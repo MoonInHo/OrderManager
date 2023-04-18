@@ -1,7 +1,6 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.entity.Account;
-import com.foodtech.mate.domain.entity.QAccount;
+import com.foodtech.mate.domain.wrapper.Username;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,11 +13,11 @@ public class MemberQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public boolean findByUserId(String userId) {
+    public boolean findByUserId(String username) {
         Integer result = queryFactory
                 .selectOne()
                 .from(account)
-                .where(account.userId.eq(userId))
+                .where(account.username.eq(Username.of(username)))
                 .fetchFirst();
 
         return result != null && result == 1;

@@ -8,15 +8,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountDto {
 
-    private String userId;
+    private String username;
     private String password;
 
-    private AccountDto(String userId, String password) {
-        this.userId = userId;
+    private AccountDto(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
-    public static AccountDto saveAccountInfo(String userId, String password) {
-        return new AccountDto(userId, password);
+    public static AccountDto saveAccountInfo(String username, String password) {
+        return new AccountDto(username, password);
     }
 }

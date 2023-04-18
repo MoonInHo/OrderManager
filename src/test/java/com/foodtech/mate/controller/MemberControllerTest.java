@@ -27,9 +27,9 @@ public class MemberControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {"test", "test!", "test 1"})
     @DisplayName("회원가입 정보 입력 - 올바르지 않은 형식의 아이디 입력시 예외 발생")
-    void invalidUserId_signUp_throwException(String userId) throws Exception {
+    void invalidUserId_signUp_throwException(String username) throws Exception {
         //given
-        AccountDto accountDto = AccountDto.saveAccountInfo(userId, "testPassword123!");
+        AccountDto accountDto = AccountDto.saveAccountInfo(username, "testPassword123!");
 
         //when
         Throwable throwable = catchThrowable(() -> memberController.signUp(accountDto));

@@ -1,12 +1,13 @@
 package com.foodtech.mate.domain.entity;
 
 import com.foodtech.mate.domain.dto.AccountDto;
+import com.foodtech.mate.domain.wrapper.Password;
+import com.foodtech.mate.domain.wrapper.Username;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -16,22 +17,32 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "! 공백을 사용할 수 없습니다.")
-    @Column(unique = true)
-    private String userId;
-    @NotBlank(message = "! 공백을 사용할 수 없습니다.")
-    private String password;
+    @Embedded
+    private Username username;
+    @Embedded
+    private Password password;
 
-    private Account(String userId, String password) {
-        this.userId = userId;
+    private Account(Username username, Password password) {
+        this.username = username;
         this.password = password;
     }
 
     public void passwordEncoding(String password) {
-        this.password = password;
+        this.password = Password.of(password);
     }
 
     public static Account createMember(AccountDto accountDto) {
-        return new Account(accountDto.getUserId(), accountDto.getPassword());
+        return new Account(
+                Username.of(accountDto.getUsername()),
+                Password.of(accountDto.getPassword())
+        );
+    }
+
+    public String usernameOf() {
+        return this.username.getUsername();
+    }
+
+    public String passwordOf() {
+        return this.password.getPassword();
     }
 }
