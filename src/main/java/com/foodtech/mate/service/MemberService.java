@@ -22,7 +22,7 @@ public class MemberService {
             throw new IllegalStateException("! 이미 사용중인 아이디 입니다.");
         }
         
-        Account member = memberRepository.save(account);
-        return member.getId();
+        Account createdAccount = memberRepository.save(account);
+        return createdAccount.getId();
     }
 }
