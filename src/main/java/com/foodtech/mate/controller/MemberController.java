@@ -22,7 +22,7 @@ public class MemberController {
     @PostMapping("/sign_up")
     public ResponseEntity<Long> signUp(@RequestBody AccountDto accountDto) {
 
-        if (!accountDto.getUserId().matches("^[a-zA-Z0-9]{5,}$")) {
+        if (!accountDto.getUsername().matches("^[a-zA-Z0-9]{5,}$")) {
             throw new InvalidUserIdException("! 올바른 형식으로 입력해주세요.");
         }
 
@@ -31,7 +31,7 @@ public class MemberController {
         }
 
         Account account = Account.createMember(accountDto);
-        account.passwordEncoding(passwordEncoder.encode(account.getPassword()));
+        account.passwordEncoding(passwordEncoder.encode(account.passwordOf()));
         Long userId = memberService.signUp(account);
 
         return ResponseEntity.ok(userId);
