@@ -21,6 +21,11 @@ public class Username {
     }
 
     public static Username of(String username) {
+
+        if (username == null || username.isBlank()) {
+            throw new NullPointerException("아이디를 입력하세요.");
+        }
+
         return new Username(username);
     }
 }

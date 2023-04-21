@@ -19,6 +19,11 @@ public class Password {
     }
 
     public static Password of(String password) {
+
+        if (password == null || password.isBlank()) {
+            throw new NullPointerException("비밀번호를 입력하세요.");
+        }
+
         return new Password(password);
     }
 }

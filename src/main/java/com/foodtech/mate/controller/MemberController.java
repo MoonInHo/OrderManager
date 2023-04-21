@@ -20,6 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign_up")
+
     public ResponseEntity<Long> signUp(@RequestBody AccountDto accountDto) {
 
         if (!accountDto.getUsername().matches("^[a-zA-Z0-9]{5,}$")) {
@@ -31,9 +32,17 @@ public class MemberController {
         }
 
         Account account = Account.createMember(accountDto);
-        account.passwordEncoding(passwordEncoder.encode(account.passwordOf()));
+        account.encryptPassword(passwordEncoder.encode(account.passwordOf()));
         Long userId = memberService.signUp(account);
 
         return ResponseEntity.ok(userId);
+    }
+
+    @PostMapping("/sign_in")
+    public ResponseEntity<Long> signIn(@RequestBody AccountDto accountDto) {
+
+        Account account = memberService.signIn(accountDto);
+
+        return ResponseEntity.ok(account.getId());
     }
 }

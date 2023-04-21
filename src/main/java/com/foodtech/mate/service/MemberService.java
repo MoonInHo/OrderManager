@@ -1,5 +1,6 @@
 package com.foodtech.mate.service;
 
+import com.foodtech.mate.domain.dto.AccountDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
@@ -17,12 +18,20 @@ public class MemberService {
     @Transactional
     public Long signUp(Account account) {
 
-        boolean userIdExist = memberQueryRepository.findByUserId(account.usernameOf());
+        boolean userIdExist = memberQueryRepository.isUsernameExist(account.usernameOf());
         if (userIdExist) {
             throw new IllegalStateException("! 이미 사용중인 아이디 입니다.");
         }
         
         Account createdAccount = memberRepository.save(account);
         return createdAccount.getId();
+    }
+
+    @Transactional
+    public Account signIn(AccountDto accountDto) {
+
+        Account findedAccount = memberQueryRepository.findByUsername(accountDto.getUsername());
+
+        return findedAccount;
     }
 }
