@@ -1,8 +1,8 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.domain.dto.AccountDto;
-import com.foodtech.mate.exception.InvalidPasswordException;
-import com.foodtech.mate.exception.InvalidUserIdException;
+import com.foodtech.mate.exception.exception.InvalidPasswordException;
+import com.foodtech.mate.exception.exception.InvalidUserIdException;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
 import com.foodtech.mate.service.MemberService;

@@ -1,9 +1,12 @@
 package com.foodtech.mate.security.configs;
 
+import com.foodtech.mate.exception.handler.MemberExceptionHandler;
+import com.foodtech.mate.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,12 +34,13 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/sign_up", "/sign_in").permitAll()
+                .antMatchers("/sign-up", "/sign-in").permitAll()
                 .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .loginPage("/sign_in")
-                .defaultSuccessUrl("/home")
+        .and()
+                .formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/sign-in")
                 .permitAll()
         ;
 

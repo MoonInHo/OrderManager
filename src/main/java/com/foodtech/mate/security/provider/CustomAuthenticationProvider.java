@@ -1,5 +1,7 @@
 package com.foodtech.mate.security.provider;
 
+import com.foodtech.mate.exception.exception.NullPasswordException;
+import com.foodtech.mate.exception.exception.NullUsernameException;
 import com.foodtech.mate.security.service.AccountContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -23,6 +25,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
+
+        if (username == null || username.isBlank()) {
+            throw new NullUsernameException("아이디를 입력하세요.");
+        }
+
+        if (password == null || password.isBlank()) {
+            throw new NullPasswordException("비밀번호를 입력하세요.");
+        }
 
         AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(username);
 

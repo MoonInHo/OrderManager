@@ -1,6 +1,5 @@
 package com.foodtech.mate.service;
 
-import com.foodtech.mate.domain.dto.AccountDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
@@ -25,13 +24,5 @@ public class MemberService {
         
         Account createdAccount = memberRepository.save(account);
         return createdAccount.getId();
-    }
-
-    @Transactional
-    public Account signIn(AccountDto accountDto) {
-
-        Account findedAccount = memberQueryRepository.findByUsername(accountDto.getUsername());
-
-        return findedAccount;
     }
 }

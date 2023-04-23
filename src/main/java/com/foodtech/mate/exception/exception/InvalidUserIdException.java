@@ -1,4 +1,4 @@
-package com.foodtech.mate.exception;
+package com.foodtech.mate.exception.exception;
 
 public class InvalidUserIdException extends RuntimeException {
 
