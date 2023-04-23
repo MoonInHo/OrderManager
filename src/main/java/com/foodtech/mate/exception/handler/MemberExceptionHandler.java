@@ -1,9 +1,11 @@
 package com.foodtech.mate.exception.handler;
 
-import com.foodtech.mate.exception.InvalidPasswordException;
-import com.foodtech.mate.exception.InvalidUserIdException;
+import com.foodtech.mate.exception.exception.InvalidPasswordException;
+import com.foodtech.mate.exception.exception.InvalidUserIdException;
 import com.foodtech.mate.exception.code.MemberErrorCode;
 import com.foodtech.mate.exception.dto.ErrorResponseDto;
+import com.foodtech.mate.exception.exception.NullPasswordException;
+import com.foodtech.mate.exception.exception.NullUsernameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,7 +23,7 @@ public class MemberExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidUserIdException.class)
     public ErrorResponseDto invalidUserIdException(InvalidUserIdException e) {
-        return new ErrorResponseDto(MemberErrorCode.INVALID_USER_ID, e.getMessage());
+        return new ErrorResponseDto(MemberErrorCode.INVALID_USERNAME, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

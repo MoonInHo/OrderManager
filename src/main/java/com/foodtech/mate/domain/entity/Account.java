@@ -27,7 +27,7 @@ public class Account {
         this.password = password;
     }
 
-    public void passwordEncoding(String password) {
+    public void encryptPassword(String password) {
         this.password = Password.of(password);
     }
 

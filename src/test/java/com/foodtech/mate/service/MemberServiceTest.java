@@ -26,7 +26,7 @@ public class MemberServiceTest {
         //given
         AccountDto accountDto = AccountDto.saveAccountInfo("test123", "testPassword123!");
         Account account = Account.createMember(accountDto);
-        given(memberQueryRepository.findByUserId(any())).willReturn(true);
+        given(memberQueryRepository.isUsernameExist(any())).willReturn(true);
 
         //when
         Throwable throwable = catchThrowable(() -> memberService.signUp(account));
@@ -40,16 +40,16 @@ public class MemberServiceTest {
     @DisplayName("회원 가입 - 올바른 회원정보로 가입시 회원생성")
     void properInfo_signUp_createMember() throws Exception {
         //given
-        AccountDto accountDto = AccountDto.saveAccountInfo("Test@naver.com", "Test123!");
+        AccountDto accountDto = AccountDto.saveAccountInfo("test123", "testPassword123!");
         Account account = Account.createMember(accountDto);
         given(memberRepository.save(any()))
                 .willReturn(account);
 
         // when
-        Account member = memberRepository.save(account);
+        Account createdAccount = memberRepository.save(account);
 
         //then
-        assertThat(member).isNotNull();
-        assertThat(member).isInstanceOf(Account.class);
+        assertThat(createdAccount).isNotNull();
+        assertThat(createdAccount).isInstanceOf(Account.class);
     }
 }

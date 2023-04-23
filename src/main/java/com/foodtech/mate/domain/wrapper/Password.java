@@ -1,5 +1,6 @@
 package com.foodtech.mate.domain.wrapper;
 
+import com.foodtech.mate.exception.exception.NullPasswordException;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
