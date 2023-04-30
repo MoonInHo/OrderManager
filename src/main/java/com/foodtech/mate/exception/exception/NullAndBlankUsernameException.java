@@ -2,9 +2,9 @@ package com.foodtech.mate.exception.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
-public class NullPasswordException extends AuthenticationException {
+public class NullAndBlankUsernameException extends AuthenticationException {
 
-    public NullPasswordException(String message) {
+    public NullAndBlankUsernameException(String message) {
         super(message);
     }
 }
