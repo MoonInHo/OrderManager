@@ -38,7 +38,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원 가입 - 올바른 회원정보로 가입시 회원생성")
-    void properInfo_signUp_createMember() throws Exception {
+    void properInfo_signUp_createMember() {
         //given
         AccountDto accountDto = AccountDto.saveAccountInfo("test123", "testPassword123!");
         Account account = Account.createMember(accountDto);

@@ -1,11 +1,11 @@
 package com.foodtech.mate.exception.handler;
 
 import com.foodtech.mate.exception.exception.InvalidPasswordException;
-import com.foodtech.mate.exception.exception.InvalidUserIdException;
+import com.foodtech.mate.exception.exception.InvalidUsernameException;
 import com.foodtech.mate.exception.code.MemberErrorCode;
 import com.foodtech.mate.exception.dto.ErrorResponseDto;
-import com.foodtech.mate.exception.exception.NullPasswordException;
-import com.foodtech.mate.exception.exception.NullUsernameException;
+import com.foodtech.mate.exception.exception.NullAndBlankPasswordException;
+import com.foodtech.mate.exception.exception.NullAndBlankUsernameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,8 +21,8 @@ public class MemberExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidUserIdException.class)
-    public ErrorResponseDto invalidUserIdException(InvalidUserIdException e) {
+    @ExceptionHandler(InvalidUsernameException.class)
+    public ErrorResponseDto invalidUserIdException(InvalidUsernameException e) {
         return new ErrorResponseDto(MemberErrorCode.INVALID_USERNAME, e.getMessage());
     }
 
@@ -30,5 +30,17 @@ public class MemberExceptionHandler {
     @ExceptionHandler(InvalidPasswordException.class)
     public ErrorResponseDto invalidPasswordException(InvalidPasswordException e) {
         return new ErrorResponseDto(MemberErrorCode.INVALID_PASSWORD, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NullAndBlankUsernameException.class)
+    public ErrorResponseDto nullUsernameException(NullAndBlankUsernameException e) {
+        return new ErrorResponseDto(MemberErrorCode.NULL_AND_BLANK_USERNAME, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NullAndBlankPasswordException.class)
+    public ErrorResponseDto nullPasswordException(NullAndBlankPasswordException e) {
+        return new ErrorResponseDto(MemberErrorCode.NULL_AND_BLANK_PASSWORD, e.getMessage());
     }
 }

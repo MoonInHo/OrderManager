@@ -1,22 +1,27 @@
 package com.foodtech.mate.security.configs;
 
-import com.foodtech.mate.exception.handler.MemberExceptionHandler;
-import com.foodtech.mate.security.provider.CustomAuthenticationProvider;
-import lombok.RequiredArgsConstructor;
+import com.foodtech.mate.security.handler.CustomLogoutHandler;
+import com.foodtech.mate.security.handler.CustomLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Bean
@@ -34,14 +39,22 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/sign-up", "/sign-in").permitAll()
+                .antMatchers("/sign-in", "/sign-up").anonymous()
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
+                .loginPage("/sign-in")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/sign-in")
-                .permitAll()
+                .defaultSuccessUrl("/")
+        .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/sign-out"))
+                .logoutSuccessUrl("/sign-in")
+                .addLogoutHandler(new CustomLogoutHandler())
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                .deleteCookies("JSESSIONID", "remember-me")
         ;
 
         return http.build();
