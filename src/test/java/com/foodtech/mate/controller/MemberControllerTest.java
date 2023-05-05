@@ -155,13 +155,14 @@ public class MemberControllerTest {
         CertificationDto certificationDto = CertificationDto.createCertificationDto(phone, null);
 
         String json = new ObjectMapper().writeValueAsString(certificationDto);
+        String responseBody = "인증번호 : " + certificationCode;
 
         //when & then
         mockMvc.perform(post("/create-certification")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("인증번호 : " + certificationCode));
+                .andExpect(content().string(responseBody));
     }
 
     @Test

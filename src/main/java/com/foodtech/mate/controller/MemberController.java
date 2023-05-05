@@ -50,7 +50,7 @@ public class MemberController {
     }
 
     @PostMapping("/create-certification")
-    public String createCertification(@RequestBody CertificationDto certificationDto) {
+    public ResponseEntity<String> createCertification(@RequestBody CertificationDto certificationDto) {
 
         Phone.of(certificationDto.getPhone());
         String phone = certificationDto.getPhone();
@@ -60,12 +60,12 @@ public class MemberController {
         }
         String certificationCode = memberService.createCertificationCode();
         certificationMap.put(phone, certificationCode);
-        
-        return "인증번호 : " + certificationCode;
+
+        return ResponseEntity.ok("인증번호 : " + certificationCode);
     }
 
     @PostMapping("/certification")
-    public String certification(@RequestBody CertificationDto certificationDto) {
+    public ResponseEntity<String> certification(@RequestBody CertificationDto certificationDto) {
 
         String phone = certificationDto.getPhone();
 
@@ -74,8 +74,8 @@ public class MemberController {
             certificationMap.remove(phone);
             String username = memberService.findUsername(phone);
 
-            return "조회하신 아이디는 '" + username + "' 입니다";
+            return ResponseEntity.ok("조회하신 아이디는 '" + username + "' 입니다");
         }
-        return "인증번호가 일치하지 않습니다.";
+        return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
     }
 }
