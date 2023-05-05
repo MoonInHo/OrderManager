@@ -1,6 +1,7 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.AccountDto;
+import com.foodtech.mate.domain.dto.CertificationDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
@@ -22,10 +23,10 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원 가입 - 이메일 중복시 예외 발생")
-    void existsEmail_join_throwException() {
+    void existsEmail_signUp_throwException() {
         //given
-        AccountDto accountDto = AccountDto.saveAccountInfo("test123", "testPassword123!");
-        Account account = Account.createMember(accountDto);
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
         given(memberQueryRepository.isUsernameExist(any())).willReturn(true);
 
         //when
@@ -40,10 +41,9 @@ public class MemberServiceTest {
     @DisplayName("회원 가입 - 올바른 회원정보로 가입시 회원생성")
     void properInfo_signUp_createMember() {
         //given
-        AccountDto accountDto = AccountDto.saveAccountInfo("test123", "testPassword123!");
-        Account account = Account.createMember(accountDto);
-        given(memberRepository.save(any()))
-                .willReturn(account);
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
+        given(memberRepository.save(any())).willReturn(account);
 
         // when
         Account createdAccount = memberRepository.save(account);
@@ -51,5 +51,32 @@ public class MemberServiceTest {
         //then
         assertThat(createdAccount).isNotNull();
         assertThat(createdAccount).isInstanceOf(Account.class);
+    }
+
+    @Test
+    @DisplayName("회원 인증 - 인증 번호 생성 요청시 무작위 인증번호 반환")
+    void requestCreateCertificationCode_returnRandomCertificationCode() {
+        //given & when
+        String certificationCode = memberService.createCertificationCode();
+
+        //then
+        assertThat(certificationCode).isNotNull();
+    }
+
+    @Test
+    @DisplayName("회원 인증 - 올바른 연락처로 회원 아이디 찾기 요청시 조회된 아이디 반환")
+    void properPhone_findUsername_returnFoundUsername() throws Exception {
+        //given
+        CertificationDto certificationDto = CertificationDto.createCertificationDto("010-1234-5678", null);
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
+        given(memberQueryRepository.findByUsername(any())).willReturn(account);
+
+        //when
+        Account foundAccount = memberQueryRepository.findByUsername(certificationDto.getPhone());
+
+        //then
+        assertThat(foundAccount).isNotNull();
+        assertThat(foundAccount).isInstanceOf(Account.class);
     }
 }
