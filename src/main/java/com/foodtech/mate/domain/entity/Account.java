@@ -1,7 +1,7 @@
 package com.foodtech.mate.domain.entity;
 
-import com.foodtech.mate.domain.dto.AccountDto;
 import com.foodtech.mate.domain.wrapper.Password;
+import com.foodtech.mate.domain.wrapper.Phone;
 import com.foodtech.mate.domain.wrapper.Role;
 import com.foodtech.mate.domain.wrapper.Username;
 import lombok.AccessLevel;
@@ -28,11 +28,14 @@ public class Account {
     @Embedded
     private Password password;
     @Embedded
+    private Phone phone;
+    @Embedded
     private Role role;
 
-    private Account(Username username, Password password) {
+    private Account(Username username, Password password, Phone phone) {
         this.username = username;
         this.password = password;
+        this.phone = phone;
         this.role = Role.of("ROLE_USER");
     }
 
@@ -40,11 +43,8 @@ public class Account {
         this.password = Password.encodedPassword(password);
     }
 
-    public static Account createMember(AccountDto accountDto) {
-        return new Account(
-                Username.of(accountDto.getUsername()),
-                Password.of(accountDto.getPassword())
-        );
+    public static Account createMember(Username username, Password password, Phone phone) {
+        return new Account(username, password, phone);
     }
 
     public String usernameOf() {
@@ -53,6 +53,10 @@ public class Account {
 
     public String passwordOf() {
         return password.getPassword();
+    }
+
+    public String phoneOf() {
+        return phone.getPhone();
     }
 
     public List<GrantedAuthority> createDefaultRoles(Role ...roles) {
