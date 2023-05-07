@@ -1,9 +1,6 @@
 package com.foodtech.mate.domain.entity;
 
-import com.foodtech.mate.domain.wrapper.Password;
-import com.foodtech.mate.domain.wrapper.Phone;
-import com.foodtech.mate.domain.wrapper.Role;
-import com.foodtech.mate.domain.wrapper.Username;
+import com.foodtech.mate.domain.wrapper.account.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,17 +21,20 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
-    private Username username;
+    private UserId userId;
     @Embedded
     private Password password;
+    @Embedded
+    private Name name;
     @Embedded
     private Phone phone;
     @Embedded
     private Role role;
 
-    private Account(Username username, Password password, Phone phone) {
-        this.username = username;
+    private Account(UserId userId, Password password,Name name, Phone phone) {
+        this.userId = userId;
         this.password = password;
+        this.name = name;
         this.phone = phone;
         this.role = Role.of("ROLE_USER");
     }
@@ -43,16 +43,20 @@ public class Account {
         this.password = Password.encodedPassword(password);
     }
 
-    public static Account createMember(Username username, Password password, Phone phone) {
-        return new Account(username, password, phone);
+    public static Account createMember(UserId userId, Password password, Name name, Phone phone) {
+        return new Account(userId, password, name, phone);
     }
 
-    public String usernameOf() {
-        return username.getUsername();
+    public String userIdOf() {
+        return userId.getUserId();
     }
 
     public String passwordOf() {
         return password.getPassword();
+    }
+
+    public String nameOf() {
+        return name.getName();
     }
 
     public String phoneOf() {

@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/sign-in", "/sign-up", "/create-certification", "/certification").anonymous()
+                .antMatchers("/sign-in", "/sign-up","/generate-verificationCode", "/find-userId", "/create-verification-password", "/verification-password", "/change-password").anonymous()
                 .antMatchers("/", "/sign-out").hasRole("USER")
                 .anyRequest().authenticated()
         .and()

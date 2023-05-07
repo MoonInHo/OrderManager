@@ -1,7 +1,5 @@
-package com.foodtech.mate.domain.wrapper;
+package com.foodtech.mate.domain.wrapper.account;
 
-import com.foodtech.mate.exception.exception.InvalidPasswordException;
-import com.foodtech.mate.exception.exception.NullAndBlankPasswordException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +17,15 @@ public class Password {
     public static Password of(String password) {
 
         if (password == null) {
-            throw new NullAndBlankPasswordException("! 비밀번호를 입력해 주세요.");
+            throw new IllegalArgumentException("! 비밀번호를 입력해 주세요.");
         }
 
         if (password.isBlank()) {
-            throw new NullAndBlankPasswordException("! 공백을 사용할 수 없습니다.");
+            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
         }
 
         if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{10,20}$")) {
-            throw new InvalidPasswordException("! 올바른 형식으로 입력해주세요.");
+            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
         }
 
         return new Password(password);

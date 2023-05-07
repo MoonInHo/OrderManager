@@ -1,9 +1,8 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.dto.AccountDto;
 import com.foodtech.mate.domain.entity.Account;
-import com.foodtech.mate.domain.wrapper.Phone;
-import com.foodtech.mate.domain.wrapper.Username;
+import com.foodtech.mate.domain.wrapper.account.Phone;
+import com.foodtech.mate.domain.wrapper.account.UserId;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,29 +15,37 @@ public class MemberQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public boolean isUsernameExist(String username) {
+    public boolean isUserIdExist(String userId) {
         Integer result = queryFactory
                 .selectOne()
                 .from(account)
-                .where(account.username.eq(Username.of(username)))
+                .where(account.userId.eq(UserId.of(userId)))
                 .fetchFirst();
 
         return result != null && result == 1;
     }
 
-    public Account findByUsername(String username) {
+    public Account findAccountByUserId(String userId) {
         return queryFactory
                 .selectFrom(account)
                 .from(account)
-                .where(account.username.eq(Username.of(username)))
+                .where(account.userId.eq(UserId.of(userId)))
                 .fetchOne();
     }
 
-    public Account findUsernameByPhone(String phone) {
+    public UserId findUserIdByPhone(String phone) {
         return queryFactory
-                .selectFrom(account)
+                .select(account.userId)
                 .from(account)
                 .where(account.phone.eq(Phone.of(phone)))
                 .fetchOne();
+    }
+
+    public Long changePassword(Account foundAccount) {
+        return queryFactory
+                .update(account)
+                .set(account.password, foundAccount.getPassword())
+                .where(account.id.eq(foundAccount.getId()))
+                .execute();
     }
 }
