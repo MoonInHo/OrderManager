@@ -13,7 +13,7 @@ public class AccountContext extends User {
     private final Account account;
 
     public AccountContext(Account account, Collection<? extends GrantedAuthority> authorities) {
-        super(account.usernameOf(), account.passwordOf(), authorities);
+        super(account.userIdOf(), account.passwordOf(), authorities);
         this.account = account;
     }
 }

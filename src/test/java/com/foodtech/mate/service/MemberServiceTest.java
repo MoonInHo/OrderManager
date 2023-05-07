@@ -1,12 +1,14 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.AccountDto;
-import com.foodtech.mate.domain.dto.CertificationDto;
 import com.foodtech.mate.domain.entity.Account;
+import com.foodtech.mate.domain.wrapper.account.UserId;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import javax.persistence.EntityNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -25,9 +27,9 @@ public class MemberServiceTest {
     @DisplayName("회원 가입 - 이메일 중복시 예외 발생")
     void existsEmail_signUp_throwException() {
         //given
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         Account account = AccountDto.createAccount(accountDto);
-        given(memberQueryRepository.isUsernameExist(any())).willReturn(true);
+        given(memberQueryRepository.isUserIdExist(any())).willReturn(true);
 
         //when
         Throwable throwable = catchThrowable(() -> memberService.signUp(account));
@@ -41,7 +43,7 @@ public class MemberServiceTest {
     @DisplayName("회원 가입 - 올바른 회원정보로 가입시 회원생성")
     void properInfo_signUp_createMember() {
         //given
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩" , "010-1234-5678");
         Account account = AccountDto.createAccount(accountDto);
         given(memberRepository.save(any())).willReturn(account);
 
@@ -54,29 +56,86 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 인증 - 인증 번호 생성 요청시 무작위 인증번호 반환")
-    void requestCreateCertificationCode_returnRandomCertificationCode() {
-        //given & when
-        String certificationCode = memberService.createCertificationCode();
+    @DisplayName("아이디 찾기 - 등록된 연락처로 아이디 찾기 시도시 조회된 회원 아이디 반환")
+    void registeredPhone_findUserId_returnUserId() {
+        //given
+        String phone = "010-1234-5678";
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
+        given(memberQueryRepository.findUserIdByPhone(phone)).willReturn(account.getUserId());
+
+        //when
+        UserId fountUserId = memberQueryRepository.findUserIdByPhone(phone);
 
         //then
-        assertThat(certificationCode).isNotNull();
+        assertThat(fountUserId).isNotNull();
+        assertThat(fountUserId.getUserId()).isEqualTo("test123");
     }
 
     @Test
-    @DisplayName("회원 인증 - 올바른 연락처로 회원 아이디 찾기 요청시 조회된 아이디 반환")
-    void properPhone_findUsername_returnFoundUsername() throws Exception {
+    @DisplayName("아이디 찾기 - 등록되지 않은 연락처로 아이디찾기 시도시 예외 발생")
+    void unregisteredPhone_findUserId_throwException() {
         //given
-        CertificationDto certificationDto = CertificationDto.createCertificationDto("010-1234-5678", null);
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
-        given(memberQueryRepository.findByUsername(any())).willReturn(account);
+        String phone = "010-5678-1234";
+        given(memberQueryRepository.findUserIdByPhone(phone)).willReturn(null);
 
         //when
-        Account foundAccount = memberQueryRepository.findByUsername(certificationDto.getPhone());
+        Throwable throwable = catchThrowable(() -> memberService.findUserId(phone));
 
         //then
-        assertThat(foundAccount).isNotNull();
-        assertThat(foundAccount).isInstanceOf(Account.class);
+        assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
+        assertThat(throwable).hasMessage("주문접수 앱 가입 정보가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 - 등록된 아이디로 계정 찾기 시도시 조회된 회원 아이디 반환")
+    void registeredUserId_findAccount_returnAccount() {
+        //given
+        String userId = "test123";
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
+        given(memberQueryRepository.findAccountByUserId(userId)).willReturn(account);
+
+        //when
+        Account fountAccount = memberQueryRepository.findAccountByUserId(userId);
+
+        //then
+        assertThat(fountAccount).isNotNull();
+        assertThat(fountAccount).isInstanceOf(Account.class);
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 - 등록되지 않은 아이디로 계정찾기 시도시 예외 발생")
+    void unregisteredUserId_findAccount_throwException() {
+        //given
+        String userId = "김개발";
+        given(memberQueryRepository.findUserIdByPhone(userId)).willReturn(null);
+
+        //when
+        Throwable throwable = catchThrowable(() -> memberService.findUserId(userId));
+
+        //then
+        assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
+        assertThat(throwable).hasMessage("주문접수 앱 가입 정보가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 - 올바른 형식의 비밀번호를 입력받아 비밀번호 변경 시도시 변경된 비밀번호가 담긴 회원객체 반환")
+    void inputNewPassword_requestChangePassword_returnAccountContainingTheChangedPassword() {
+        //given
+        String newPassword = "newTestPassword123!";
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
+        Account account = AccountDto.createAccount(accountDto);
+        given(memberQueryRepository.findAccountByUserId(accountDto.getUserId())).willReturn(account);
+
+        // When
+        account.encryptPassword(newPassword);
+        memberService.changePassword(account);
+
+        Account changedAccount = memberQueryRepository.findAccountByUserId(accountDto.getUserId());
+
+        //then
+        assertThat(changedAccount.passwordOf()).isEqualTo(newPassword);
     }
 }

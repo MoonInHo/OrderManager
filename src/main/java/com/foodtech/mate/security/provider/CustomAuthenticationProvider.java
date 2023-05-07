@@ -21,10 +21,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String username = authentication.getName();
+        String userId = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(username);
+        AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(userId);
 
         if (!passwordEncoder.matches(password, accountContext.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");

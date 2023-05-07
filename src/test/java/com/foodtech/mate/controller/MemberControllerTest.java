@@ -1,8 +1,9 @@
 package com.foodtech.mate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foodtech.mate.controller.verifier.Verifier;
 import com.foodtech.mate.domain.dto.AccountDto;
-import com.foodtech.mate.domain.dto.CertificationDto;
+import com.foodtech.mate.domain.dto.VerificationDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.security.configs.SecurityConfig;
 import com.foodtech.mate.service.MemberService;
@@ -17,10 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,7 +70,7 @@ public class MemberControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/sign-in"));
     }
-    
+
     @Test
     @DisplayName("접근 권한 - 회원이 로그인 페이지 접근시 403 상태코드 반환")
     @WithMockUser(authorities = "USER")
@@ -110,7 +113,7 @@ public class MemberControllerTest {
     @WithAnonymousUser
     void properAccountInfo_signUp_createMember() throws Exception {
         //given
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         String json = new ObjectMapper().writeValueAsString(accountDto);
 
         //when & then
@@ -134,7 +137,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호 인코딩 - 사용자가 입력한 비밀번호를 인코딩 후 암호화된 비밀번호 반환")
     void password_encoding_returnEncodedPassword() {
         //given
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
+        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         Account account = AccountDto.createAccount(accountDto);
 
         //when
@@ -144,49 +147,66 @@ public class MemberControllerTest {
         assertThat(passwordEncoder.matches(accountDto.getPassword(), account.passwordOf()));
     }
 
+
+    //TODO responseBody 가 빈 문자열인 이유
     @Test
-    @DisplayName("회원 찾기 - 회원 연락처로 아이디 찾기 수행시 인증번호 발송")
+    @DisplayName("아이디 찾기 - 연락처를 입력 후 인증 요청시 인증번호 반환")
     @WithAnonymousUser
-    void memberPhone_findUsername_returnCertificationCode() throws Exception {
-        //given
+    void inputPhone_requestVerification_returnVerificationCode() throws Exception {
+        // given
         String phone = "010-1234-5678";
-        String certificationCode = "123456";
-        given(memberService.createCertificationCode()).willReturn(certificationCode);
-        CertificationDto certificationDto = CertificationDto.createCertificationDto(phone, null);
+        VerificationDto verificationDto = VerificationDto.createVerificationDto(null, null, phone, null);
+        Map<String, String> verificationMap = new ConcurrentHashMap<>();
+        String verificationCode = Verifier.generateUserIdVerificationCode(verificationDto, verificationMap);
 
-        String json = new ObjectMapper().writeValueAsString(certificationDto);
-        String responseBody = "인증번호 : " + certificationCode;
+        verificationMap.put(phone, verificationCode);
 
-        //when & then
-        mockMvc.perform(post("/create-certification")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
+        String expectResponseBody = "인증번호 : " + verificationCode;
+        String json = new ObjectMapper().writeValueAsString(verificationDto);
+
+        //when
+        MvcResult result =
+                mockMvc.perform(post("/generate-verificationCode")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk())
-                .andExpect(content().string(responseBody));
+                .andReturn();
+
+        // then
+
+        String responseBody = result.getResponse().getContentAsString();
+
+        assertThat(expectResponseBody).isEqualTo(responseBody);
+        assertThat(verificationCode).isEqualTo(verificationMap.get("010-1234-5678"));
     }
 
     @Test
-    @DisplayName("회원 찾기 - 발급된 인증번호로 인증 완료시 조회된 아이디 반환")
-    void CertificationCode_Certification_returnUsername() throws Exception {
-        //given
-        AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "010-1234-5678");
-        CertificationDto certificationDto = CertificationDto.createCertificationDto("010-1234-5678", "123456");
-        Account account = AccountDto.createAccount(accountDto);
+    @DisplayName("아이디 찾기 - 올바르지 않은 인증번호로 인증 시도시 예외 반환")
+    void InvalidVerificationCode_requestVerification_throwException() {
 
-        given(memberService.findUsername(any())).willReturn(account.usernameOf());
-
-        String json = new ObjectMapper().writeValueAsString(certificationDto);
-
-        mockMvc.perform(post("/certification")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("조회하신 아이디는 '" + account.usernameOf() + "' 입니다"));
     }
 
     @Test
-    @DisplayName("회원 찾기 - 올바르지 않은 인증번호로 아이디 찾기 시도시 에외 발생")
-    void invalidCertificationCode_findUsername_throwException() {
+    @DisplayName("아이디 찾기 - 인증 성공 후 회원 아이디 찾기 요청시 조회된 아이디 반환")
+    void successVerification_findUsername_returnFoundUsername() throws Exception {
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 - 회원정보 입력 후 인증 요청시 인증번호 반환")
+    void inputMemberInfo_requestVerification_returnVerificationCode() {
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 - 올바른 인증번호로 인증시도시 성공 메세지 반환 후 인증자 정보 저장")
+    void inputProperVerificationCode_requestVerification_returnStatusOkAndSaveRequest() {
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 - 변경할 비밀번호를 입력받아 검증 성공시 암호화 후 비밀번호를 저장한 뒤 성공 메세지 반환")
+    void inputNewPassword_successVerificationPerformPasswordEncoding_savePasswordAndReturnStatusOk() {
 
     }
 }
+

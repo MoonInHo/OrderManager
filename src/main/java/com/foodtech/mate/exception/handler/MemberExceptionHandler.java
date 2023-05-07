@@ -1,8 +1,10 @@
 package com.foodtech.mate.exception.handler;
 
-import com.foodtech.mate.exception.exception.*;
 import com.foodtech.mate.exception.code.MemberErrorCode;
 import com.foodtech.mate.exception.dto.ErrorResponseDto;
+import com.foodtech.mate.exception.exception.InvalidAuthCodeException;
+import com.foodtech.mate.exception.exception.MisMatchedPasswordException;
+import com.foodtech.mate.exception.exception.VerificationFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,40 +20,20 @@ public class MemberExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidUsernameException.class)
-    public ErrorResponseDto invalidUserIdException(InvalidUsernameException e) {
-        return new ErrorResponseDto(MemberErrorCode.INVALID_USERNAME, e.getMessage());
+    @ExceptionHandler(VerificationFailureException.class)
+    public ErrorResponseDto verificationFailureException(VerificationFailureException e) {
+        return new ErrorResponseDto(MemberErrorCode.VERIFICATION_FAILURE_ERROR, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ErrorResponseDto invalidPasswordException(InvalidPasswordException e) {
-        return new ErrorResponseDto(MemberErrorCode.INVALID_PASSWORD, e.getMessage());
+    @ExceptionHandler(MisMatchedPasswordException.class)
+    public ErrorResponseDto mismatchedPasswordException(MisMatchedPasswordException e) {
+        return new ErrorResponseDto(MemberErrorCode.MIS_MATCHED_PASSWORD_ERROR, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidPhoneException.class)
-    public ErrorResponseDto invalidPhoneException(InvalidPhoneException e) {
-        return new ErrorResponseDto(MemberErrorCode.INVALID_PHONE, e.getMessage());
+    @ExceptionHandler(InvalidAuthCodeException.class)
+    public ErrorResponseDto InvalidAuthCodeException(InvalidAuthCodeException e) {
+        return new ErrorResponseDto(MemberErrorCode.INVALID_AUTH_CODE_ERROR, e.getMessage());
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NullAndBlankUsernameException.class)
-    public ErrorResponseDto nullAndBlankUsernameException(NullAndBlankUsernameException e) {
-        return new ErrorResponseDto(MemberErrorCode.NULL_AND_BLANK_USERNAME, e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NullAndBlankPasswordException.class)
-    public ErrorResponseDto nullAndBlankPasswordException(NullAndBlankPasswordException e) {
-        return new ErrorResponseDto(MemberErrorCode.NULL_AND_BLANK_PASSWORD, e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NullAndBlankPhoneException.class)
-    public ErrorResponseDto nullAndBlankPhoneException(NullAndBlankPhoneException e) {
-        return new ErrorResponseDto(MemberErrorCode.NULL_AND_BLANK_PASSWORD, e.getMessage());
-    }
-
-
 }

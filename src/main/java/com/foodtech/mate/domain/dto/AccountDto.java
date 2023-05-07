@@ -1,9 +1,7 @@
 package com.foodtech.mate.domain.dto;
 
 import com.foodtech.mate.domain.entity.Account;
-import com.foodtech.mate.domain.wrapper.Password;
-import com.foodtech.mate.domain.wrapper.Phone;
-import com.foodtech.mate.domain.wrapper.Username;
+import com.foodtech.mate.domain.wrapper.account.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,24 +10,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountDto {
 
-    private String username;
+    private String userId;
     private String password;
+    private String name;
     private String phone;
 
-    private AccountDto(String username, String password, String phone) {
-        this.username = username;
+    private AccountDto(String userId, String password, String name, String phone) {
+        this.userId = userId;
         this.password = password;
+        this.name = name;
         this.phone = phone;
     }
 
-    public static AccountDto createAccountDto(String username, String password, String phone) {
-        return new AccountDto(username, password, phone);
+    public static AccountDto createAccountDto(String userId, String password, String name, String phone) {
+        return new AccountDto(userId, password, name, phone);
     }
 
     public static Account createAccount(AccountDto accountDto) {
         return Account.createMember(
-                Username.of(accountDto.getUsername()),
+                UserId.of(accountDto.getUserId()),
                 Password.of(accountDto.getPassword()),
+                Name.of(accountDto.getName()),
                 Phone.of(accountDto.getPhone())
         );
     }
