@@ -1,6 +1,6 @@
 package com.foodtech.mate.service;
 
-import com.foodtech.mate.domain.dto.AccountDto;
+import com.foodtech.mate.domain.dto.account.AccountDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.domain.wrapper.account.UserId;
 import com.foodtech.mate.repository.MemberQueryRepository;

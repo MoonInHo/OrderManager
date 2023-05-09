@@ -4,10 +4,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Phone {
 
+    @Column(unique = true)
     private final String phone;
 
     private Phone(String phone) {

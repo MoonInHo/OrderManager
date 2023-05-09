@@ -2,8 +2,8 @@ package com.foodtech.mate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foodtech.mate.controller.verifier.Verifier;
-import com.foodtech.mate.domain.dto.AccountDto;
-import com.foodtech.mate.domain.dto.VerificationDto;
+import com.foodtech.mate.domain.dto.account.AccountDto;
+import com.foodtech.mate.domain.dto.account.VerificationDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.security.configs.SecurityConfig;
 import com.foodtech.mate.service.MemberService;
@@ -173,7 +173,6 @@ public class MemberControllerTest {
                 .andReturn();
 
         // then
-
         String responseBody = result.getResponse().getContentAsString();
 
         assertThat(expectResponseBody).isEqualTo(responseBody);

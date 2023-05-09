@@ -30,6 +30,8 @@ public class Account {
     private Phone phone;
     @Embedded
     private Role role;
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Store> store;
 
     private Account(UserId userId, Password password,Name name, Phone phone) {
         this.userId = userId;
