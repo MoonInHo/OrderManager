@@ -1,7 +1,7 @@
 package com.foodtech.mate.controller.verifier;
 
-import com.foodtech.mate.domain.dto.ChangePasswordDto;
-import com.foodtech.mate.domain.dto.VerificationDto;
+import com.foodtech.mate.domain.dto.account.ChangePasswordDto;
+import com.foodtech.mate.domain.dto.account.VerificationDto;
 import com.foodtech.mate.domain.wrapper.account.Name;
 import com.foodtech.mate.domain.wrapper.account.Password;
 import com.foodtech.mate.domain.wrapper.account.Phone;

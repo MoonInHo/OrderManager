@@ -15,11 +15,11 @@ public class MemberQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public boolean isUserIdExist(String userId) {
+    public boolean isUserIdExist(UserId userId) {
         Integer result = queryFactory
                 .selectOne()
                 .from(account)
-                .where(account.userId.eq(UserId.of(userId)))
+                .where(account.userId.eq(userId))
                 .fetchFirst();
 
         return result != null && result == 1;

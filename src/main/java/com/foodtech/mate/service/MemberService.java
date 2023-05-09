@@ -20,7 +20,7 @@ public class MemberService {
     @Transactional
     public Long signUp(Account account) {
 
-        boolean userIdExist = memberQueryRepository.isUserIdExist(account.userIdOf());
+        boolean userIdExist = memberQueryRepository.isUserIdExist(account.getUserId());
         if (userIdExist) {
             throw new IllegalStateException("! 이미 사용중인 아이디 입니다.");
         }

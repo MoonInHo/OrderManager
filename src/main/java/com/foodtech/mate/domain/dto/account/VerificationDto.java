@@ -1,4 +1,4 @@
-package com.foodtech.mate.domain.dto;
+package com.foodtech.mate.domain.dto.account;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

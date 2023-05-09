@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Name {
 
-    private String name;
+    private final String name;
 
     private Name(String name) {
         this.name = name;

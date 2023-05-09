@@ -1,9 +1,9 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.controller.verifier.Verifier;
-import com.foodtech.mate.domain.dto.AccountDto;
-import com.foodtech.mate.domain.dto.ChangePasswordDto;
-import com.foodtech.mate.domain.dto.VerificationDto;
+import com.foodtech.mate.domain.dto.account.AccountDto;
+import com.foodtech.mate.domain.dto.account.ChangePasswordDto;
+import com.foodtech.mate.domain.dto.account.VerificationDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.service.MemberService;
 import lombok.RequiredArgsConstructor;
