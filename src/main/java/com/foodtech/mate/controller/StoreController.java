@@ -10,5 +10,4 @@ public class StoreController {
 
     private final StoreService storeService;
 
-
 }
