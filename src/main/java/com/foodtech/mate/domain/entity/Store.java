@@ -33,7 +33,7 @@ public class Store {
     private BusinessType businessType;
     @Embedded
     private Industry industry;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
