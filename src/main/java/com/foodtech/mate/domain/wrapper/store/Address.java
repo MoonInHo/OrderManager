@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE,force = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Address {
 
     @NotBlank
@@ -20,7 +20,7 @@ public class Address {
     public static Address of(String address) {
 
         if (address == null || address.isBlank()) {
-            throw new IllegalArgumentException("사업장주소를 입력해주세요");
+            throw new IllegalArgumentException("주소를 입력해주세요");
         }
         return new Address(address);
     }

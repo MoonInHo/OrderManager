@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,8 +31,8 @@ public class Account {
     private Phone phone;
     @Embedded
     private Role role;
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Store> store;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private List<Store> store = new ArrayList<>();
 
     private Account(UserId userId, Password password,Name name, Phone phone) {
         this.userId = userId;
