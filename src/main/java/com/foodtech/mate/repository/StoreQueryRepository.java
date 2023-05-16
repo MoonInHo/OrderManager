@@ -1,6 +1,5 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.wrapper.store.BusinessNumber;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -13,13 +12,11 @@ public class StoreQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public boolean isBusinessNumberExist(BusinessNumber businessNumber) {
-        Integer result = queryFactory
-                .selectOne()
+    public Long findStoreIdByUserCode(Long userCode) {
+        return queryFactory
+                .select(store.account.id)
                 .from(store)
-                .where(store.businessNumber.eq(businessNumber))
+                .where(store.account.id.eq(userCode))
                 .fetchFirst();
-
-        return result != null && result == 1;
     }
 }

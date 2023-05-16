@@ -23,6 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         // TODO 학습하기: 묻지 말고 시켜라(Tell, Don't ask)
-        return new AccountContext(account, account.createDefaultRoles());
+        return new AccountContext(account, account.createRole());
     }
 }

@@ -3,13 +3,11 @@ package com.foodtech.mate.domain.wrapper.store;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE,force = true)
 public class AddressDetail {
 
-    @NotBlank
     @Pattern(regexp = "/^[가-힣0-9\\s\\-(),#]*$/")
     private final String addressDetail;
 

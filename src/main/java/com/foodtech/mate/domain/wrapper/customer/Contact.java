@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Contact {
 
+    //TODO 안심번호 추가
     private final String contact;
 
     private Contact(String contact) {
