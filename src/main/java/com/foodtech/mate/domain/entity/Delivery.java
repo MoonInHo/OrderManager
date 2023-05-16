@@ -1,5 +1,6 @@
 package com.foodtech.mate.domain.entity;
 
+import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "delivery_id")
     private Long id;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -23,6 +25,7 @@ public class Delivery {
     @Embedded
     private DriverPhone driverPhone;
     @Embedded
+    @Column(columnDefinition = "NUMBER(5, 0) FORMAT '999,999,999'")
     private DeliveryTips deliveryTips;
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;

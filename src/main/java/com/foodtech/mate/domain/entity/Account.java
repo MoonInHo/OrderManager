@@ -9,9 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -58,18 +57,7 @@ public class Account {
         return password.getPassword();
     }
 
-    public String nameOf() {
-        return name.getName();
-    }
-
-    public String phoneOf() {
-        return phone.getPhone();
-    }
-
-    public List<GrantedAuthority> createDefaultRoles(Role ...roles) {
-        List<SimpleGrantedAuthority> defaultRoles = List.of(role.createRole());
-        return Arrays.stream(roles)
-                .map(Role::createRole)
-                .collect(Collectors.toList());
+    public List<GrantedAuthority> createRole() {
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));
     }
 }

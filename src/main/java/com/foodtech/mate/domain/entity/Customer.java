@@ -15,11 +15,12 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long id;
     @Embedded
-    private Address customerAddress;
+    private Address address;
     @Embedded
-    private Contact customerContact;
+    private Contact contact;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> order = new ArrayList<>();
 }

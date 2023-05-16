@@ -3,13 +3,11 @@ package com.foodtech.mate.domain.wrapper.store;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE,force = true)
 public class Industry {
 
-    @NotBlank
     @Pattern(regexp = "/^[가-힣]{2,20}$/", message = "업종 2~20자의 한글")
     private final String industry;
 

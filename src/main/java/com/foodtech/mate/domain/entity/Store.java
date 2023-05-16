@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,6 +16,7 @@ public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "store_id")
     private Long id;
     @Embedded
     private BusinessNumber businessNumber;
@@ -26,8 +29,6 @@ public class Store {
     @Embedded
     private Address address;
     @Embedded
-    private AddressDetail addressDetail;
-    @Embedded
     private StoreContact storeContact;
     @Embedded
     private BusinessType businessType;
@@ -36,29 +37,8 @@ public class Store {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
-
-    private Store(BusinessNumber businessNumber, StoreNumber storeNumber, StoreName storeName,
-                  RepresentativeName representativeName, Address address, AddressDetail addressDetail,
-                  StoreContact storeContact, BusinessType businessType, Industry industry)
-    {
-        this.businessNumber = businessNumber;
-        this.storeNumber = storeNumber;
-        this.storeName = storeName;
-        this.representativeName = representativeName;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.storeContact = storeContact;
-        this.businessType = businessType;
-        this.industry = industry;
-    }
-
-    public static Store saveStoreInfo(
-            BusinessNumber businessNumber, StoreNumber storeNumber,
-            StoreName storeName, RepresentativeName representativeName,
-            Address address, AddressDetail addressDetail,
-            StoreContact storeContact, BusinessType businessType, Industry industry)
-    {
-        return new Store(businessNumber, storeNumber, storeName, representativeName,
-                address, addressDetail, storeContact, businessType, industry);
-    }
+    @OneToMany(mappedBy = "store")
+    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "store")
+    private List<Menu> menu = new ArrayList<>();
 }

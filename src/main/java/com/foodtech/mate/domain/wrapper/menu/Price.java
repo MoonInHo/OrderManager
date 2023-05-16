@@ -4,15 +4,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.NumberFormat;
+import javax.persistence.Column;
+import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Price {
 
-    private final String price;
+    private final Integer price;
 
-    private Price(String price) {
+    private Price(Integer price) {
         this.price = price;
     }
 
@@ -21,11 +22,6 @@ public class Price {
         if (price == null) {
             throw new IllegalArgumentException("가격을 입력해주세요");
         }
-
-        NumberFormat format = NumberFormat.getInstance();
-        format.setGroupingUsed(true);
-        String formattedPrice = format.format(price);
-
-        return new Price(formattedPrice);
+        return new Price(price);
     }
 }

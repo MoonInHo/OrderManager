@@ -9,18 +9,19 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class OrderTimestamp {
 
-    private final LocalDateTime orderTimeStamp;
+    private final LocalDateTime orderTimestamp;
 
     private OrderTimestamp(String formattedDateTime) {
-        this.orderTimeStamp = LocalDateTime.parse(formattedDateTime);
+        this.orderTimestamp = LocalDateTime.parse(formattedDateTime);
     }
 
-//    public static OrderTimestamp of() {
+    //TODO 주문 생성 기능 생성시 타임포매터 적용하기
+    public static OrderTimestamp of(LocalDateTime orderTimestamp) {
 
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
-//        String formattedDateTime = now.format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDateTime = now.format(formatter);
 
-//        return new OrderTimestamp(formattedDateTime);
-//    }
+        return new OrderTimestamp(formattedDateTime);
+    }
 }

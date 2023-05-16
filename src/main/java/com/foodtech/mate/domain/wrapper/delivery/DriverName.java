@@ -13,6 +13,10 @@ public class DriverName {
     }
 
     public static DriverName of(String driverName) {
+
+        if (driverName == null || driverName.isBlank()) {
+            throw new IllegalArgumentException("배달원 이름을 입력하세요");
+        }
         return new DriverName(driverName);
     }
 }
