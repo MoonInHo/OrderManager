@@ -2,6 +2,7 @@ package com.foodtech.mate.repository;
 
 import com.foodtech.mate.domain.dto.order.PendingOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
+import com.foodtech.mate.domain.state.OrderType;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -26,6 +27,12 @@ public class OrderQueryRepository {
 
     public List<PendingOrderDto> findPendingOrderByStoreId(Long storeId) {
 
+        Expression<String> customerInfo = Expressions.cases()
+                .when(order.orderType.eq(OrderType.DELIVERY))
+                .then(order.customer.address.address.concat(" ").concat(order.customer.address.addressDetail))
+                .otherwise(order.customer.contact.contact)
+                .as("customerInfo");
+
         Expression<String> menuName =
                 ExpressionUtils.as(
                         JPAExpressions
@@ -45,8 +52,9 @@ public class OrderQueryRepository {
                                 order.orderTimestamp.orderTimestamp,
                                 menuName,
                                 order.totalPrice,
+                                customerInfo,
                                 order.customerRequest,
-                                customer.customerAddress.as("customerAddress"),
+                                customer.address.as("address"),
                                 order.orderState.stringValue().as("orderState"),
                                 order.orderType.stringValue().as("orderType"),
                                 order.paymentType.stringValue().as("paymentType")

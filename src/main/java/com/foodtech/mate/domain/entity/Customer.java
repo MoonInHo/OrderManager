@@ -18,9 +18,9 @@ public class Customer {
     @Column(name = "customer_id")
     private Long id;
     @Embedded
-    private Address customerAddress;
+    private Address address;
     @Embedded
-    private Contact customerContact;
+    private Contact contact;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> order = new ArrayList<>();
 }
