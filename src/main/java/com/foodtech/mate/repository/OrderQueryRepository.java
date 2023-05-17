@@ -68,4 +68,22 @@ public class OrderQueryRepository {
 
         return orders;
     }
+
+    public OrderState findOrderByOrderId(Long orderId) {
+        return queryFactory
+                .select(order.orderState)
+                .from(order)
+                .where(order.id.eq(orderId))
+                .fetchFirst();
+    }
+
+    public Long changeOrderState(Long orderId, OrderState orderState) {
+
+        //TODO 주문상태 전달받은 파라미터값으로 변경하는 방법 찾아보기
+        return queryFactory
+                .update(order)
+                .set(order.orderState, orderState)
+                .where(order.id.eq(orderId))
+                .execute();
+    }
 }
