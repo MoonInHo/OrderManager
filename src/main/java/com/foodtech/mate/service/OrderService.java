@@ -1,11 +1,14 @@
 package com.foodtech.mate.service;
 
+import com.foodtech.mate.domain.dto.order.OrderStateDto;
 import com.foodtech.mate.domain.dto.order.PendingOrderDto;
+import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.exception.exception.NoOrderException;
 import com.foodtech.mate.repository.OrderQueryRepository;
 import com.foodtech.mate.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderQueryRepository orderQueryRepository;
 
+    @Transactional
     public List<PendingOrderDto> findPendingOrder(Long storeId) {
 
         List<PendingOrderDto> fountPendingOrders = orderQueryRepository.findPendingOrderByStoreId(storeId);
@@ -23,5 +27,15 @@ public class OrderService {
             throw new NoOrderException("대기중인 주문이 없습니다.");
         }
         return fountPendingOrders;
+    }
+
+    @Transactional
+    public OrderState checkOrderState(Long orderId) {
+        return orderQueryRepository.findOrderByOrderId(orderId);
+    }
+
+    @Transactional
+    public void changeOrderState(Long orderId, OrderState orderState) {
+        orderQueryRepository.changeOrderState(orderId, orderState);
     }
 }
