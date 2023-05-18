@@ -1,7 +1,6 @@
 package com.foodtech.mate.service;
 
-import com.foodtech.mate.domain.dto.order.OrderStateDto;
-import com.foodtech.mate.domain.dto.order.PendingOrderDto;
+import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.exception.exception.NoOrderException;
 import com.foodtech.mate.repository.OrderQueryRepository;
@@ -20,13 +19,13 @@ public class OrderService {
     private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
-    public List<PendingOrderDto> findPendingOrder(Long storeId) {
+    public List<FindOrderDto> findWaitingOrder(Long storeId, OrderState orderStateCode) {
 
-        List<PendingOrderDto> fountPendingOrders = orderQueryRepository.findPendingOrderByStoreId(storeId);
-        if (fountPendingOrders == null) {
+        List<FindOrderDto> fountWaitingOrders = orderQueryRepository.findOrderByStoreId(storeId, orderStateCode);
+        if (fountWaitingOrders == null) {
             throw new NoOrderException("대기중인 주문이 없습니다.");
         }
-        return fountPendingOrders;
+        return fountWaitingOrders;
     }
 
     @Transactional

@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/sign-in", "/sign-up","/generate-verificationCode", "/find-userId", "/create-verification-password", "/verification-password", "/change-password").anonymous()
-                .antMatchers("/", "/sign-out", "/view-pending-order", "/change-order-state").hasRole("USER")
+                .antMatchers("/", "/sign-out", "view-orders", "/change-order-state").hasRole("USER")
                 .anyRequest().authenticated()
         .and()
                 .formLogin()

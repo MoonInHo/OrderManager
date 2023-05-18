@@ -41,4 +41,6 @@ public class Store {
     private List<Order> orders = new ArrayList<>();
     @OneToMany(mappedBy = "store")
     private List<Menu> menu = new ArrayList<>();
+//    @OneToMany(mappedBy = "store")
+//    private List<SetMenu> setMenu = new ArrayList<>();
 }

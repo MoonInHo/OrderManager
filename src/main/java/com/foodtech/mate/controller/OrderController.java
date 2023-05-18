@@ -1,7 +1,7 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.domain.dto.order.OrderStateDto;
-import com.foodtech.mate.domain.dto.order.PendingOrderDto;
+import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.service.OrderService;
 import com.foodtech.mate.service.StoreService;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.foodtech.mate.controller.verifier.ProfileProcessing.fetchLoggedInUserKey;
 import static com.foodtech.mate.domain.state.OrderState.findByOrderState;
@@ -24,12 +23,15 @@ public class OrderController {
     private final OrderService orderService;
     private final StoreService storeService;
 
-    @PostMapping("/view-pending-order")
-    public List<PendingOrderDto> viewPendingOrder() {
+    @PostMapping("/view-orders")
+    public List<FindOrderDto> viewWaitingOrder(@RequestBody OrderStateDto orderStateDto) {
+
+        String inputOrderState = orderStateDto.getOrderState();
+        OrderState orderStateCode = findByOrderState(inputOrderState);
 
         Long storeId = storeService.findStoreId(fetchLoggedInUserKey());
 
-        return orderService.findPendingOrder(storeId);
+        return orderService.findWaitingOrder(storeId, orderStateCode);
     }
 
     @PutMapping("/change-order-state")

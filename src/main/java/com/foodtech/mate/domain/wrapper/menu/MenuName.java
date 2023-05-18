@@ -10,8 +10,8 @@ public class MenuName {
 
     private final String menuName;
 
-    private MenuName(String price) {
-        this.menuName = price;
+    private MenuName(String menuName) {
+        this.menuName = menuName;
     }
 
     public static MenuName of(String menuName) {

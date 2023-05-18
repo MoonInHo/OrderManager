@@ -25,7 +25,6 @@ public class Delivery {
     @Embedded
     private DriverPhone driverPhone;
     @Embedded
-    @Column(columnDefinition = "NUMBER(5, 0) FORMAT '999,999,999'")
     private DeliveryTips deliveryTips;
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;
