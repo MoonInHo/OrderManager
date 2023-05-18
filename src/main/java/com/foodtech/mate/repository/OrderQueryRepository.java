@@ -91,10 +91,10 @@ public class OrderQueryRepository {
                 .fetchFirst();
     }
 
-    public Long changeOrderState(Long orderId, OrderState orderState) {
+    public Long changeOrderState(Long orderId, OrderState orderStateCode) {
         return queryFactory
                 .update(order)
-                .set(order.orderState, orderState)
+                .set(order.orderState, orderStateCode)
                 .where(order.id.eq(orderId))
                 .execute();
     }
