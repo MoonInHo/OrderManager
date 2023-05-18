@@ -1,6 +1,9 @@
 package com.foodtech.mate.domain.dto.order;
 
+import com.foodtech.mate.domain.wrapper.menu.MenuName;
 import com.foodtech.mate.domain.wrapper.order.CustomerRequest;
+import com.foodtech.mate.domain.wrapper.order.Quantity;
+import com.foodtech.mate.domain.wrapper.order.TotalMenuPrice;
 import com.foodtech.mate.domain.wrapper.order.TotalPrice;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,11 +14,11 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PendingOrderDto {
+public class FindOrderDto {
 
     private Long orderId;
     private LocalDateTime orderTimestamp;
-    private String menuName;
+    private String menuNames;
     private TotalPrice totalPrice;
     private String customerInfo;
     private CustomerRequest customerRequest;

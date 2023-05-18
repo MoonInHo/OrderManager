@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,4 +26,6 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+    @OneToMany(mappedBy = "menu")
+    private List<OrderDetail> orderDetail = new ArrayList<>();
 }

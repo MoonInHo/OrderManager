@@ -1,6 +1,7 @@
 package com.foodtech.mate.domain.wrapper.order;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ public class TotalPrice {
 
     private final Integer totalPrice;
 
-    private TotalPrice(Integer totalPrice) {
+    public TotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
     }
 

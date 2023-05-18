@@ -21,6 +21,9 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "set_menu_id")
+//    private SetMenu setMenu;
     @Embedded
     private TotalMenuPrice totalMenuPrice;
     @Embedded
