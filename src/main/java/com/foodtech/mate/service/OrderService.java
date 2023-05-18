@@ -2,6 +2,7 @@ package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
+import com.foodtech.mate.domain.wrapper.account.QUserId;
 import com.foodtech.mate.exception.exception.NoOrderException;
 import com.foodtech.mate.repository.OrderQueryRepository;
 import com.foodtech.mate.repository.OrderRepository;
@@ -34,7 +35,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderState(Long orderId, OrderState orderState) {
-        orderQueryRepository.changeOrderState(orderId, orderState);
+    public void changeOrderState(Long orderId, OrderState orderStateCode) {
+        orderQueryRepository.changeOrderState(orderId, orderStateCode);
     }
 }

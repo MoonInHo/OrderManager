@@ -15,6 +15,7 @@ public enum OrderState {
     }
 
     public static OrderState findByOrderState(String orderStateCode){
+
         return Arrays.stream(OrderState.values())
                 .filter(orderState -> orderState.orderStateCode.equals(orderStateCode))
                 .findAny()
