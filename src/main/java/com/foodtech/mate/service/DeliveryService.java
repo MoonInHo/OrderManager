@@ -56,12 +56,16 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void deliveryPickUp(Long deliveryId, DeliveryState deliveryState) {
+    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
 
         Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
         if (foundDelivery == null) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
+        if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+
         if (!foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }

@@ -47,8 +47,9 @@ public class DeliveryController {
     public ResponseEntity<String> deliveryPickUp(@RequestBody RequestDeliveryDto requestDeliveryDto) {
 
         Long deliveryId = requestDeliveryDto.getDeliveryId();
+        Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
 
-        deliveryService.deliveryPickUp(deliveryId, DeliveryState.PICKUP);
+        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId, DeliveryState.PICKUP);
 
         return ResponseEntity.ok("배달원이 물품을 픽업했습니다");
     }
