@@ -106,4 +106,12 @@ public class OrderQueryRepository {
                 .where(order.id.eq(orderId))
                 .execute();
     }
+
+    public OrderType findOrderTypeByOrderId(Long orderId) {
+        return queryFactory
+                .select(order.orderType)
+                .from(order)
+                .where(order.orderType.eq(OrderType.TOGO), order.id.eq(orderId))
+                .fetchFirst();
+    }
 }

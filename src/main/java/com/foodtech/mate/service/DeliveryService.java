@@ -7,6 +7,7 @@ import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.entity.Order;
 import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.state.OrderState;
+import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
 import com.foodtech.mate.repository.DeliveryQueryRepository;
 import com.foodtech.mate.repository.DeliveryRepository;
@@ -30,6 +31,9 @@ public class DeliveryService {
         Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
 
         Order foundOrder = orderQueryRepository.findOrderByOrderId(orderId);
+        if (!foundOrder.getOrderType().equals(OrderType.DELIVERY)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
         if (!foundOrder.getOrderState().equals(OrderState.READY)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
@@ -44,6 +48,7 @@ public class DeliveryService {
     public Long deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) {
 
         Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
+
         if (!foundDelivery.getDeliveryState().equals(DeliveryState.WAITING)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }

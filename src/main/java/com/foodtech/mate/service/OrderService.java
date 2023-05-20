@@ -2,6 +2,7 @@ package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
+import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.exception.exception.NoOrderException;
 import com.foodtech.mate.repository.OrderQueryRepository;
 import com.foodtech.mate.repository.OrderRepository;
@@ -36,5 +37,13 @@ public class OrderService {
     @Transactional
     public void changeOrderState(Long orderId, OrderState orderStateCode) {
         orderQueryRepository.changeOrderState(orderId, orderStateCode);
+    }
+
+    public void checkOrderType(Long orderId) {
+
+        OrderType orderType = orderQueryRepository.findOrderTypeByOrderId(orderId);
+        if (!orderType.equals(OrderType.TOGO)) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다.");
+        }
     }
 }
