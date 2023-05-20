@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class RequestDeliveryDto {
 
     private Long orderId;
+    private Long deliveryId;
     private Long deliveryDriverId;
+    private String companyName;
     private Integer deliveryTips;
 }
