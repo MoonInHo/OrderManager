@@ -25,11 +25,9 @@ public class DeliveryController {
         String inputCompanyName = requestDeliveryDto.getCompanyName();
         Company companyName = findByCompanyName(inputCompanyName);
 
-        Delivery deliveryInfo = deliveryService.createDeliveryInfo(requestDeliveryDto, companyName);
-        if (deliveryInfo == null) {
-            return ResponseEntity.badRequest().body("대행 요청에 실패하였습니다");
-        }
-        return ResponseEntity.ok("배달기사 배정을 요청하였습니다");
+        deliveryService.createDeliveryInfo(requestDeliveryDto, companyName);
+
+        return ResponseEntity.ok("배달기사 배정을 요청했습니다");
     }
 
     @PutMapping("/delivery-driver-assignment")

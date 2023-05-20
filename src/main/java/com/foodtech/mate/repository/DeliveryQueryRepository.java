@@ -1,5 +1,6 @@
 package com.foodtech.mate.repository;
 
+import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.foodtech.mate.domain.entity.QDelivery.delivery;
 import static com.foodtech.mate.domain.entity.QDeliveryCompany.deliveryCompany;
+import static com.foodtech.mate.domain.entity.QDeliveryDriver.deliveryDriver;
 
 
 @Repository
@@ -24,11 +26,18 @@ public class DeliveryQueryRepository {
                 .fetchFirst();
     }
 
-    public DeliveryState findDeliveryByDeliveryId(Long deliveryId) {
+    public Delivery findDeliveryByDeliveryId(Long deliveryId) {
         return queryFactory
-                .select(delivery.deliveryState)
-                .from(delivery)
+                .selectFrom(delivery)
                 .where(delivery.id.eq(deliveryId))
+                .fetchFirst();
+    }
+
+    public Long findDeliveryDriverCompanyIdByDeliveryDriverId(Long deliveryDriverId) {
+        return queryFactory
+                .select(deliveryDriver.deliveryCompany.id)
+                .from(deliveryDriver)
+                .where(deliveryDriver.id.eq(deliveryDriverId))
                 .fetchFirst();
     }
 

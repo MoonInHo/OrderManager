@@ -24,7 +24,7 @@ public class DeliveryService {
     private final DeliveryQueryRepository deliveryQueryRepository;
 
     @Transactional
-    public Delivery createDeliveryInfo(RequestDeliveryDto requestDeliveryDto, Company companyName) {
+    public void createDeliveryInfo(RequestDeliveryDto requestDeliveryDto, Company companyName) {
 
         Long orderId = requestDeliveryDto.getOrderId();
         Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
@@ -37,16 +37,21 @@ public class DeliveryService {
         DeliveryCompany deliveryCompany = deliveryQueryRepository.findDeliveryCompanyByCompanyName(companyName);
         Delivery delivery = DeliveryDto.toEntity(foundOrder, deliveryCompany, deliveryTips);
 
-        return deliveryRepository.save(delivery);
+        deliveryRepository.save(delivery);
     }
 
     @Transactional
     public Long deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) {
 
-        DeliveryState deliveryState = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
-        if (!deliveryState.equals(DeliveryState.WAITING)) {
+        Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
+        if (!foundDelivery.getDeliveryState().equals(DeliveryState.WAITING)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
+        Long driverCompanyId = deliveryQueryRepository.findDeliveryDriverCompanyIdByDeliveryDriverId(deliveryDriverId);
+        if (!driverCompanyId.equals(foundDelivery.getDeliveryCompany().getId())) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다.");
+        }
+
         return deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryDriverId);
     }
 }
