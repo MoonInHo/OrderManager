@@ -138,7 +138,7 @@ public class MemberControllerTest {
     void password_encoding_returnEncodedPassword() {
         //given
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
 
         //when
         account.encryptPassword(passwordEncoder.encode(account.passwordOf()));

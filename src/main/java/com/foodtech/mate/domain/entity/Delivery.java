@@ -18,14 +18,21 @@ public class Delivery {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    @Enumerated(EnumType.STRING)
-    private Company company;
-    @Embedded
-    private DriverName driverName;
-    @Embedded
-    private DriverPhone driverPhone;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_driver_id")
+    private DeliveryDriver deliveryDriver;
     @Embedded
     private DeliveryTips deliveryTips;
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;
+
+    private Delivery(Order order, DeliveryTips deliveryTips) {
+        this.order = order;
+        this.deliveryTips = deliveryTips;
+        this.deliveryState = DeliveryState.WAITING;
+    }
+
+    public static Delivery createDeliveryInfo(Order order, DeliveryTips deliveryTips) {
+        return new Delivery(order, deliveryTips);
+    }
 }

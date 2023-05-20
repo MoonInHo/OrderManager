@@ -43,7 +43,7 @@ public class MemberController {
     @PostMapping("/sign-up")
     public ResponseEntity<Long> signUp(@RequestBody AccountDto accountDto) {
 
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         account.encryptPassword(passwordEncoder.encode(account.passwordOf()));
         Long userId = memberService.signUp(account);
 

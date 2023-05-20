@@ -1,6 +1,7 @@
 package com.foodtech.mate.repository;
 
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
+import com.foodtech.mate.domain.entity.Order;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.domain.state.OrderType;
 import com.querydsl.core.types.Expression;
@@ -25,6 +26,13 @@ import static com.foodtech.mate.domain.entity.QOrderDetail.orderDetail;
 public class OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public Order findOrderByOrderId(Long orderId) {
+        return queryFactory
+                .selectFrom(order)
+                .where(order.id.eq(orderId))
+                .fetchFirst();
+    }
 
     public List<FindOrderDto> findOrderByStoreId(Long storeId, OrderState orderStateCode) {
 
@@ -83,7 +91,7 @@ public class OrderQueryRepository {
         return orders;
     }
 
-    public OrderState findOrderByOrderId(Long orderId) {
+    public OrderState findOrderStateByOrderId(Long orderId) {
         return queryFactory
                 .select(order.orderState)
                 .from(order)

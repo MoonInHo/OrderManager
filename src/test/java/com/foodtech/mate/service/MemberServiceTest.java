@@ -28,7 +28,7 @@ public class MemberServiceTest {
     void existsEmail_signUp_throwException() {
         //given
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         given(memberQueryRepository.isUserIdExist(any())).willReturn(true);
 
         //when
@@ -44,7 +44,7 @@ public class MemberServiceTest {
     void properInfo_signUp_createMember() {
         //given
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩" , "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         given(memberRepository.save(any())).willReturn(account);
 
         // when
@@ -61,7 +61,7 @@ public class MemberServiceTest {
         //given
         String phone = "010-1234-5678";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         given(memberQueryRepository.findUserIdByPhone(phone)).willReturn(account.getUserId());
 
         //when
@@ -93,7 +93,7 @@ public class MemberServiceTest {
         //given
         String userId = "test123";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         given(memberQueryRepository.findAccountByUserId(userId)).willReturn(account);
 
         //when
@@ -126,7 +126,7 @@ public class MemberServiceTest {
         //given
         String newPassword = "newTestPassword123!";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
-        Account account = AccountDto.createAccount(accountDto);
+        Account account = AccountDto.toEntity(accountDto);
         given(memberQueryRepository.findAccountByUserId(accountDto.getUserId())).willReturn(account);
 
         // When

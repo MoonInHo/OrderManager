@@ -1,4 +1,4 @@
-package com.foodtech.mate.domain.dto.order;
+package com.foodtech.mate.domain.dto.delivery;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderStateDto {
+public class RequestDeliveryDto {
 
     private Long orderId;
-    private String orderState;
-    private String orderType;
+    private Long deliveryDriverId;
+    private Integer deliveryTips;
 }

@@ -21,7 +21,7 @@ public class AccountDto {
         return new AccountDto(userId, password, name, phone);
     }
 
-    public static Account createAccount(AccountDto accountDto) {
+    public static Account toEntity(AccountDto accountDto) {
         return Account.createMember(
                 UserId.of(accountDto.getUserId()),
                 Password.of(accountDto.getPassword()),
