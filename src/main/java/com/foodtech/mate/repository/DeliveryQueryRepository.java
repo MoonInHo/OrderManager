@@ -41,7 +41,7 @@ public class DeliveryQueryRepository {
                 .fetchFirst();
     }
 
-    public Long updateDeliveryState(Long deliveryId, Long deliveryDriverId) {
+    public Long updateDeliveryStateAndDriverId(Long deliveryId, Long deliveryDriverId) {
         return queryFactory
                 .update(delivery)
                 .set(delivery.deliveryDriver.id, deliveryDriverId)
@@ -50,7 +50,7 @@ public class DeliveryQueryRepository {
                 .execute();
     }
 
-    public Long updateDeliveryStateToComplete(Long deliveryId, DeliveryState deliveryState) {
+    public Long updateDeliveryState(Long deliveryId, DeliveryState deliveryState) {
         return queryFactory
                 .update(delivery)
                 .set(delivery.deliveryState, deliveryState)

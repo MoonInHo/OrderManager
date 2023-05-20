@@ -52,7 +52,7 @@ public class DeliveryService {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
 
-        return deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryDriverId);
+        return deliveryQueryRepository.updateDeliveryStateAndDriverId(deliveryId, deliveryDriverId);
     }
 
     @Transactional
@@ -70,6 +70,24 @@ public class DeliveryService {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
 
-        deliveryQueryRepository.updateDeliveryStateToComplete(deliveryId, deliveryState);
+        deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
+    }
+
+    @Transactional
+    public void deliveryComplete(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
+
+        Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
+        if (foundDelivery == null) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+        if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+
+        if (!foundDelivery.getDeliveryState().equals(DeliveryState.PICKUP)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+
+        deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
     }
 }
