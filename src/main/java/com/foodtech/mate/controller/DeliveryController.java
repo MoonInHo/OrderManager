@@ -53,4 +53,15 @@ public class DeliveryController {
 
         return ResponseEntity.ok("배달원이 물품을 픽업했습니다");
     }
+
+    @PutMapping("/delivery-complete")
+    public ResponseEntity<String> deliveryComplete(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+
+        Long deliveryId = requestDeliveryDto.getDeliveryId();
+        Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
+
+        deliveryService.deliveryComplete(deliveryId, deliveryDriverId, DeliveryState.COMPLETE);
+
+        return ResponseEntity.ok("배달원이 배달을 완료했습니다");
+    }
 }
