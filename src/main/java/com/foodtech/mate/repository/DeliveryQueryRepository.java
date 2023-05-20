@@ -49,4 +49,12 @@ public class DeliveryQueryRepository {
                 .where(delivery.id.eq(deliveryId))
                 .execute();
     }
+
+    public Long updateDeliveryStateToComplete(Long deliveryId, DeliveryState deliveryState) {
+        return queryFactory
+                .update(delivery)
+                .set(delivery.deliveryState, deliveryState)
+                .where(delivery.id.eq(deliveryId))
+                .execute();
+    }
 }
