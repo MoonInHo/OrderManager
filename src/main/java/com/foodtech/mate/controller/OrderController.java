@@ -73,4 +73,19 @@ public class OrderController {
         }
         return ResponseEntity.badRequest().body("올바르지 않은 입력입니다");
     }
+
+    @PutMapping("/pickup-complete")
+    public ResponseEntity<String> pickUpComplete(@RequestBody OrderStateDto orderStateDto) {
+
+        Long orderId = orderStateDto.getOrderId();
+
+        orderService.checkOrderType(orderId);
+
+        OrderState orderState = orderService.findOrderState(orderId);
+        if (orderState.equals(OrderState.READY)) {
+            orderService.changeOrderState(orderId, OrderState.PICKUP);
+            return ResponseEntity.ok("픽업이 완료되었습니다");
+        }
+        return ResponseEntity.badRequest().body("올바르지 않은 입력입니다");
+    }
 }
