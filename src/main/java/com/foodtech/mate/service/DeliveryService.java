@@ -49,9 +49,27 @@ public class DeliveryService {
         }
         Long driverCompanyId = deliveryQueryRepository.findDeliveryDriverCompanyIdByDeliveryDriverId(deliveryDriverId);
         if (!driverCompanyId.equals(foundDelivery.getDeliveryCompany().getId())) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다.");
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
 
         return deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryDriverId);
+    }
+
+    @Transactional
+    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
+
+        Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
+        if (foundDelivery == null) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+        if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+
+        if (!foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH)) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        }
+
+        deliveryQueryRepository.updateDeliveryStateToComplete(deliveryId, deliveryState);
     }
 }

@@ -1,7 +1,7 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
-import com.foodtech.mate.domain.entity.Delivery;
+import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
 import com.foodtech.mate.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class DeliveryController {
 
         deliveryService.createDeliveryInfo(requestDeliveryDto, companyName);
 
-        return ResponseEntity.ok("배달기사 배정을 요청했습니다");
+        return ResponseEntity.ok("배달원 배정을 요청했습니다");
     }
 
     @PutMapping("/delivery-driver-assignment")
@@ -38,8 +38,19 @@ public class DeliveryController {
 
         Long update = deliveryService.deliveryDriverAssignment(deliveryId, deliveryDriverId);
         if (update == null) {
-            return ResponseEntity.badRequest().body("기사 배정에 실패하였습니다.");
+            return ResponseEntity.badRequest().body("배달원 배정에 실패하였습니다.");
         }
-        return ResponseEntity.ok("기사가 배정되었습니다.");
+        return ResponseEntity.ok("배달원 배정되었습니다.");
+    }
+
+    @PutMapping("/delivery-pickup")
+    public ResponseEntity<String> deliveryPickUp(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+
+        Long deliveryId = requestDeliveryDto.getDeliveryId();
+        Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
+
+        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId, DeliveryState.PICKUP);
+
+        return ResponseEntity.ok("배달원이 물품을 픽업했습니다");
     }
 }
