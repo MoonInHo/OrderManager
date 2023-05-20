@@ -19,6 +19,9 @@ public class Delivery {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_company_id")
+    private DeliveryCompany deliveryCompany;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_driver_id")
     private DeliveryDriver deliveryDriver;
     @Embedded
@@ -26,13 +29,14 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;
 
-    private Delivery(Order order, DeliveryTips deliveryTips) {
+    private Delivery(Order order, DeliveryCompany deliveryCompany, DeliveryTips deliveryTips) {
         this.order = order;
+        this.deliveryCompany = deliveryCompany;
         this.deliveryTips = deliveryTips;
         this.deliveryState = DeliveryState.WAITING;
     }
 
-    public static Delivery createDeliveryInfo(Order order, DeliveryTips deliveryTips) {
-        return new Delivery(order, deliveryTips);
+    public static Delivery createDeliveryInfo(Order order, DeliveryCompany deliveryCompany, DeliveryTips deliveryTips) {
+        return new Delivery(order, deliveryCompany, deliveryTips);
     }
 }
