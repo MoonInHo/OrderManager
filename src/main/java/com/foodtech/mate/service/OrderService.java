@@ -1,5 +1,6 @@
 package com.foodtech.mate.service;
 
+import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.domain.state.OrderType;

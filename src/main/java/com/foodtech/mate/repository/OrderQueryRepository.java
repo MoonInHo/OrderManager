@@ -1,5 +1,6 @@
 package com.foodtech.mate.repository;
 
+import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.entity.Order;
 import com.foodtech.mate.domain.state.OrderState;

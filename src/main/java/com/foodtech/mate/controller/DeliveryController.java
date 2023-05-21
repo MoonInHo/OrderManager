@@ -1,6 +1,7 @@
 package com.foodtech.mate.controller;
 
-import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryStateDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
 import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.foodtech.mate.domain.state.DeliveryState.findByDeliveryState;
 import static com.foodtech.mate.domain.wrapper.delivery.Company.findByCompanyName;
 
 @RestController
@@ -68,9 +70,16 @@ public class DeliveryController {
         return ResponseEntity.ok("배달원이 배달을 완료했습니다");
     }
 
-    @PostMapping("/view-delivery-list")
-    public List<InProgressDeliveryDto> viewDeliveryList() {
+    @PostMapping("/delivery-tracking")
+    public List<DeliveryTrackingDto> deliveryTracking(@RequestBody DeliveryStateDto deliveryStateDto) {
 
-        return deliveryService.findInProgressDeliveryList();
+        String inputDeliveryState = deliveryStateDto.getDeliveryState();
+
+        DeliveryState deliveryStateCode = findByDeliveryState(inputDeliveryState);
+        if (deliveryStateCode == null) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다");
+        }
+
+        return deliveryService.deliveryTracking(deliveryStateCode);
     }
 }

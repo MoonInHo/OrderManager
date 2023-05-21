@@ -1,7 +1,7 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.delivery.DeliveryDto;
-import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
@@ -100,9 +100,9 @@ public class DeliveryService {
         deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
     }
 
-    public List<InProgressDeliveryDto> findInProgressDeliveryList() {
+    public List<DeliveryTrackingDto> deliveryTracking(DeliveryState deliveryState) {
 
-        List<InProgressDeliveryDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInProgressingDelivery();
+        List<DeliveryTrackingDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInDeliveryByDeliveryState(deliveryState);
         if (fetchedInProgressDeliveryList == null) {
             throw new NoDeliveryException("배달주문이 없습니다");
         }

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InProgressDeliveryDto {
+public class DeliveryTrackingDto {
 
     private Long deliveryId;
     private LocalDateTime orderTimeStamp;
