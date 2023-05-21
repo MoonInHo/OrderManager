@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
-public class ErrorResponseDto {
+public class MemberErrorResponseDto {
 
     private MemberErrorCode code;
     private String message;
+
 }

@@ -1,6 +1,7 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.delivery.DeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
@@ -9,12 +10,15 @@ import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
+import com.foodtech.mate.exception.exception.NoDeliveryException;
 import com.foodtech.mate.repository.DeliveryQueryRepository;
 import com.foodtech.mate.repository.DeliveryRepository;
 import com.foodtech.mate.repository.OrderQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -94,5 +98,14 @@ public class DeliveryService {
         }
 
         deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
+    }
+
+    public List<InProgressDeliveryDto> findInProgressDeliveryList() {
+
+        List<InProgressDeliveryDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInProgressingDelivery();
+        if (fetchedInProgressDeliveryList == null) {
+            throw new NoDeliveryException("배달주문이 없습니다");
+        }
+        return fetchedInProgressDeliveryList;
     }
 }
