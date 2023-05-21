@@ -1,16 +1,22 @@
 package com.foodtech.mate.repository;
 
+import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.state.DeliveryState;
+import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static com.foodtech.mate.domain.entity.QDelivery.delivery;
 import static com.foodtech.mate.domain.entity.QDeliveryCompany.deliveryCompany;
 import static com.foodtech.mate.domain.entity.QDeliveryDriver.deliveryDriver;
+import static com.foodtech.mate.domain.entity.QOrder.order;
 
 
 @Repository
@@ -56,5 +62,25 @@ public class DeliveryQueryRepository {
                 .set(delivery.deliveryState, deliveryState)
                 .where(delivery.id.eq(deliveryId))
                 .execute();
+    }
+
+    public List<InProgressDeliveryDto> findInProgressingDelivery() {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                InProgressDeliveryDto.class,
+                                delivery.id,
+                                order.orderTimestamp.orderTimestamp,
+                                order.orderType,
+                                delivery.deliveryCompany.company,
+                                order.paymentType,
+                                order.totalPrice,
+                                delivery.deliveryState
+                        )
+                )
+                .from(order)
+                .join(order.delivery, delivery)
+                .where(order.orderType.eq(OrderType.DELIVERY), delivery.deliveryState.ne(DeliveryState.COMPLETE))
+                .fetch();
     }
 }

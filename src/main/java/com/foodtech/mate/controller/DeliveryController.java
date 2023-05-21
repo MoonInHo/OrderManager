@@ -1,5 +1,6 @@
 package com.foodtech.mate.controller;
 
+import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
 import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.foodtech.mate.domain.wrapper.delivery.Company.findByCompanyName;
 
@@ -63,5 +66,11 @@ public class DeliveryController {
         deliveryService.deliveryComplete(deliveryId, deliveryDriverId, DeliveryState.COMPLETE);
 
         return ResponseEntity.ok("배달원이 배달을 완료했습니다");
+    }
+
+    @PostMapping("/view-delivery-list")
+    public List<InProgressDeliveryDto> viewDeliveryList() {
+
+        return deliveryService.findInProgressDeliveryList();
     }
 }
