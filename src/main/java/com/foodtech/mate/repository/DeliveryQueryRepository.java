@@ -1,6 +1,6 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.dto.delivery.InProgressDeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.state.DeliveryState;
@@ -64,11 +64,11 @@ public class DeliveryQueryRepository {
                 .execute();
     }
 
-    public List<InProgressDeliveryDto> findInProgressingDelivery() {
+    public List<DeliveryTrackingDto> findInDeliveryByDeliveryState(DeliveryState deliveryState) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                InProgressDeliveryDto.class,
+                                DeliveryTrackingDto.class,
                                 delivery.id,
                                 order.orderTimestamp.orderTimestamp,
                                 order.orderType,
@@ -80,7 +80,7 @@ public class DeliveryQueryRepository {
                 )
                 .from(order)
                 .join(order.delivery, delivery)
-                .where(order.orderType.eq(OrderType.DELIVERY), delivery.deliveryState.ne(DeliveryState.COMPLETE))
+                .where(order.orderType.eq(OrderType.DELIVERY), delivery.deliveryState.eq(deliveryState))
                 .fetch();
     }
 }
