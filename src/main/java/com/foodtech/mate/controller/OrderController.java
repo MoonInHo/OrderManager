@@ -1,5 +1,6 @@
 package com.foodtech.mate.controller;
 
+import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
 import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.dto.order.OrderStateDto;
 import com.foodtech.mate.domain.state.OrderState;
@@ -83,9 +84,15 @@ public class OrderController {
 
         OrderState orderState = orderService.findOrderState(orderId);
         if (orderState.equals(OrderState.READY)) {
-            orderService.changeOrderState(orderId, OrderState.PICKUP);
+            orderService.changeOrderState(orderId, OrderState.COMPLETE);
             return ResponseEntity.ok("픽업이 완료되었습니다");
         }
         return ResponseEntity.badRequest().body("올바르지 않은 입력입니다");
+    }
+
+    @PostMapping("/completed-order-inquiry")
+    public List<CompletedOrderDto> completedOrderInquiry() {
+
+        return orderService.completeOrderInquiry();
     }
 }

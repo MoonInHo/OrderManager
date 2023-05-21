@@ -37,7 +37,7 @@ public class OrderService {
 
     @Transactional
     public void changeOrderState(Long orderId, OrderState orderStateCode) {
-        orderQueryRepository.changeOrderState(orderId, orderStateCode);
+        orderQueryRepository.updateOrderState(orderId, orderStateCode);
     }
 
     public void checkOrderType(Long orderId) {
@@ -46,5 +46,9 @@ public class OrderService {
         if (!orderType.equals(OrderType.TOGO)) {
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
+    }
+
+    public List<CompletedOrderDto> completeOrderInquiry() {
+        return orderQueryRepository.findCompleteOrder();
     }
 }
