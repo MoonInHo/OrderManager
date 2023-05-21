@@ -57,6 +57,7 @@ public class DeliveryQueryRepository {
     }
 
     public Long updateDeliveryState(Long deliveryId, DeliveryState deliveryState) {
+
         return queryFactory
                 .update(delivery)
                 .set(delivery.deliveryState, deliveryState)

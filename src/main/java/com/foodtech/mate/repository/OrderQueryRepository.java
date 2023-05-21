@@ -45,29 +45,10 @@ public class OrderQueryRepository {
             condition = order.orderState.eq(OrderState.PREPARING);
         }
 
-        Expression<String> contact = customer.contact.contact;
-        Expression<String> address = customer.address.address
-                .concat(" ")
-                .concat(customer.address.addressDetail);
+        Expression<String> customerInfo = getCustomerInfo();
+        Expression<String> menuName = getMenuName();
 
-        Expression<String> customerInfo = Expressions.cases()
-                .when(order.orderType.eq(OrderType.DELIVERY))
-                .then(address)
-                .otherwise(contact)
-                .as("customerInfo");
-
-        Expression<String> menuName =
-                ExpressionUtils.as(
-                        JPAExpressions
-                                .select(Expressions.stringTemplate("group_concat({0})", menu.menuName))
-                                .from(orderDetail)
-                                .join(orderDetail.menu, menu)
-                                .where(orderDetail.order.id.eq(order.id))
-                                .groupBy(orderDetail.order.id),
-                        "menuNames"
-                );
-
-        List<FindOrderDto> orders = queryFactory
+        return queryFactory
                 .select(
                         Projections.constructor(
                                 FindOrderDto.class,
@@ -88,8 +69,6 @@ public class OrderQueryRepository {
                 .where(order.store.id.eq(storeId), condition)
                 .orderBy(order.orderTimestamp.orderTimestamp.asc())
                 .fetch();
-
-        return orders;
     }
 
     public OrderState findOrderStateByOrderId(Long orderId) {
@@ -100,7 +79,7 @@ public class OrderQueryRepository {
                 .fetchFirst();
     }
 
-    public Long changeOrderState(Long orderId, OrderState orderStateCode) {
+    public Long updateOrderState(Long orderId, OrderState orderStateCode) {
         return queryFactory
                 .update(order)
                 .set(order.orderState, orderStateCode)
@@ -114,5 +93,57 @@ public class OrderQueryRepository {
                 .from(order)
                 .where(order.orderType.eq(OrderType.TOGO), order.id.eq(orderId))
                 .fetchFirst();
+    }
+
+    public List<CompletedOrderDto> findCompleteOrder() {
+
+        Expression<String> customerInfo = getCustomerInfo();
+        Expression<String> menuName = getMenuName();
+
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                CompletedOrderDto.class,
+                                order.orderTimestamp.orderTimestamp,
+                                order.orderType,
+                                order.paymentType,
+                                menuName,
+                                customerInfo,
+                                order.orderState
+                        )
+                )
+                .from(order)
+                .join(order.customer, customer)
+                .where(order.orderState.eq(OrderState.COMPLETE))
+                .fetch();
+    }
+
+    private static Expression<String> getMenuName() {
+        Expression<String> menuName =
+                ExpressionUtils.as(
+                        JPAExpressions
+                                .select(Expressions.stringTemplate("group_concat({0})", menu.menuName))
+                                .from(orderDetail)
+                                .join(orderDetail.menu, menu)
+                                .where(orderDetail.order.id.eq(order.id))
+                                .groupBy(orderDetail.order.id),
+                        "menuNames"
+                );
+        return menuName;
+    }
+
+    private static Expression<String> getCustomerInfo() {
+        Expression<String> contact = customer.contact.contact;
+        Expression<String> address = customer.address.address
+                .concat(" ")
+                .concat(customer.address.addressDetail);
+
+        Expression<String> customerInfo = Expressions.cases()
+                .when(order.orderType.eq(OrderType.DELIVERY))
+                .then(address)
+                .otherwise(contact)
+                .as("customerInfo");
+
+        return customerInfo;
     }
 }

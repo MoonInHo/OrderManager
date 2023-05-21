@@ -92,12 +92,14 @@ public class DeliveryService {
         if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
-
         if (!foundDelivery.getDeliveryState().equals(DeliveryState.PICKUP)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
 
+        Long orderId = foundDelivery.getOrder().getId();
+
         deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
+        orderQueryRepository.updateOrderState(orderId, OrderState.COMPLETE);
     }
 
     public List<DeliveryTrackingDto> deliveryTracking(DeliveryState deliveryState) {
