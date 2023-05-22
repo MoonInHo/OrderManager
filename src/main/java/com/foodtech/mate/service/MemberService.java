@@ -5,6 +5,8 @@ import com.foodtech.mate.domain.wrapper.account.UserId;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
 
@@ -49,7 +52,14 @@ public class MemberService {
     }
 
     @Transactional
-    public void changePassword(Account account) {
-        memberQueryRepository.changePassword(account);
+    public void changePassword(String userId, String password) {
+
+        Account foundAccount = memberQueryRepository.findAccountByUserId(userId);
+        if (passwordEncoder.matches(password, foundAccount.passwordOf())) {
+            throw new IllegalArgumentException("기존 비밀번호로 변경하실 수 없습니다.");
+        }
+        foundAccount.encryptPassword(passwordEncoder.encode(password));
+
+        memberQueryRepository.changePassword(foundAccount);
     }
 }
