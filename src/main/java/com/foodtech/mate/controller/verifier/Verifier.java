@@ -1,6 +1,6 @@
 package com.foodtech.mate.controller.verifier;
 
-import com.foodtech.mate.domain.dto.account.ChangePasswordDto;
+import com.foodtech.mate.domain.dto.account.PasswordDto;
 import com.foodtech.mate.domain.dto.account.VerificationDto;
 import com.foodtech.mate.domain.wrapper.account.Name;
 import com.foodtech.mate.domain.wrapper.account.Password;
@@ -18,12 +18,16 @@ public class Verifier {
     public static String generateUserIdVerificationCode(VerificationDto verificationDto, Map<String, String> verificationMap) {
 
         Phone.of(verificationDto.getPhone());
+
         return generateVerificationCode(verificationDto, verificationMap);
     }
 
     public static String generatePasswordVerificationCode(VerificationDto verificationDto, Map<String, String> verificationMap) {
 
-        inputVerifier(verificationDto);
+        UserId.of(verificationDto.getUserId());
+        Name.of(verificationDto.getName());
+        Phone.of(verificationDto.getPhone());
+
         return generateVerificationCode(verificationDto, verificationMap);
     }
 
@@ -39,10 +43,10 @@ public class Verifier {
         verificationMap.remove(phone);
     }
 
-    public static String verifyPassword(ChangePasswordDto changePasswordDto, Map<String, String> verificationMap) {
+    public static String verifyPassword(PasswordDto passwordDto, Map<String, String> verificationMap) {
 
-        String password = changePasswordDto.getPassword();
-        String verifyPassword = changePasswordDto.getVerifyPassword();
+        String password = passwordDto.getPassword();
+        String verifyPassword = passwordDto.getVerifyPassword();
         Password.of(password);
         Password.of(verifyPassword);
 
@@ -63,11 +67,5 @@ public class Verifier {
             verificationMap.remove(verificationDto.getPhone());
         }
         return String.valueOf(new Random().nextInt(900000) + 100000);
-    }
-
-    private static void inputVerifier(VerificationDto verificationDto) {
-        UserId.of(verificationDto.getUserId());
-        Name.of(verificationDto.getName());
-        Phone.of(verificationDto.getPhone());
     }
 }
