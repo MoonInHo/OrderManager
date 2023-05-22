@@ -30,9 +30,6 @@ public class Order {
     private TotalPrice totalPrice;
     @Embedded
     private CustomerRequest customerRequest;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private Store store;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<OrderDetail> orderDetail = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.LAZY)

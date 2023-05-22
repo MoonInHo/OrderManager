@@ -1,7 +1,5 @@
 package com.foodtech.mate.domain.dto.store;
 
-import com.foodtech.mate.domain.entity.Store;
-import com.foodtech.mate.domain.wrapper.store.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

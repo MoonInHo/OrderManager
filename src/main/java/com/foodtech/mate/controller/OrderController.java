@@ -1,11 +1,11 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
-import com.foodtech.mate.domain.dto.order.FindOrderDto;
 import com.foodtech.mate.domain.dto.order.OrderStateDto;
+import com.foodtech.mate.domain.dto.order.PreparingOrderDto;
+import com.foodtech.mate.domain.dto.order.WaitingOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.service.OrderService;
-import com.foodtech.mate.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.foodtech.mate.controller.verifier.ProfileProcessing.fetchLoggedInUserKey;
-import static com.foodtech.mate.domain.state.OrderState.findByOrderState;
-
 @RestController
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-    private final StoreService storeService;
 
-    @PostMapping("/view-orders")
-    public List<FindOrderDto> viewWaitingOrder(@RequestBody OrderStateDto orderStateDto) {
+    @PostMapping("/waiting-orders-lookup")
+    public List<WaitingOrderDto> waitingOrdersLookup() {
+        return orderService.findWaitingOrders();
+    }
 
-        String inputOrderState = orderStateDto.getOrderState();
-        OrderState orderStateCode = findByOrderState(inputOrderState);
+    @PostMapping("/preparing-orders-lookup")
+    public List<PreparingOrderDto> preparingOrdersLookup() {
+        return orderService.findPreparingOrders();
+    }
 
-        Long storeId = storeService.findStoreId(fetchLoggedInUserKey());
-
-        return orderService.findOrder(storeId, orderStateCode);
+    @PostMapping("/completed-orders-lookup")
+    public List<CompletedOrderDto> completedOrdersLookup() {
+        return orderService.completeOrdersLookup();
     }
 
     @PutMapping("/accept-order")
     public ResponseEntity<String> acceptOrder(@RequestBody OrderStateDto orderStateDto) {
 
         Long orderId = orderStateDto.getOrderId();
-
+        //TODO 메소드 추출 여부 판단하기 (acceptOrder, readyOrder, cancelOrder)
         OrderState orderState = orderService.findOrderState(orderId);
         if (orderState.equals(OrderState.WAITING)) {
             orderService.changeOrderState(orderId, OrderState.PREPARING);
@@ -80,19 +80,11 @@ public class OrderController {
 
         Long orderId = orderStateDto.getOrderId();
 
-        orderService.checkOrderType(orderId);
-
         OrderState orderState = orderService.findOrderState(orderId);
         if (orderState.equals(OrderState.READY)) {
-            orderService.changeOrderState(orderId, OrderState.COMPLETE);
+            orderService.changeOrderStateToPickUp(orderId, OrderState.COMPLETE);
             return ResponseEntity.ok("픽업이 완료되었습니다");
         }
         return ResponseEntity.badRequest().body("올바르지 않은 입력입니다");
-    }
-
-    @PostMapping("/completed-order-inquiry")
-    public List<CompletedOrderDto> completedOrderInquiry() {
-
-        return orderService.completeOrderInquiry();
     }
 }

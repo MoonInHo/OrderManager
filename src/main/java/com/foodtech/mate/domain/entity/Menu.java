@@ -23,9 +23,6 @@ public class Menu {
     private MenuName menuName;
     @Embedded
     private Price price;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private Store store;
     @OneToMany(mappedBy = "menu")
     private List<OrderDetail> orderDetail = new ArrayList<>();
 }
