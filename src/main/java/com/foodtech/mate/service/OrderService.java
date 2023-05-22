@@ -1,12 +1,12 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
-import com.foodtech.mate.domain.dto.order.FindOrderDto;
+import com.foodtech.mate.domain.dto.order.PreparingOrderDto;
+import com.foodtech.mate.domain.dto.order.WaitingOrderDto;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.exception.exception.NoOrderException;
 import com.foodtech.mate.repository.OrderQueryRepository;
-import com.foodtech.mate.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final OrderRepository orderRepository;
     private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
-    public List<FindOrderDto> findOrder(Long storeId, OrderState orderStateCode) {
+    public List<WaitingOrderDto> findWaitingOrders() {
 
-        List<FindOrderDto> foundOrder = orderQueryRepository.findOrderByStoreId(storeId, orderStateCode);
-        if (foundOrder == null) {
+        List<WaitingOrderDto> waitingOrder = orderQueryRepository.findWaitingOrder();
+        if (waitingOrder == null) {
             throw new NoOrderException("대기중인 주문이 없습니다.");
         }
-        return foundOrder;
+        return waitingOrder;
+    }
+
+    @Transactional
+    public List<PreparingOrderDto> findPreparingOrders() {
+
+        List<PreparingOrderDto> preparingOrder = orderQueryRepository.findPreparingOrder();
+        if (preparingOrder == null) {
+            throw new NoOrderException("준비중인 주문이 없습니다.");
+        }
+        return preparingOrder;
+    }
+
+    @Transactional
+    public List<CompletedOrderDto> completeOrdersLookup() {
+
+        List<CompletedOrderDto> completeOrder = orderQueryRepository.findCompleteOrder();
+        if (completeOrder == null) {
+            throw new NoOrderException("완료된 주문이 없습니다.");
+        }
+        return completeOrder;
     }
 
     @Transactional
@@ -40,15 +59,13 @@ public class OrderService {
         orderQueryRepository.updateOrderState(orderId, orderStateCode);
     }
 
-    public void checkOrderType(Long orderId) {
+    @Transactional
+    public void changeOrderStateToPickUp(Long orderId, OrderState orderState) {
 
         OrderType orderType = orderQueryRepository.findOrderTypeByOrderId(orderId);
         if (!orderType.equals(OrderType.TOGO)) {
             throw new IllegalArgumentException("올바르지 않은 요청입니다.");
         }
-    }
-
-    public List<CompletedOrderDto> completeOrderInquiry() {
-        return orderQueryRepository.findCompleteOrder();
+        orderQueryRepository.updateOrderState(orderId, orderState);
     }
 }

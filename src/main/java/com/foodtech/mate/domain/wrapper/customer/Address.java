@@ -1,4 +1,4 @@
-package com.foodtech.mate.domain.wrapper.store;
+package com.foodtech.mate.domain.wrapper.customer;
 
 import lombok.AccessLevel;
 import lombok.Getter;

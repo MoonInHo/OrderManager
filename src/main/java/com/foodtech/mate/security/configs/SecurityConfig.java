@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/sign-in", "/sign-up","/generate-verificationCode-userid", "/find-userId", "/generate-verificationCode-password", "/verification-password", "/change-password").anonymous()
-                .antMatchers("/", "/sign-out", "view-orders", "/accept-order", "/cancel-order", "/ready-order", "/request-driver-assignment", "/create-delivery-info", "/delivery-driver-assignment", "/delivery-pickup", "/delivery-complete", "/pickup-complete", "/delivery-tracking", "/completed-order-inquiry", "/delivery-info-inquiry").hasRole("USER")
+                .antMatchers("/", "/sign-out", "/waiting-orders-lookup", "/preparing-orders-lookup", "/completed-order-lookup", "/accept-order", "/ready-order", "/cancel-order", "/pickup-complete", "/request-driver-assignment", "/create-delivery-info", "/delivery-driver-assignment", "/delivery-pickup", "/delivery-complete", "/delivery-tracking", "/delivery-info-inquiry").hasRole("USER")
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
