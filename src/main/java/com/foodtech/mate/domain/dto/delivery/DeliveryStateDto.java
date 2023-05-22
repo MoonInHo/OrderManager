@@ -7,5 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeliveryStateDto {
 
+    private Long deliveryId;
     private String deliveryState;
 }

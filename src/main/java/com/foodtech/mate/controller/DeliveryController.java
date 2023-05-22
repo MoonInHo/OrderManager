@@ -1,5 +1,6 @@
 package com.foodtech.mate.controller;
 
+import com.foodtech.mate.domain.dto.delivery.DeliveryInfoDto;
 import com.foodtech.mate.domain.dto.delivery.DeliveryStateDto;
 import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
@@ -81,5 +82,13 @@ public class DeliveryController {
         }
 
         return deliveryService.deliveryTracking(deliveryStateCode);
+    }
+
+    @PostMapping("/delivery-info-inquiry")
+    public List<DeliveryInfoDto> deliveryInfoInquiry(@RequestBody DeliveryStateDto deliveryStateDto) {
+
+        Long deliveryId = deliveryStateDto.getDeliveryId();
+
+        return deliveryService.deliveryInfoInquiry(deliveryId);
     }
 }

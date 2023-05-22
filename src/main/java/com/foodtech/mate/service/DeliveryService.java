@@ -1,6 +1,7 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.delivery.DeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryInfoDto;
 import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
 import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
 import com.foodtech.mate.domain.entity.Delivery;
@@ -109,5 +110,10 @@ public class DeliveryService {
             throw new NoDeliveryException("배달주문이 없습니다");
         }
         return fetchedInProgressDeliveryList;
+    }
+
+    public List<DeliveryInfoDto> deliveryInfoInquiry(Long deliveryId) {
+
+        return deliveryQueryRepository.findDeliveryInfo(deliveryId);
     }
 }
