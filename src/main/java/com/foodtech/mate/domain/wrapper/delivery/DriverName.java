@@ -1,8 +1,10 @@
 package com.foodtech.mate.domain.wrapper.delivery;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class DriverName {
 

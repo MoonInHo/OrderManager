@@ -1,10 +1,12 @@
 package com.foodtech.mate.domain.wrapper.delivery;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class DriverPhone {
 
