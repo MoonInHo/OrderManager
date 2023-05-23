@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/sign-in", "/sign-up","/generate-verificationCode-userid", "/find-userId", "/generate-verificationCode-password", "/verification-password", "/change-password").anonymous()
+                .antMatchers("/sign-in", "/sign-up","/userid-find/request", "/userId-find/verify", "/password-reset/request", "/password-reset/verify", "/password-reset").anonymous()
                 //TODO 접근권한 설정 개별이 아닌 전체설정으로 변경
                 .antMatchers("/", "/sign-out", "/waiting-orders-lookup", "/preparing-orders-lookup", "/completed-order-lookup", "/accept-order", "/ready-order", "/cancel-order", "/pickup-complete", "/request-driver-assignment", "/create-delivery-info", "/delivery-driver-assignment", "/delivery-pickup", "/delivery-complete", "/delivery-tracking", "/delivery-info-lookup").hasRole("USER")
                 .anyRequest().authenticated()

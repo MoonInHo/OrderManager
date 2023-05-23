@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class PasswordDto {
 
     private String password;
-    private String verifyPassword;
+    private String confirmPassword;
 }

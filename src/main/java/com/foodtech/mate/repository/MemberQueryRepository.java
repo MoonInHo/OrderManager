@@ -33,11 +33,11 @@ public class MemberQueryRepository {
                 .fetchOne();
     }
 
-    public UserId findUserIdByPhone(String phone) {
+    public UserId findUserIdByPhone(Phone phone) {
         return queryFactory
                 .select(account.userId)
                 .from(account)
-                .where(account.phone.eq(Phone.of(phone)))
+                .where(account.phone.eq(phone))
                 .fetchOne();
     }
 

@@ -156,7 +156,7 @@ public class MemberControllerTest {
         String phone = "010-1234-5678";
         VerificationDto verificationDto = VerificationDto.createVerificationDto(null, null, phone, null);
         Map<String, String> verificationMap = new ConcurrentHashMap<>();
-        String verificationCode = Verifier.generateUserIdVerificationCode(verificationDto, verificationMap);
+        String verificationCode = Verifier.generateVerificationCode(verificationDto, verificationMap);
 
         verificationMap.put(phone, verificationCode);
 
