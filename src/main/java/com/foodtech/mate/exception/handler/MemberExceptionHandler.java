@@ -2,6 +2,7 @@ package com.foodtech.mate.exception.handler;
 
 import com.foodtech.mate.exception.code.MemberErrorCode;
 import com.foodtech.mate.exception.dto.MemberErrorResponseDto;
+import com.foodtech.mate.exception.exception.DuplicateCheckException;
 import com.foodtech.mate.exception.exception.InvalidAuthCodeException;
 import com.foodtech.mate.exception.exception.MisMatchedPasswordException;
 import com.foodtech.mate.exception.exception.VerificationFailureException;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class MemberExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalStateException.class)
-    public MemberErrorResponseDto duplicateCheckException(IllegalStateException e) {
+    @ExceptionHandler(DuplicateCheckException.class)
+    public MemberErrorResponseDto duplicateCheckException(DuplicateCheckException e) {
         return new MemberErrorResponseDto(MemberErrorCode.DUPLICATE_CHECK_ERROR, e.getMessage());
     }
 
