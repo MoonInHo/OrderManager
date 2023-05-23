@@ -9,7 +9,7 @@ public enum DeliveryState {
     PICKUP("배달중"),
     COMPLETE("배달완료");
 
-    private String deliveryStateCode;
+    private final String deliveryStateCode;
 
     DeliveryState(String deliveryStateCode) {
         this.deliveryStateCode = deliveryStateCode;

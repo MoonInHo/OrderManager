@@ -18,7 +18,7 @@ import static com.foodtech.mate.controller.verifier.Verifier.*;
 
 @RestController
 @RequiredArgsConstructor
-public class MemberController {
+public class MemberApiController {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;

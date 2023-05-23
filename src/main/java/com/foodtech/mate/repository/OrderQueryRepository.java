@@ -77,7 +77,8 @@ public class OrderQueryRepository {
                                 menuName,
                                 order.totalPrice,
                                 customerInfo,
-//                                order.orderDetail,
+                                //TODO List로 출력하는 방법
+                                order.orderDetail,
                                 order.orderState,
                                 order.orderType,
                                 order.paymentType

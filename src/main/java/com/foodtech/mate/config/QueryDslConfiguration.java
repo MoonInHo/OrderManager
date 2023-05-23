@@ -1,4 +1,4 @@
-package com.foodtech.mate;
+package com.foodtech.mate.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Configuration
-public class MateConfiguration {
+public class QueryDslConfiguration {
 
     @PersistenceContext
     private EntityManager entityManager;

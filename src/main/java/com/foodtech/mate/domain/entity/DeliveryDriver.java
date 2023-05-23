@@ -21,13 +21,17 @@ public class DeliveryDriver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_driver_id")
     private Long id;
+
     @Embedded
     private DriverName driverName;
+
     @Embedded
     private DriverPhone driverPhone;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_company_id")
     private DeliveryCompany deliveryCompany;
+
     @OneToMany(mappedBy = "deliveryDriver")
     private List<Delivery> delivery = new ArrayList<>();
 }

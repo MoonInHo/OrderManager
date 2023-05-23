@@ -21,7 +21,7 @@ import static com.foodtech.mate.domain.wrapper.delivery.Company.findByCompanyNam
 
 @RestController
 @RequiredArgsConstructor
-public class DeliveryController {
+public class DeliveryApiController {
 
     private final DeliveryService deliveryService;
 
@@ -84,11 +84,11 @@ public class DeliveryController {
         return deliveryService.deliveryTracking(deliveryStateCode);
     }
 
-    @PostMapping("/delivery-info-inquiry")
-    public List<DeliveryInfoDto> deliveryInfoInquiry(@RequestBody DeliveryStateDto deliveryStateDto) {
+    @PostMapping("/delivery-info-lookup")
+    public List<DeliveryInfoDto> deliveryDetailInfoLookup(@RequestBody DeliveryStateDto deliveryStateDto) {
 
         Long deliveryId = deliveryStateDto.getDeliveryId();
 
-        return deliveryService.deliveryInfoInquiry(deliveryId);
+        return deliveryService.deliveryInfoLookup(deliveryId);
     }
 }

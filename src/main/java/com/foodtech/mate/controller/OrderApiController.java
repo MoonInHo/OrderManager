@@ -17,10 +17,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class OrderController {
+public class OrderApiController {
 
     private final OrderService orderService;
 
+    //TODO 요청 병합 여부 고민
     @PostMapping("/waiting-orders-lookup")
     public List<WaitingOrderDto> waitingOrdersLookup() {
         return orderService.findWaitingOrders();
