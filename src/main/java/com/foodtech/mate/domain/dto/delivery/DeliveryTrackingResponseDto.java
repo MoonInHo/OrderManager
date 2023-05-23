@@ -1,8 +1,9 @@
-package com.foodtech.mate.domain.dto.order;
+package com.foodtech.mate.domain.dto.delivery;
 
-import com.foodtech.mate.domain.state.OrderState;
+import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.state.OrderType;
 import com.foodtech.mate.domain.state.PaymentType;
+import com.foodtech.mate.domain.wrapper.delivery.Company;
 import com.foodtech.mate.domain.wrapper.order.TotalPrice;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,13 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompletedOrderDto {
+public class DeliveryTrackingResponseDto {
 
+    private Long deliveryId;
     private LocalDateTime orderTimeStamp;
     private OrderType orderType;
+    private Company company;
     private PaymentType paymentType;
-    private String menuName;
     private TotalPrice totalPrice;
-    private String customerInfo;
-    private OrderState orderState;
+    private DeliveryState deliveryState;
 }

@@ -1,9 +1,9 @@
 package com.foodtech.mate.service;
 
 import com.foodtech.mate.domain.dto.delivery.DeliveryDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryInfoDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
-import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryInfoResponseDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingResponseDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryRequestDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.entity.Order;
@@ -30,7 +30,7 @@ public class DeliveryService {
     private final DeliveryQueryRepository deliveryQueryRepository;
 
     @Transactional
-    public void createDeliveryInfo(RequestDeliveryDto requestDeliveryDto, Company companyName) {
+    public void createDeliveryInfo(DeliveryRequestDto requestDeliveryDto, Company companyName) {
 
         Long orderId = requestDeliveryDto.getOrderId();
         Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
@@ -113,18 +113,18 @@ public class DeliveryService {
         orderQueryRepository.updateOrderState(orderId, OrderState.COMPLETE);
     }
 
-    public List<DeliveryTrackingDto> deliveryTracking(DeliveryState deliveryState) {
+    public List<DeliveryTrackingResponseDto> deliveryTracking(DeliveryState deliveryState) {
 
-        List<DeliveryTrackingDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInDeliveryByDeliveryState(deliveryState);
+        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInDeliveryByDeliveryState(deliveryState);
         if (fetchedInProgressDeliveryList == null) {
             throw new NoDeliveryException("배달주문이 없습니다");
         }
         return fetchedInProgressDeliveryList;
     }
 
-    public List<DeliveryInfoDto> deliveryInfoLookup(Long deliveryId) {
+    public List<DeliveryInfoResponseDto> deliveryInfoLookup(Long deliveryId) {
 
-        List<DeliveryInfoDto> deliveryInfo = deliveryQueryRepository.findDeliveryInfo(deliveryId);
+        List<DeliveryInfoResponseDto> deliveryInfo = deliveryQueryRepository.findDeliveryInfo(deliveryId);
         if (deliveryInfo == null) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다.");
         }

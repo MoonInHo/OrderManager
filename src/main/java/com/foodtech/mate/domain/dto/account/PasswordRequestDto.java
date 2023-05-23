@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PasswordDto {
+public class PasswordRequestDto {
 
     private String password;
     private String confirmPassword;
