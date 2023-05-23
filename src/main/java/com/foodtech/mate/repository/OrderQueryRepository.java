@@ -1,8 +1,8 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.dto.order.CompletedOrderDto;
-import com.foodtech.mate.domain.dto.order.PreparingOrderDto;
-import com.foodtech.mate.domain.dto.order.WaitingOrderDto;
+import com.foodtech.mate.domain.dto.order.CompletedOrderResponseDto;
+import com.foodtech.mate.domain.dto.order.PreparingOrderResponseDto;
+import com.foodtech.mate.domain.dto.order.WaitingOrderResponseDto;
 import com.foodtech.mate.domain.entity.Order;
 import com.foodtech.mate.domain.state.OrderState;
 import com.foodtech.mate.domain.state.OrderType;
@@ -36,7 +36,7 @@ public class OrderQueryRepository {
     }
 
     //TODO 코드 합칠수있는 방법 생각해보기
-    public List<WaitingOrderDto> findWaitingOrder() {
+    public List<WaitingOrderResponseDto> findWaitingOrder() {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -44,7 +44,7 @@ public class OrderQueryRepository {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                WaitingOrderDto.class,
+                                WaitingOrderResponseDto.class,
                                 order.id,
                                 order.orderTimestamp.orderTimestamp,
                                 menuName,
@@ -63,7 +63,7 @@ public class OrderQueryRepository {
                 .fetch();
     }
 
-    public List<PreparingOrderDto> findPreparingOrder() {
+    public List<PreparingOrderResponseDto> findPreparingOrder() {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -71,14 +71,14 @@ public class OrderQueryRepository {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                PreparingOrderDto.class,
+                                PreparingOrderResponseDto.class,
                                 order.id,
                                 order.orderTimestamp.orderTimestamp,
                                 menuName,
                                 order.totalPrice,
                                 customerInfo,
                                 //TODO List로 출력하는 방법
-                                order.orderDetail,
+//                                order.orderDetail,
                                 order.orderState,
                                 order.orderType,
                                 order.paymentType
@@ -91,7 +91,7 @@ public class OrderQueryRepository {
                 .fetch();
     }
 
-    public List<CompletedOrderDto> findCompleteOrder() {
+    public List<CompletedOrderResponseDto> findCompleteOrder() {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -99,7 +99,7 @@ public class OrderQueryRepository {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                CompletedOrderDto.class,
+                                CompletedOrderResponseDto.class,
                                 order.orderTimestamp.orderTimestamp,
                                 order.orderType,
                                 order.paymentType,

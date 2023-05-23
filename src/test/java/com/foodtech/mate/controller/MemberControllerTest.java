@@ -3,7 +3,7 @@ package com.foodtech.mate.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foodtech.mate.controller.verifier.Verifier;
 import com.foodtech.mate.domain.dto.account.AccountDto;
-import com.foodtech.mate.domain.dto.account.VerificationDto;
+import com.foodtech.mate.domain.dto.account.VerificationRequestDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.security.configs.SecurityConfig;
 import com.foodtech.mate.service.MemberService;
@@ -154,7 +154,7 @@ public class MemberControllerTest {
     void inputPhone_requestVerification_returnVerificationCode() throws Exception {
         // given
         String phone = "010-1234-5678";
-        VerificationDto verificationDto = VerificationDto.createVerificationDto(null, null, phone, null);
+        VerificationRequestDto verificationDto = VerificationRequestDto.createVerificationDto(null, null, phone, null);
         Map<String, String> verificationMap = new ConcurrentHashMap<>();
         String verificationCode = Verifier.generateVerificationCode(verificationDto, verificationMap);
 

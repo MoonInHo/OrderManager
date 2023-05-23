@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WaitingOrderDto {
+public class WaitingOrderResponseDto {
 
     private Long orderId;
     private LocalDateTime orderTimestamp;

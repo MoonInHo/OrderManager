@@ -1,8 +1,8 @@
 package com.foodtech.mate.controller;
 
 import com.foodtech.mate.domain.dto.account.AccountDto;
-import com.foodtech.mate.domain.dto.account.PasswordDto;
-import com.foodtech.mate.domain.dto.account.VerificationDto;
+import com.foodtech.mate.domain.dto.account.PasswordRequestDto;
+import com.foodtech.mate.domain.dto.account.VerificationRequestDto;
 import com.foodtech.mate.enums.Verification;
 import com.foodtech.mate.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/userid-find/request")
-    public ResponseEntity<String> requestVerificationCodeToFindUserId(@RequestBody VerificationDto verificationDto, HttpSession session) {
+    public ResponseEntity<String> requestVerificationCodeToFindUserId(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String phone = verificationDto.getPhone();
         if (isInvalidPhoneFormat(phone)) {
@@ -59,7 +59,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/userId-find/verify")
-    public ResponseEntity<String> findUserId(@RequestBody VerificationDto verificationDto, HttpSession session) {
+    public ResponseEntity<String> findUserId(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String verificationCode = verificationDto.getVerificationCode();
         String phone = (String) session.getAttribute(Verification.PHONE.name());
@@ -76,7 +76,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/password-reset/request")
-    public ResponseEntity<String> requestVerificationCodeToResetPassword(@RequestBody VerificationDto verificationDto, HttpSession session) {
+    public ResponseEntity<String> requestVerificationCodeToResetPassword(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String userId = verificationDto.getUserId();
         String name = verificationDto.getName();
@@ -94,7 +94,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/password-reset/verify")
-    public ResponseEntity<String> verifyPasswordResetCode(@RequestBody VerificationDto verificationDto, HttpSession session) {
+    public ResponseEntity<String> verifyPasswordResetCode(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String userId = (String) session.getAttribute(Verification.USERID.name());
         String storedVerificationCode = (String) session.getAttribute(Verification.CODE.name());
@@ -112,13 +112,13 @@ public class MemberApiController {
         return ResponseEntity.ok("인증에 성공하였습니다.");
     }
 
-    @PatchMapping("/password-reset")
-    public ResponseEntity<String> changePassword(@RequestBody PasswordDto passwordDto, HttpSession session) {
+    @PostMapping("/password-reset")
+    public ResponseEntity<String> changePassword(@RequestBody PasswordRequestDto passwordDto, HttpSession session) {
 
         String userId = (String) session.getAttribute(Verification.USERID.name());
         String verification = (String) session.getAttribute(Verification.VERIFICATION.name());
 
-//        session.invalidate();
+        session.invalidate();
 
         String password = passwordDto.getPassword();
         String confirmPassword = passwordDto.getConfirmPassword();
@@ -157,15 +157,15 @@ public class MemberApiController {
         return !phone.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$");
     }
 
+    private boolean isVerificationFailure(String verification) {
+        return !verification.equals(Verification.SUCCESS.name());
+    }
+
     private boolean isInvalidVerificationCode(String verificationCode, String storedVerificationCode) {
         return !storedVerificationCode.equals(verificationCode);
     }
 
     private boolean isPasswordConfirmationInvalid(String password, String confirmPassword) {
         return !password.equals(confirmPassword);
-    }
-
-    private boolean isVerificationFailure(String verification) {
-        return !verification.equals(Verification.SUCCESS.name());
     }
 }

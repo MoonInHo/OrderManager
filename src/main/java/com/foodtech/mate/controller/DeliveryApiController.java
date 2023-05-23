@@ -1,9 +1,9 @@
 package com.foodtech.mate.controller;
 
-import com.foodtech.mate.domain.dto.delivery.DeliveryInfoDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryStateDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
-import com.foodtech.mate.domain.dto.delivery.RequestDeliveryDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryInfoResponseDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryStateRequestDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingResponseDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryRequestDto;
 import com.foodtech.mate.domain.state.DeliveryState;
 import com.foodtech.mate.domain.wrapper.delivery.Company;
 import com.foodtech.mate.service.DeliveryService;
@@ -26,7 +26,7 @@ public class DeliveryApiController {
     private final DeliveryService deliveryService;
 
     @PostMapping("/create-delivery-info")
-    public ResponseEntity<String> createDeliveryInfo(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+    public ResponseEntity<String> createDeliveryInfo(@RequestBody DeliveryRequestDto requestDeliveryDto) {
 
         String inputCompanyName = requestDeliveryDto.getCompanyName();
         Company companyName = findByCompanyName(inputCompanyName);
@@ -37,7 +37,7 @@ public class DeliveryApiController {
     }
 
     @PutMapping("/delivery-driver-assignment")
-    public ResponseEntity<String> deliveryDriverAssignment(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+    public ResponseEntity<String> deliveryDriverAssignment(@RequestBody DeliveryRequestDto requestDeliveryDto) {
 
         Long deliveryId = requestDeliveryDto.getDeliveryId();
         Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
@@ -50,7 +50,7 @@ public class DeliveryApiController {
     }
 
     @PutMapping("/delivery-pickup")
-    public ResponseEntity<String> deliveryPickUp(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+    public ResponseEntity<String> deliveryPickUp(@RequestBody DeliveryRequestDto requestDeliveryDto) {
 
         Long deliveryId = requestDeliveryDto.getDeliveryId();
         Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
@@ -61,7 +61,7 @@ public class DeliveryApiController {
     }
 
     @PutMapping("/delivery-complete")
-    public ResponseEntity<String> deliveryComplete(@RequestBody RequestDeliveryDto requestDeliveryDto) {
+    public ResponseEntity<String> deliveryComplete(@RequestBody DeliveryRequestDto requestDeliveryDto) {
 
         Long deliveryId = requestDeliveryDto.getDeliveryId();
         Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
@@ -72,7 +72,7 @@ public class DeliveryApiController {
     }
 
     @PostMapping("/delivery-tracking")
-    public List<DeliveryTrackingDto> deliveryTracking(@RequestBody DeliveryStateDto deliveryStateDto) {
+    public List<DeliveryTrackingResponseDto> deliveryTracking(@RequestBody DeliveryStateRequestDto deliveryStateDto) {
 
         String inputDeliveryState = deliveryStateDto.getDeliveryState();
 
@@ -85,7 +85,7 @@ public class DeliveryApiController {
     }
 
     @PostMapping("/delivery-info-lookup")
-    public List<DeliveryInfoDto> deliveryDetailInfoLookup(@RequestBody DeliveryStateDto deliveryStateDto) {
+    public List<DeliveryInfoResponseDto> deliveryDetailInfoLookup(@RequestBody DeliveryStateRequestDto deliveryStateDto) {
 
         Long deliveryId = deliveryStateDto.getDeliveryId();
 

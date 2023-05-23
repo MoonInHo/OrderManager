@@ -1,7 +1,7 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.dto.delivery.DeliveryInfoDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryInfoResponseDto;
+import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingResponseDto;
 import com.foodtech.mate.domain.entity.Delivery;
 import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.state.DeliveryState;
@@ -66,11 +66,11 @@ public class DeliveryQueryRepository {
                 .execute();
     }
 
-    public List<DeliveryTrackingDto> findInDeliveryByDeliveryState(DeliveryState deliveryState) {
+    public List<DeliveryTrackingResponseDto> findInDeliveryByDeliveryState(DeliveryState deliveryState) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                DeliveryTrackingDto.class,
+                                DeliveryTrackingResponseDto.class,
                                 delivery.id,
                                 order.orderTimestamp.orderTimestamp,
                                 order.orderType,
@@ -86,11 +86,11 @@ public class DeliveryQueryRepository {
                 .fetch();
     }
 
-    public List<DeliveryInfoDto> findDeliveryInfo(Long deliveryId) {
+    public List<DeliveryInfoResponseDto> findDeliveryInfo(Long deliveryId) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                DeliveryInfoDto.class,
+                                DeliveryInfoResponseDto.class,
                                 delivery.deliveryState,
                                 deliveryCompany.company,
                                 delivery.deliveryTips,

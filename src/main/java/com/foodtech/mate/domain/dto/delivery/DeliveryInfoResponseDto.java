@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryInfoDto {
+public class DeliveryInfoResponseDto {
 
     private DeliveryState deliveryState;
     private Company company;
