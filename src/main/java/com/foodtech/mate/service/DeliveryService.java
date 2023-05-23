@@ -34,12 +34,15 @@ public class DeliveryService {
 
         Long orderId = requestDeliveryDto.getOrderId();
         Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
-
+        //TODO if문 줄일수 있는 방법 생각해보기
         Order foundOrder = orderQueryRepository.findOrderByOrderId(orderId);
-        if (!foundOrder.getOrderType().equals(OrderType.DELIVERY)) {
+        if (foundOrder == null) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
-        if (!foundOrder.getOrderState().equals(OrderState.READY)) {
+        if (isNotDelivery(foundOrder.getOrderType())) {
+            throw new IllegalArgumentException("올바르지 않은 요청입니다");
+        }
+        if (isReady(foundOrder.getOrderState())) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
 
@@ -47,6 +50,14 @@ public class DeliveryService {
         Delivery delivery = DeliveryDto.toEntity(foundOrder, deliveryCompany, deliveryTips);
 
         deliveryRepository.save(delivery);
+    }
+
+    private static boolean isNotDelivery(OrderType orderType) {
+        return !orderType.equals(OrderType.DELIVERY);
+    }
+
+    private static boolean isReady(OrderState orderState) {
+        return !orderState.equals(OrderState.READY);
     }
 
     @Transactional
@@ -75,7 +86,6 @@ public class DeliveryService {
         if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
-
         if (!foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH)) {
             throw new IllegalArgumentException("올바르지 않은 입력입니다");
         }
@@ -112,8 +122,12 @@ public class DeliveryService {
         return fetchedInProgressDeliveryList;
     }
 
-    public List<DeliveryInfoDto> deliveryInfoInquiry(Long deliveryId) {
+    public List<DeliveryInfoDto> deliveryInfoLookup(Long deliveryId) {
 
-        return deliveryQueryRepository.findDeliveryInfo(deliveryId);
+        List<DeliveryInfoDto> deliveryInfo = deliveryQueryRepository.findDeliveryInfo(deliveryId);
+        if (deliveryInfo == null) {
+            throw new IllegalArgumentException("올바르지 않은 입력입니다.");
+        }
+        return deliveryInfo;
     }
 }

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("[유닛 테스트] - 회원 컨트롤러")
-@WebMvcTest(MemberController.class)
+@WebMvcTest(MemberApiController.class)
 @Import(SecurityConfig.class)
 public class MemberControllerTest {
 
@@ -40,7 +40,7 @@ public class MemberControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @MockBean
-    private MemberController memberController;
+    private MemberApiController memberController;
 
     @MockBean
     private MemberService memberService;
@@ -95,7 +95,6 @@ public class MemberControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO 로그인 기능 테스트코드 작성 & 스프링 시큐리티 설정 확인
     @Test
     @DisplayName("회원 로그인 - 올바른 회원정보로 로그인 시도시 200ok 반환")
     @WithAnonymousUser
