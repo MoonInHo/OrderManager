@@ -18,10 +18,13 @@ public class DeliveryCompany {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_company_id")
     private Long id;
+
     @Enumerated(EnumType.STRING)
     private Company company;
+
     @OneToMany(mappedBy = "deliveryCompany")
     private List<Delivery> delivery = new ArrayList<>();
+
     @OneToMany(mappedBy = "deliveryCompany")
     private List<DeliveryDriver> deliveryDriver = new ArrayList<>();
 }

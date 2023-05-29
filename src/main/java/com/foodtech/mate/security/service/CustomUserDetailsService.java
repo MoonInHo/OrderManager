@@ -1,6 +1,7 @@
 package com.foodtech.mate.security.service;
 
 import com.foodtech.mate.domain.entity.Account;
+import com.foodtech.mate.domain.wrapper.account.UserId;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
-        Account account = memberQueryRepository.findAccountByUserId(userId);
+        Account account = memberQueryRepository.findAccountByUserId(UserId.of(userId));
         if (account == null) {
             throw new UsernameNotFoundException("사용자 정보를 다시 확인해 주세요.");
         }

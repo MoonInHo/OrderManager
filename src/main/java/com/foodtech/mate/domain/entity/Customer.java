@@ -17,10 +17,13 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private Long id;
+
     @Embedded
     private Address address;
+
     @Embedded
     private Contact contact;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> order = new ArrayList<>();
 }

@@ -1,7 +1,7 @@
 package com.foodtech.mate.domain.entity;
 
-import com.foodtech.mate.domain.state.DeliveryState;
-import com.foodtech.mate.domain.wrapper.delivery.*;
+import com.foodtech.mate.domain.wrapper.delivery.DeliveryTips;
+import com.foodtech.mate.enums.state.DeliveryState;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,17 +17,22 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_id")
     private Long id;
+
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", unique = true)
     private Order order;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_company_id")
     private DeliveryCompany deliveryCompany;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_driver_id")
     private DeliveryDriver deliveryDriver;
+
     @Embedded
     private DeliveryTips deliveryTips;
+
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;
 

@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
+import static com.foodtech.mate.util.validation.PatternMatcher.isInvalidNameFormat;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class DriverName {

@@ -3,12 +3,14 @@ package com.foodtech.mate.domain.wrapper.order;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class OrderTimestamp {
 
+    @Column(nullable = false)
     private final LocalDateTime orderTimestamp;
 
     private OrderTimestamp(String formattedDateTime) {

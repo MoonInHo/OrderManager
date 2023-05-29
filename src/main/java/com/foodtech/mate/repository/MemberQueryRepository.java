@@ -25,11 +25,21 @@ public class MemberQueryRepository {
         return result != null && result == 1;
     }
 
-    public Account findAccountByUserId(String userId) {
+    public boolean isPhoneExist(Phone phone) {
+        Integer result = queryFactory
+                .selectOne()
+                .from(account)
+                .where(account.phone.eq(phone))
+                .fetchFirst();
+
+        return result != null && result == 1;
+    }
+
+    public Account findAccountByUserId(UserId userId) {
         return queryFactory
                 .selectFrom(account)
                 .from(account)
-                .where(account.userId.eq(UserId.of(userId)))
+                .where(account.userId.eq(userId))
                 .fetchOne();
     }
 

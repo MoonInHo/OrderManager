@@ -15,17 +15,18 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "set_menu_id")
-//    private SetMenu setMenu;
+
     @Embedded
     private TotalMenuPrice totalMenuPrice;
+
     @Embedded
     private Quantity quantity;
 }

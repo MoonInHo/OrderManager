@@ -1,9 +1,13 @@
 package com.foodtech.mate.service;
 
-import com.foodtech.mate.domain.dto.account.AccountDto;
 import com.foodtech.mate.domain.entity.Account;
 import com.foodtech.mate.domain.wrapper.account.Phone;
 import com.foodtech.mate.domain.wrapper.account.UserId;
+import com.foodtech.mate.dto.account.AccountDto;
+import com.foodtech.mate.exception.exception.member.MemberNotFoundException;
+import com.foodtech.mate.exception.exception.member.PhoneExistException;
+import com.foodtech.mate.exception.exception.member.SamePasswordException;
+import com.foodtech.mate.exception.exception.member.UserIdExistException;
 import com.foodtech.mate.repository.MemberQueryRepository;
 import com.foodtech.mate.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Random;
 
 @Service
@@ -26,19 +29,24 @@ public class MemberService {
     public Long signUp(AccountDto accountDto) {
 
         String userId = accountDto.getUserId();
+        String phone = accountDto.getPhone();
+
         boolean userIdExist = memberQueryRepository.isUserIdExist(UserId.of(userId));
         if (userIdExist) {
-            throw new IllegalStateException("! 이미 사용중인 아이디 입니다.");
+            throw new UserIdExistException();
+        }
+        boolean phoneExist = memberQueryRepository.isPhoneExist(Phone.of(phone));
+        if (phoneExist) {
+            throw new PhoneExistException();
         }
 
-        Account account = AccountDto.toEntity(accountDto);
+        Account account = accountDto.toEntity();
         account.encryptPassword(passwordEncoder.encode(account.passwordOf()));
         Account createdAccount = memberRepository.save(account);
 
         return createdAccount.getId();
     }
 
-    @Transactional
     public String generateVerification() {
         return String.valueOf(new Random().nextInt(900000) + 100000);
     }
@@ -48,7 +56,7 @@ public class MemberService {
 
         UserId foundUserId = memberQueryRepository.findUserIdByPhone(Phone.of(phone));
         if (foundUserId == null) {
-            throw new EntityNotFoundException("주문접수 앱 가입 정보가 없습니다.");
+            throw new MemberNotFoundException();
         }
         return foundUserId.getUserId();
     }
@@ -56,9 +64,9 @@ public class MemberService {
     @Transactional
     public Account findAccount(String userId) {
 
-        Account foundAccount = memberQueryRepository.findAccountByUserId(userId);
+        Account foundAccount = memberQueryRepository.findAccountByUserId(UserId.of(userId));
         if (foundAccount == null) {
-            throw new EntityNotFoundException("주문접수 앱 가입 정보가 없습니다.");
+            throw new MemberNotFoundException();
         }
         return foundAccount;
     }
@@ -66,9 +74,9 @@ public class MemberService {
     @Transactional
     public void changePassword(String userId, String password) {
 
-        Account foundAccount = memberQueryRepository.findAccountByUserId(userId);
+        Account foundAccount = memberQueryRepository.findAccountByUserId(UserId.of(userId));
         if (isMatchesPassword(password, foundAccount)) {
-            throw new IllegalArgumentException("기존 비밀번호로 변경하실 수 없습니다.");
+            throw new SamePasswordException();
         }
         foundAccount.encryptPassword(passwordEncoder.encode(password));
 

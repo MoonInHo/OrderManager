@@ -1,95 +1,57 @@
 package com.foodtech.mate.service;
 
-import com.foodtech.mate.domain.dto.delivery.DeliveryDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryInfoResponseDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryTrackingResponseDto;
-import com.foodtech.mate.domain.dto.delivery.DeliveryRequestDto;
 import com.foodtech.mate.domain.entity.Delivery;
-import com.foodtech.mate.domain.entity.DeliveryCompany;
-import com.foodtech.mate.domain.entity.Order;
-import com.foodtech.mate.domain.state.DeliveryState;
-import com.foodtech.mate.domain.state.OrderState;
-import com.foodtech.mate.domain.state.OrderType;
-import com.foodtech.mate.domain.wrapper.delivery.Company;
-import com.foodtech.mate.exception.exception.NoDeliveryException;
+import com.foodtech.mate.dto.delivery.DeliveryRequestDto;
+import com.foodtech.mate.enums.state.DeliveryState;
+import com.foodtech.mate.enums.state.OrderState;
+import com.foodtech.mate.exception.exception.delivery.*;
 import com.foodtech.mate.repository.DeliveryQueryRepository;
-import com.foodtech.mate.repository.DeliveryRepository;
 import com.foodtech.mate.repository.OrderQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
 
     private final OrderQueryRepository orderQueryRepository;
-    private final DeliveryRepository deliveryRepository;
     private final DeliveryQueryRepository deliveryQueryRepository;
 
     @Transactional
-    public void createDeliveryInfo(DeliveryRequestDto requestDeliveryDto, Company companyName) {
+    public void deliveryDriverAssignment(Long deliveryId, DeliveryRequestDto deliveryRequestDto) {
 
-        Long orderId = requestDeliveryDto.getOrderId();
-        Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
-        //TODO if문 줄일수 있는 방법 생각해보기
-        Order foundOrder = orderQueryRepository.findOrderByOrderId(orderId);
-        if (foundOrder == null) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
-        }
-        if (isNotDelivery(foundOrder.getOrderType())) {
-            throw new IllegalArgumentException("올바르지 않은 요청입니다");
-        }
-        if (isReady(foundOrder.getOrderState())) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
-        }
-
-        DeliveryCompany deliveryCompany = deliveryQueryRepository.findDeliveryCompanyByCompanyName(companyName);
-        Delivery delivery = DeliveryDto.toEntity(foundOrder, deliveryCompany, deliveryTips);
-
-        deliveryRepository.save(delivery);
-    }
-
-    private static boolean isNotDelivery(OrderType orderType) {
-        return !orderType.equals(OrderType.DELIVERY);
-    }
-
-    private static boolean isReady(OrderState orderState) {
-        return !orderState.equals(OrderState.READY);
-    }
-
-    @Transactional
-    public Long deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) {
+        Long deliveryDriverId = deliveryRequestDto.getDeliveryDriverId();
 
         Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
-
-        if (!foundDelivery.getDeliveryState().equals(DeliveryState.WAITING)) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isNotWaiting(foundDelivery)) {
+            throw new NotWaitingException();
         }
+
         Long driverCompanyId = deliveryQueryRepository.findDeliveryDriverCompanyIdByDeliveryDriverId(deliveryDriverId);
-        if (!driverCompanyId.equals(foundDelivery.getDeliveryCompany().getId())) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isCompanyMismatch(foundDelivery, driverCompanyId)) {
+            throw new CompanyMismatchException();
         }
 
-        return deliveryQueryRepository.updateDeliveryStateAndDriverId(deliveryId, deliveryDriverId);
+        Long updatedLow = deliveryQueryRepository.updateDeliveryStateAndDriverId(deliveryId, deliveryDriverId);
+        if (updatedLow == null) {
+            throw new DriverAssignmentFailureException();
+        }
     }
-
+    
     @Transactional
     public void deliveryPickUp(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
 
         Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
         if (foundDelivery == null) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+            throw new EmptyDeliveryException();
         }
-        if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isDeliveryDriverMismatch(deliveryDriverId, foundDelivery)) {
+            throw new DriverMismatchException();
         }
-        if (!foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH)) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isNotStateInDispatch(foundDelivery)) {
+            throw new NotStateInDispatchException();
         }
-
         deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
     }
 
@@ -98,13 +60,13 @@ public class DeliveryService {
 
         Delivery foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
         if (foundDelivery == null) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+            throw new EmptyDeliveryException();
         }
-        if (!foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId)) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isDeliveryDriverMismatch(deliveryDriverId, foundDelivery)) {
+            throw new DriverMismatchException();
         }
-        if (!foundDelivery.getDeliveryState().equals(DeliveryState.PICKUP)) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다");
+        if (isNotStateInPickUp(foundDelivery)) {
+            throw new NotStateInPickUpException();
         }
 
         Long orderId = foundDelivery.getOrder().getId();
@@ -113,21 +75,23 @@ public class DeliveryService {
         orderQueryRepository.updateOrderState(orderId, OrderState.COMPLETE);
     }
 
-    public List<DeliveryTrackingResponseDto> deliveryTracking(DeliveryState deliveryState) {
-
-        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = deliveryQueryRepository.findInDeliveryByDeliveryState(deliveryState);
-        if (fetchedInProgressDeliveryList == null) {
-            throw new NoDeliveryException("배달주문이 없습니다");
-        }
-        return fetchedInProgressDeliveryList;
+    private boolean isNotWaiting(Delivery foundDelivery) {
+        return !foundDelivery.getDeliveryState().equals(DeliveryState.WAITING);
     }
 
-    public List<DeliveryInfoResponseDto> deliveryInfoLookup(Long deliveryId) {
+    private boolean isCompanyMismatch(Delivery foundDelivery, Long driverCompanyId) {
+        return !driverCompanyId.equals(foundDelivery.getDeliveryCompany().getId());
+    }
 
-        List<DeliveryInfoResponseDto> deliveryInfo = deliveryQueryRepository.findDeliveryInfo(deliveryId);
-        if (deliveryInfo == null) {
-            throw new IllegalArgumentException("올바르지 않은 입력입니다.");
-        }
-        return deliveryInfo;
+    private boolean isNotStateInPickUp(Delivery foundDelivery) {
+        return !foundDelivery.getDeliveryState().equals(DeliveryState.PICKUP);
+    }
+
+    private boolean isNotStateInDispatch(Delivery foundDelivery) {
+        return !foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH);
+    }
+
+    private boolean isDeliveryDriverMismatch(Long deliveryDriverId, Delivery foundDelivery) {
+        return !foundDelivery.getDeliveryDriver().getId().equals(deliveryDriverId);
     }
 }
