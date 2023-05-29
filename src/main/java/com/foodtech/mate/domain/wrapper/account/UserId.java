@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 
+import static com.foodtech.mate.util.validation.PatternMatcher.isInvalidUserIdFormat;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class UserId {
@@ -27,7 +29,7 @@ public class UserId {
             throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
         }
 
-        if (!userId.matches("^[a-zA-Z0-9]{5,}$")) {
+        if (isInvalidUserIdFormat(userId)) {
             throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
         }
 

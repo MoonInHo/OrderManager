@@ -1,11 +1,16 @@
 package com.foodtech.mate.repository;
 
-import com.foodtech.mate.domain.dto.order.CompletedOrderResponseDto;
-import com.foodtech.mate.domain.dto.order.PreparingOrderResponseDto;
-import com.foodtech.mate.domain.dto.order.WaitingOrderResponseDto;
+import com.foodtech.mate.domain.entity.DeliveryCompany;
 import com.foodtech.mate.domain.entity.Order;
-import com.foodtech.mate.domain.state.OrderState;
-import com.foodtech.mate.domain.state.OrderType;
+import com.foodtech.mate.domain.wrapper.delivery.Company;
+import com.foodtech.mate.dto.delivery.DeliveryDetailResponseDto;
+import com.foodtech.mate.dto.delivery.DeliveryTrackingResponseDto;
+import com.foodtech.mate.dto.order.CompletedOrderResponseDto;
+import com.foodtech.mate.dto.order.PreparingOrderResponseDto;
+import com.foodtech.mate.dto.order.WaitingOrderResponseDto;
+import com.foodtech.mate.enums.state.DeliveryState;
+import com.foodtech.mate.enums.state.OrderState;
+import com.foodtech.mate.enums.type.OrderType;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -18,6 +23,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.foodtech.mate.domain.entity.QCustomer.customer;
+import static com.foodtech.mate.domain.entity.QDelivery.delivery;
+import static com.foodtech.mate.domain.entity.QDeliveryCompany.deliveryCompany;
+import static com.foodtech.mate.domain.entity.QDeliveryDriver.deliveryDriver;
 import static com.foodtech.mate.domain.entity.QMenu.menu;
 import static com.foodtech.mate.domain.entity.QOrder.order;
 import static com.foodtech.mate.domain.entity.QOrderDetail.orderDetail;
@@ -32,7 +40,7 @@ public class OrderQueryRepository {
         return queryFactory
                 .selectFrom(order)
                 .where(order.id.eq(orderId))
-                .fetchFirst();
+                .fetchOne();
     }
 
     //TODO 코드 합칠수있는 방법 생각해보기
@@ -120,11 +128,10 @@ public class OrderQueryRepository {
                 .select(order.orderState)
                 .from(order)
                 .where(order.id.eq(orderId))
-                .fetchFirst();
+                .fetchOne();
     }
 
     public Long updateOrderState(Long orderId, OrderState orderStateCode) {
-
         return queryFactory
                 .update(order)
                 .set(order.orderState, orderStateCode)
@@ -137,7 +144,7 @@ public class OrderQueryRepository {
                 .select(order.orderType)
                 .from(order)
                 .where(order.orderType.eq(OrderType.TOGO), order.id.eq(orderId))
-                .fetchFirst();
+                .fetchOne();
     }
 
     private static Expression<String> getMenuName() {
@@ -167,5 +174,57 @@ public class OrderQueryRepository {
                 .as("customerInfo");
 
         return customerInfo;
+    }
+
+    public DeliveryCompany findDeliveryCompanyByCompanyName(Company companyName) {
+        return queryFactory
+                .selectFrom(deliveryCompany)
+                .where(deliveryCompany.company.eq(companyName))
+                .fetchOne();
+    }
+
+    public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState() {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                DeliveryTrackingResponseDto.class,
+                                delivery.id,
+                                order.orderTimestamp.orderTimestamp,
+                                order.orderType,
+                                delivery.deliveryCompany.company,
+                                order.paymentType,
+                                order.totalPrice,
+                                delivery.deliveryState
+                        )
+                )
+                .from(order)
+                .join(order.delivery, delivery)
+                .where(order.orderType.eq(OrderType.DELIVERY), delivery.deliveryState.ne(DeliveryState.COMPLETE))
+                .fetch();
+    }
+
+    public List<DeliveryDetailResponseDto> findDeliveryDetail(Long deliveryId) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                DeliveryDetailResponseDto.class,
+                                delivery.deliveryState,
+                                deliveryCompany.company,
+                                delivery.deliveryTips,
+                                deliveryDriver.driverName,
+                                deliveryDriver.driverPhone,
+                                customer.contact,
+                                customer.address,
+                                order.orderTimestamp.orderTimestamp,
+                                order.orderType
+                        )
+                )
+                .from(delivery)
+                .join(delivery.deliveryDriver, deliveryDriver)
+                .join(delivery.deliveryCompany, deliveryCompany)
+                .join(delivery.order, order)
+                .join(order.customer, customer)
+                .where(delivery.id.eq(deliveryId))
+                .fetch();
     }
 }

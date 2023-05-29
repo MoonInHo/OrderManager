@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
+import static com.foodtech.mate.util.validation.PatternMatcher.isInvalidPasswordFormat;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Password {
@@ -24,7 +28,7 @@ public class Password {
             throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
         }
 
-        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{10,20}$")) {
+        if (isInvalidPasswordFormat(password)) {
             throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
         }
 

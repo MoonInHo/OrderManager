@@ -19,10 +19,13 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private Long id;
+
     @Embedded
     private MenuName menuName;
+
     @Embedded
     private Price price;
+
     @OneToMany(mappedBy = "menu")
     private List<OrderDetail> orderDetail = new ArrayList<>();
 }

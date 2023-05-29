@@ -12,24 +12,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Embedded
     private UserId userId;
+
     @Embedded
     private Password password;
+
     @Embedded
     private Name name;
+
     @Embedded
     private Phone phone;
+
     @Embedded
     private Role role;
+
+    @OneToMany(mappedBy = "account")
+    private List<Order> orders = new ArrayList<>();
 
     private Account(UserId userId, Password password,Name name, Phone phone) {
         this.userId = userId;
@@ -47,6 +55,7 @@ public class Account {
         return new Account(userId, password, name, phone);
     }
 
+    //TODO wrapper 클래스에 대한 의존성 제거 및 getter 사용 지양
     public String userIdOf() {
         return userId.getUserId();
     }

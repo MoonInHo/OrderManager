@@ -1,11 +1,16 @@
 package com.foodtech.mate.domain.wrapper.order;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Quantity {
 
+    @Column(nullable = false)
     private final Integer quantity;
 
     private Quantity(Integer quantity) {

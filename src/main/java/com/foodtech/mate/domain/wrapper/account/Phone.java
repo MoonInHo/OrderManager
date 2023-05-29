@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 
+import static com.foodtech.mate.util.validation.PatternMatcher.isInvalidPhoneFormat;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Phone {
@@ -27,7 +29,7 @@ public class Phone {
             throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
         }
 
-        if (!phone.matches("^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")) {
+        if (isInvalidPhoneFormat(phone)) {
             throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
         }
 

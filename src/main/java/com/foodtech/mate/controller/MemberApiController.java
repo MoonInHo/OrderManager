@@ -1,8 +1,8 @@
 package com.foodtech.mate.controller;
 
-import com.foodtech.mate.domain.dto.account.AccountDto;
-import com.foodtech.mate.domain.dto.account.PasswordRequestDto;
-import com.foodtech.mate.domain.dto.account.VerificationRequestDto;
+import com.foodtech.mate.dto.account.AccountDto;
+import com.foodtech.mate.dto.account.PasswordRequestDto;
+import com.foodtech.mate.dto.account.VerificationRequestDto;
 import com.foodtech.mate.enums.Verification;
 import com.foodtech.mate.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -10,17 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static com.foodtech.mate.util.validation.PatternMatcher.*;
 
 @RestController
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class MemberApiController {
 
     private final MemberService memberService;
-    private final Map<String, String> verificationMap = new ConcurrentHashMap<>();
 
-    @GetMapping("/")
+    @GetMapping
     public String main() {
         return "mainPage";
     }
@@ -43,7 +43,7 @@ public class MemberApiController {
         return ResponseEntity.ok(userCode);
     }
 
-    @PostMapping("/userid-find/request")
+    @PostMapping("/find-id")
     public ResponseEntity<String> requestVerificationCodeToFindUserId(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String phone = verificationDto.getPhone();
@@ -58,7 +58,7 @@ public class MemberApiController {
         return ResponseEntity.ok("인증번호 : " + verificationCode);
     }
 
-    @PostMapping("/userId-find/verify")
+    @GetMapping("/find-id/verify")
     public ResponseEntity<String> findUserId(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String verificationCode = verificationDto.getVerificationCode();
@@ -75,7 +75,7 @@ public class MemberApiController {
         return ResponseEntity.ok("조회하신 아이디는 '" + userId + "' 입니다");
     }
 
-    @PostMapping("/password-reset/request")
+    @PostMapping("/reset-password")
     public ResponseEntity<String> requestVerificationCodeToResetPassword(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String userId = verificationDto.getUserId();
@@ -93,7 +93,7 @@ public class MemberApiController {
         return ResponseEntity.ok("인증번호 : " + verificationCode);
     }
 
-    @PostMapping("/password-reset/verify")
+    @PostMapping("/reset-password/verify")
     public ResponseEntity<String> verifyPasswordResetCode(@RequestBody VerificationRequestDto verificationDto, HttpSession session) {
 
         String userId = (String) session.getAttribute(Verification.USERID.name());
@@ -112,25 +112,22 @@ public class MemberApiController {
         return ResponseEntity.ok("인증에 성공하였습니다.");
     }
 
-    @PostMapping("/password-reset")
+    @PatchMapping("/reset-password")
     public ResponseEntity<String> changePassword(@RequestBody PasswordRequestDto passwordDto, HttpSession session) {
 
         String userId = (String) session.getAttribute(Verification.USERID.name());
         String verification = (String) session.getAttribute(Verification.VERIFICATION.name());
-
-        session.invalidate();
-
         String password = passwordDto.getPassword();
         String confirmPassword = passwordDto.getConfirmPassword();
+
+        session.invalidate();
 
         if (isVerificationFailure(verification)) {
             return ResponseEntity.badRequest().body("! 본인인증 후 다시 시도해주세요.");
         }
-
         if (isInvalidPasswordFormat(password)) {
             return ResponseEntity.badRequest().body("! 올바른 형식으로 입력해주세요.");
         }
-
         if (isPasswordConfirmationInvalid(password, confirmPassword)) {
             return ResponseEntity.badRequest().body("! 비밀번호를 다시 확인해주세요.");
         }
@@ -141,22 +138,6 @@ public class MemberApiController {
     }
 
     //TODO 회원정보 변경 기능 추가
-    private boolean isInvalidUserIdFormat(String userId) {
-        return !userId.matches("^[a-zA-Z0-9]{5,}$");
-    }
-
-    private boolean isInvalidPasswordFormat(String password) {
-        return !password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{10,20}$");
-    }
-
-    private boolean isInvalidNameFormat(String name) {
-        return !name.matches("^[가-힣]{2,5}$");
-    }
-
-    private boolean isInvalidPhoneFormat(String phone) {
-        return !phone.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$");
-    }
-
     private boolean isVerificationFailure(String verification) {
         return !verification.equals(Verification.SUCCESS.name());
     }

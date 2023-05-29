@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class TotalPrice {
 
+    @Column(nullable = false)
     private final Integer totalPrice;
 
     public TotalPrice(Integer totalPrice) {

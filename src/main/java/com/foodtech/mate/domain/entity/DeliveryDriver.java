@@ -1,7 +1,5 @@
 package com.foodtech.mate.domain.entity;
 
-import com.foodtech.mate.domain.wrapper.account.Name;
-import com.foodtech.mate.domain.wrapper.account.Phone;
 import com.foodtech.mate.domain.wrapper.delivery.DriverName;
 import com.foodtech.mate.domain.wrapper.delivery.DriverPhone;
 import lombok.AccessLevel;
