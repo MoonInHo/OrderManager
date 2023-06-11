@@ -35,20 +35,6 @@ public class OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public OrderTypeResponseDto findOrderTypeByOrderIdAndStoreId(Long orderId, Long storeId) {
-        return queryFactory
-                .select(
-                        Projections.constructor(
-                                OrderTypeResponseDto.class,
-                                order.orderType,
-                                order.orderState
-                        )
-                )
-                .from(order)
-                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-                .fetchOne();
-    }
-
     public List<WaitingOrderResponseDto> findWaitingOrder(Long storeId) {
 
         Expression<String> customerInfo = getCustomerInfo();
@@ -90,7 +76,7 @@ public class OrderQueryRepository {
                                 menuName,
                                 order.totalPrice,
                                 customerInfo,
-                                //TODO List로 출력하는 방법
+                                //TODO List 로 출력하는 방법
 //                                order.orderDetail,
                                 order.orderState,
                                 order.orderType,
@@ -128,7 +114,21 @@ public class OrderQueryRepository {
                 .fetch();
     }
 
-    public OrderState findOrderStateByOrderId(Long orderId, Long storeId) {
+    public OrderTypeResponseDto findOrderTypeByOrderIdAndStoreId(Long storeId, Long orderId) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                OrderTypeResponseDto.class,
+                                order.orderType,
+                                order.orderState
+                        )
+                )
+                .from(order)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .fetchOne();
+    }
+
+    public OrderState findOrderStateByOrderId(Long storeId, Long orderId) {
         return queryFactory
                 .select(order.orderState)
                 .from(order)
@@ -136,57 +136,36 @@ public class OrderQueryRepository {
                 .fetchOne();
     }
 
-    public Long updateOrderState(Long orderId, Long storeId, OrderState orderStateCode) {
+    public Long updateOrderStateToPreparing(Long storeId, Long orderId) {
         return queryFactory
                 .update(order)
-                .set(order.orderState, orderStateCode)
+                .set(order.orderState, OrderState.PREPARING)
                 .where(order.store.id.eq(storeId), order.id.eq(orderId))
                 .execute();
     }
 
-    public OrderType findOrderTypeByOrderId(Long orderId) {
+    public Long updateOrderStateToReady(Long storeId, Long orderId) {
         return queryFactory
-                .select(order.orderType)
-                .from(order)
-                .where(order.orderType.eq(OrderType.TOGO), order.id.eq(orderId))
-                .fetchOne();
+                .update(order)
+                .set(order.orderState, OrderState.READY)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .execute();
     }
 
-    private static Expression<String> getMenuName() {
-        Expression<String> menuName =
-                ExpressionUtils.as(
-                        JPAExpressions
-                                .select(Expressions.stringTemplate("group_concat({0})", menu.menuName))
-                                .from(orderDetail)
-                                .join(orderDetail.menu, menu)
-                                .where(orderDetail.order.id.eq(order.id))
-                                .groupBy(orderDetail.order.id),
-                        "menuNames"
-                );
-        return menuName;
-    }
-
-    private static Expression<String> getCustomerInfo() {
-        Expression<String> customerContact = customer.contact.contact;
-        Expression<String> address = customer.address.address
-                .concat(" ")
-                .concat(customer.address.addressDetail);
-
-        Expression<String> customerInfo = Expressions.cases()
-                .when(order.orderType.eq(OrderType.DELIVERY))
-                .then(address)
-                .otherwise(customerContact)
-                .as("customerInfo");
-
-        return customerInfo;
-    }
-
-    public Long findDeliveryCompanyIdByCompanyName(Company companyName) {
+    public Long updateOrderStateToCancel(Long storeId, Long orderId) {
         return queryFactory
-                .select(deliveryCompany.id)
-                .from(deliveryCompany)
-                .where(deliveryCompany.company.eq(companyName))
-                .fetchOne();
+                .update(order)
+                .set(order.orderState, OrderState.CANCEL)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .execute();
+    }
+
+    public Long updateOrderStateToComplete(Long storeId, Long orderId) {
+        return queryFactory
+                .update(order)
+                .set(order.orderState, OrderState.COMPLETE)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .execute();
     }
 
     public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState(Long storeId) {
@@ -237,5 +216,38 @@ public class OrderQueryRepository {
                 .join(order.customer, customer)
                 .where(order.store.id.eq(storeId), delivery.id.eq(deliveryId))
                 .fetch();
+    }
+
+    private static Expression<String> getMenuName() {
+        return ExpressionUtils.as(
+                        JPAExpressions
+                                .select(Expressions.stringTemplate("group_concat({0})", menu.menuName))
+                                .from(orderDetail)
+                                .join(orderDetail.menu, menu)
+                                .where(orderDetail.order.id.eq(order.id))
+                                .groupBy(orderDetail.order.id),
+                        "menuNames"
+        );
+    }
+
+    private static Expression<String> getCustomerInfo() {
+        Expression<String> customerContact = customer.contact.contact;
+        Expression<String> address = customer.address.address
+                .concat(" ")
+                .concat(customer.address.addressDetail);
+
+        return Expressions.cases()
+                .when(order.orderType.eq(OrderType.DELIVERY))
+                .then(address)
+                .otherwise(customerContact)
+                .as("customerInfo");
+    }
+
+    public Long findDeliveryCompanyIdByCompanyName(Company companyName) {
+        return queryFactory
+                .select(deliveryCompany.id)
+                .from(deliveryCompany)
+                .where(deliveryCompany.company.eq(companyName))
+                .fetchOne();
     }
 }

@@ -1,6 +1,5 @@
 package com.order.manager.service;
 
-import com.order.manager.dto.delivery.DeliveryRequestDto;
 import com.order.manager.dto.delivery.DeliveryResponseDto;
 import com.order.manager.enums.state.DeliveryState;
 import com.order.manager.enums.state.OrderState;
@@ -30,7 +29,7 @@ public class DeliveryService {
             throw new EmptyDeliveryException();
         }
         if (isNotWaiting(foundDelivery)) {
-            throw new NotWaitingException();
+            throw new NotReadyException();
         }
 
         Long driverCompanyId = deliveryQueryRepository.findDeliveryCompanyIdByDeliveryDriverId(deliveryDriverId);
@@ -79,7 +78,7 @@ public class DeliveryService {
         Long orderId = foundDelivery.getOrderId();
 
         deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
-        orderQueryRepository.updateOrderState(orderId, storeId, OrderState.COMPLETE);
+//        orderQueryRepository.updateOrderStateToPreparing(orderId, storeId, OrderState.COMPLETE);
     }
 
     private boolean isNotWaiting(DeliveryResponseDto foundDelivery) {

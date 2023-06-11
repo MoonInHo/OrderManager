@@ -1,7 +1,5 @@
 package com.order.manager.enums.state;
 
-import java.util.Arrays;
-
 public enum OrderState {
 
     WAITING("대기중"),
@@ -14,13 +12,5 @@ public enum OrderState {
 
     OrderState(String orderStateCode) {
         this.orderStateCode = orderStateCode;
-    }
-
-    public static OrderState findByOrderState(String orderStateCode){
-
-        return Arrays.stream(OrderState.values())
-                .filter(orderState -> orderState.orderStateCode.equals(orderStateCode))
-                .findAny()
-                .orElse(null);
     }
 }
