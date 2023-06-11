@@ -1,10 +1,11 @@
 package com.order.manager.domain.wrapper.account;
 
+import com.order.manager.exception.exception.EmptyValueException;
+import com.order.manager.exception.exception.InvalidFormatException;
+import com.order.manager.exception.exception.member.NullValueException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static com.order.manager.util.validation.PatternMatcher.isInvalidPasswordFormat;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
@@ -19,15 +20,15 @@ public class Password {
     public static Password of(String password) {
 
         if (password == null) {
-            throw new IllegalArgumentException("! 비밀번호를 입력해 주세요.");
+            throw new NullValueException();
         }
 
         if (password.isBlank()) {
-            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
+            throw new EmptyValueException();
         }
 
-        if (isInvalidPasswordFormat(password)) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
+        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{10,20}$")) {
+            throw new InvalidFormatException();
         }
 
         return new Password(password);

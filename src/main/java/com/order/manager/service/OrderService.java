@@ -1,16 +1,16 @@
 package com.order.manager.service;
 
 import com.order.manager.domain.entity.Delivery;
-import com.order.manager.domain.entity.DeliveryCompany;
-import com.order.manager.domain.entity.Order;
 import com.order.manager.domain.wrapper.delivery.Company;
 import com.order.manager.dto.delivery.*;
 import com.order.manager.dto.order.CompletedOrderResponseDto;
+import com.order.manager.dto.order.OrderTypeResponseDto;
 import com.order.manager.dto.order.PreparingOrderResponseDto;
 import com.order.manager.dto.order.WaitingOrderResponseDto;
 import com.order.manager.enums.state.OrderState;
 import com.order.manager.enums.type.OrderType;
-import com.order.manager.exception.exception.EmptyResultDataAccessException;
+import com.order.manager.exception.exception.ChangeOrderStatusException;
+import com.order.manager.exception.exception.delivery.EmptyDeliveryException;
 import com.order.manager.exception.exception.delivery.EmptyDeliveryListException;
 import com.order.manager.exception.exception.delivery.NotDeliveryException;
 import com.order.manager.exception.exception.delivery.NotReadyException;
@@ -18,6 +18,7 @@ import com.order.manager.exception.exception.order.EmptyOrderListException;
 import com.order.manager.exception.exception.order.InvalidOrderTypeException;
 import com.order.manager.repository.DeliveryRepository;
 import com.order.manager.repository.OrderQueryRepository;
+import com.order.manager.repository.StoreQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,47 +26,55 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.order.manager.domain.wrapper.delivery.Company.findByCompanyName;
+import static com.order.manager.util.account.LoggedInUserinfoProvider.loggedInUserKeyFetcher;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final DeliveryRepository deliveryRepository;
+    private final StoreQueryRepository storeQueryRepository;
     private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
-    public List<WaitingOrderResponseDto> findWaitingOrders() {
+    public Long findStoreId() {
+        return storeQueryRepository.findStoreIdByUserKey(loggedInUserKeyFetcher());
+    }
 
-        List<WaitingOrderResponseDto> waitingOrder = orderQueryRepository.findWaitingOrder();
-        if (isNullAndEmptyWaitingOrder(waitingOrder)) {
+    @Transactional
+    public List<WaitingOrderResponseDto> findWaitingOrders(Long storeId) {
+
+        List<WaitingOrderResponseDto> waitingOrder = orderQueryRepository.findWaitingOrder(storeId);
+        if (isEmptyWaitingOrder(waitingOrder)) {
             throw new EmptyOrderListException();
         }
         return waitingOrder;
     }
 
     @Transactional
-    public List<PreparingOrderResponseDto> findPreparingOrders() {
+    public List<PreparingOrderResponseDto> findPreparingOrders(Long storeId) {
 
-        List<PreparingOrderResponseDto> preparingOrder = orderQueryRepository.findPreparingOrder();
-        if (isNullAndEmptyPreparingOrder(preparingOrder)) {
+        List<PreparingOrderResponseDto> preparingOrder = orderQueryRepository.findPreparingOrder(storeId);
+        if (isEmptyPreparingOrder(preparingOrder)) {
             throw new EmptyOrderListException();
         }
         return preparingOrder;
     }
 
     @Transactional
-    public List<CompletedOrderResponseDto> completeOrdersLookup() {
+    public List<CompletedOrderResponseDto> completeOrdersLookup(Long storeId) {
 
-        List<CompletedOrderResponseDto> completeOrder = orderQueryRepository.findCompleteOrder();
-        if (isNullAndEmptyCompleteOrder(completeOrder)) {
+        List<CompletedOrderResponseDto> completeOrder = orderQueryRepository.findCompleteOrder(storeId);
+        if (isEmptyCompleteOrder(completeOrder)) {
             throw new EmptyOrderListException();
         }
         return completeOrder;
     }
 
     @Transactional
-    public OrderState findOrderState(Long orderId) {
-        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(orderId);
+    public OrderState findOrderState(Long orderId, Long storeId) {
+
+        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(orderId, storeId);
         if (orderState == null) {
             throw new EmptyOrderListException();
         }
@@ -73,87 +82,81 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderState(Long orderId, OrderState orderStateCode) {
-        Long updatedRow = orderQueryRepository.updateOrderState(orderId, orderStateCode);
-        if (updatedRow == null) {
-            throw new EmptyResultDataAccessException();
+    public void changeOrderState(Long orderId, Long storeId, OrderState orderStateCode) {
+
+        Long updatedRow = orderQueryRepository.updateOrderState(orderId, storeId, orderStateCode);
+        if (updatedRow == 0) {
+            throw new ChangeOrderStatusException();
         }
     }
 
     @Transactional
-    public void changeOrderStateToPickUp(Long orderId, OrderState orderStateCode) {
+    public void changeOrderStateToPickUp(Long orderId, Long storeId, OrderState orderStateCode) {
 
         OrderType orderType = orderQueryRepository.findOrderTypeByOrderId(orderId);
         if (isNotTogo(orderType)) {
             throw new InvalidOrderTypeException();
         }
-        orderQueryRepository.updateOrderState(orderId, orderStateCode);
+        orderQueryRepository.updateOrderState(orderId, storeId, orderStateCode);
     }
 
     @Transactional
-    public void createDeliveryInfo(Long orderId, DeliveryRequestDto requestDeliveryDto) {
+    public void createDeliveryInfo(Long orderId, Long storeId, DeliveryRequestDto requestDeliveryDto) {
 
         String inputCompanyName = requestDeliveryDto.getCompanyName();
         Integer deliveryTips = requestDeliveryDto.getDeliveryTips();
 
         Company companyName = findByCompanyName(inputCompanyName);
 
-        //TODO order 와 delivery 객체를 전달하는 것이아닌 키값만 전달하는 방법으로 변경해서 구현
-        Order foundOrder = orderQueryRepository.findOrderByOrderId(orderId);
-        if (foundOrder == null) {
-            throw new EmptyOrderListException();
-        }
-        if (isNotDelivery(foundOrder.getOrderType())) {
-            throw new NotDeliveryException();
-        }
-        if (isNotReady(foundOrder.getOrderState())) {
-            throw new NotReadyException();
-        }
+        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypeByOrderIdAndStoreId(orderId, storeId);
+        orderTypeValidation(orderTypes);
 
-        DeliveryCompany deliveryCompany = orderQueryRepository.findDeliveryCompanyByCompanyName(companyName);
-        Delivery delivery = DeliveryDto.toEntity(foundOrder, deliveryCompany, deliveryTips);
+        Long deliveryCompanyId = orderQueryRepository.findDeliveryCompanyIdByCompanyName(companyName);
+        Delivery delivery = DeliveryDto.toEntity(orderId, deliveryCompanyId, deliveryTips);
 
         deliveryRepository.save(delivery);
     }
 
-    @Transactional
-    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery() {
 
-        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = orderQueryRepository.findDeliveryByDeliveryState();
-        if (isNullAndEmptyInProgressDelivery(fetchedInProgressDeliveryList)) {
+
+    @Transactional
+    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery(Long storeId) {
+
+        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = orderQueryRepository.findDeliveryByDeliveryState(storeId);
+        if (isEmptyInProgressDelivery(fetchedInProgressDeliveryList)) {
             throw new EmptyDeliveryListException();
         }
         return fetchedInProgressDeliveryList;
     }
 
     @Transactional
-    public List<DeliveryDetailResponseDto> deliveryDetailLookup(Long deliveryId) {
+    public List<DeliveryDetailResponseDto> deliveryDetailLookup(Long storeId, Long deliveryId) {
 
-        List<DeliveryDetailResponseDto> deliveryInfo = orderQueryRepository.findDeliveryDetail(deliveryId);
-        if (isNullAndEmptyDeliveryDetail(deliveryInfo)) {
-            throw new EmptyDeliveryListException();
+        List<DeliveryDetailResponseDto> deliveryInfo = orderQueryRepository.findDeliveryDetail(storeId, deliveryId);
+        if (isEmptyDeliveryDetail(deliveryInfo)) {
+            throw new EmptyDeliveryException();
         }
         return deliveryInfo;
     }
 
-    private boolean isNullAndEmptyWaitingOrder(List<WaitingOrderResponseDto> waitingOrder) {
-        return waitingOrder == null || waitingOrder.isEmpty();
+    private boolean isEmptyWaitingOrder(List<WaitingOrderResponseDto> waitingOrder) {
+        return waitingOrder.isEmpty();
     }
 
-    private boolean isNullAndEmptyCompleteOrder(List<CompletedOrderResponseDto> completeOrder) {
-        return completeOrder == null || completeOrder.isEmpty();
+    private boolean isEmptyCompleteOrder(List<CompletedOrderResponseDto> completeOrder) {
+        return completeOrder.isEmpty();
     }
 
-    private boolean isNullAndEmptyPreparingOrder(List<PreparingOrderResponseDto> preparingOrder) {
-        return preparingOrder == null || preparingOrder.isEmpty();
+    private boolean isEmptyPreparingOrder(List<PreparingOrderResponseDto> preparingOrder) {
+        return preparingOrder.isEmpty();
     }
 
-    private boolean isNullAndEmptyInProgressDelivery(List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList) {
-        return fetchedInProgressDeliveryList == null || fetchedInProgressDeliveryList.isEmpty();
+    private boolean isEmptyInProgressDelivery(List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList) {
+        return fetchedInProgressDeliveryList.isEmpty();
     }
 
-    private boolean isNullAndEmptyDeliveryDetail(List<DeliveryDetailResponseDto> deliveryInfo) {
-        return deliveryInfo == null || deliveryInfo.isEmpty();
+    private boolean isEmptyDeliveryDetail(List<DeliveryDetailResponseDto> deliveryInfo) {
+        return deliveryInfo.isEmpty();
     }
 
     private boolean isNotTogo(OrderType orderType) {
@@ -166,5 +169,17 @@ public class OrderService {
 
     private boolean isNotReady(OrderState orderState) {
         return !orderState.equals(OrderState.READY);
+    }
+
+    private void orderTypeValidation(OrderTypeResponseDto orderDivision) {
+        if (orderDivision == null) {
+            throw new EmptyOrderListException();
+        }
+        if (isNotDelivery(orderDivision.getOrderType())) {
+            throw new NotDeliveryException();
+        }
+        if (isNotReady(orderDivision.getOrderState())) {
+            throw new NotReadyException();
+        }
     }
 }

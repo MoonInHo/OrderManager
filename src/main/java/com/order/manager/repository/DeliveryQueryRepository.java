@@ -1,7 +1,8 @@
 package com.order.manager.repository;
 
-import com.order.manager.domain.entity.Delivery;
+import com.order.manager.dto.delivery.DeliveryResponseDto;
 import com.order.manager.enums.state.DeliveryState;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,14 +17,23 @@ public class DeliveryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Delivery findDeliveryByDeliveryId(Long deliveryId) {
+    public DeliveryResponseDto findDeliveryByDeliveryId(Long deliveryId) {
         return queryFactory
-                .selectFrom(delivery)
+                .select(
+                        Projections.constructor(
+                                DeliveryResponseDto.class,
+                                delivery.order.id,
+                                delivery.deliveryState,
+                                delivery.deliveryCompany,
+                                delivery.deliveryDriver.id
+                        )
+                )
+                .from(delivery)
                 .where(delivery.id.eq(deliveryId))
                 .fetchFirst();
     }
 
-    public Long findDeliveryDriverCompanyIdByDeliveryDriverId(Long deliveryDriverId) {
+    public Long findDeliveryCompanyIdByDeliveryDriverId(Long deliveryDriverId) {
         return queryFactory
                 .select(deliveryDriver.deliveryCompany.id)
                 .from(deliveryDriver)

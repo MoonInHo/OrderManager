@@ -4,6 +4,7 @@ import com.order.manager.domain.wrapper.account.Phone;
 import com.order.manager.dto.account.AccountDto;
 import com.order.manager.domain.entity.Account;
 import com.order.manager.domain.wrapper.account.UserId;
+import com.order.manager.exception.exception.member.UserIdExistException;
 import com.order.manager.repository.MemberQueryRepository;
 import com.order.manager.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ public class MemberServiceTest {
         Throwable throwable = catchThrowable(() -> memberService.signUp(accountDto));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+        assertThat(throwable).isInstanceOf(UserIdExistException.class);
         assertThat(throwable).hasMessage("! 이미 사용중인 아이디 입니다.");
     }
 
@@ -67,7 +68,7 @@ public class MemberServiceTest {
         String phone = "010-1234-5678";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         Account account = accountDto.toEntity();
-        given(memberQueryRepository.findUserIdByPhone(Phone.of(phone))).willReturn(account.getUserId());
+        given(memberQueryRepository.findUserIdByPhone(Phone.of(phone))).willReturn(UserId.of(accountDto.getUserId()));
 
         //when
         UserId fountUserId = memberQueryRepository.findUserIdByPhone(Phone.of(phone));
@@ -99,10 +100,10 @@ public class MemberServiceTest {
         String userId = "test123";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         Account account = accountDto.toEntity();
-        given(memberQueryRepository.findAccountByUserId(UserId.of(userId))).willReturn(account);
+        given(memberQueryRepository.getByUserId(UserId.of(userId))).willReturn(account);
 
         //when
-        Account fountAccount = memberQueryRepository.findAccountByUserId(UserId.of(userId));
+        Account fountAccount = memberQueryRepository.getByUserId(UserId.of(userId));
 
         //then
         assertThat(fountAccount).isNotNull();
@@ -132,13 +133,13 @@ public class MemberServiceTest {
         String newPassword = "newTestPassword123!";
         AccountDto accountDto = AccountDto.createAccountDto("test123", "testPassword123!", "김코딩", "010-1234-5678");
         Account account = accountDto.toEntity();
-        given(memberQueryRepository.findAccountByUserId(UserId.of(accountDto.getUserId()))).willReturn(account);
+        given(memberQueryRepository.getByUserId(UserId.of(accountDto.getUserId()))).willReturn(account);
 
         // When
-        account.passwordEncrypt(newPassword);
+        accountDto.passwordEncrypt(newPassword);
         memberService.changePassword(accountDto.getUserId(), accountDto.getPassword());
 
-        Account changedAccount = memberQueryRepository.findAccountByUserId(UserId.of(accountDto.getUserId()));
+        Account changedAccount = memberQueryRepository.getByUserId(UserId.of(accountDto.getUserId()));
 
         //then
         assertThat(changedAccount.isPassword()).isEqualTo(newPassword);

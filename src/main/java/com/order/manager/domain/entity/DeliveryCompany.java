@@ -27,4 +27,12 @@ public class DeliveryCompany {
 
     @OneToMany(mappedBy = "deliveryCompany")
     private List<DeliveryDriver> deliveryDriver = new ArrayList<>();
+
+    private DeliveryCompany(Long id) {
+        this.id = id;
+    }
+
+    public static DeliveryCompany createFromKey(Long id) {
+        return new DeliveryCompany(id);
+    }
 }

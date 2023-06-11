@@ -29,10 +29,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable() //TODO csrf 서치
                 .authorizeRequests()
                 .antMatchers("/users/sign-in", "/users/sign-up","/users/find-id", "/users/find-id/verify", "/users/reset-password/verify", "/users/reset-password").anonymous()
-//                .antMatchers("/users", "/orders", "/users/sign-out", "/orders/waiting", "/orders/preparing", "/orders/complete", "/{orderId}/accept", "/{orderId}/ready", "/{orderId}/cancel", "/{orderId}/pickup", "/deliveries/{orderId}/create", "/deliveries/{deliveryId}/assignment", "/delivery-driver-assignment", "/deliveries-pickup", "/deliveries-complete", "/deliveries/tracking", "/deliveries/detail").hasRole("USER")
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
@@ -45,8 +44,7 @@ public class SecurityConfig {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/users/sign-out"))
                 .logoutSuccessUrl("/users/sign-in")
                 .addLogoutHandler(new CustomLogoutHandler())
-                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
-                .deleteCookies("JSESSIONID", "remember-me")
+                .deleteCookies("JSESSIONID")
         ;
 
         return http.build();

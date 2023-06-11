@@ -1,10 +1,11 @@
 package com.order.manager.domain.wrapper.account;
 
+import com.order.manager.exception.exception.EmptyValueException;
+import com.order.manager.exception.exception.InvalidFormatException;
+import com.order.manager.exception.exception.member.NullValueException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static com.order.manager.util.validation.PatternMatcher.isInvalidNameFormat;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
@@ -19,15 +20,15 @@ public class Name {
     public static Name of(String name) {
 
         if (name == null) {
-            throw new IllegalArgumentException("! 이름을 입력해 주세요.");
+            throw new NullValueException();
         }
 
         if (name.isBlank()) {
-            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
+            throw new EmptyValueException();
         }
 
-        if (isInvalidNameFormat(name)) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
+        if (!name.matches("^[가-힣]{2,5}$")) {
+            throw new InvalidFormatException();
         }
 
         return new Name(name);

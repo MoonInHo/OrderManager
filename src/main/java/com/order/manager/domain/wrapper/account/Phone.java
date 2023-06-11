@@ -1,12 +1,13 @@
 package com.order.manager.domain.wrapper.account;
 
+import com.order.manager.exception.exception.EmptyValueException;
+import com.order.manager.exception.exception.InvalidFormatException;
+import com.order.manager.exception.exception.member.NullValueException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-
-import static com.order.manager.util.validation.PatternMatcher.isInvalidPhoneFormat;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
@@ -22,15 +23,15 @@ public class Phone {
     public static Phone of(String phone) {
 
         if (phone == null) {
-            throw new IllegalArgumentException("! 연락처를 입력해 주세요.");
+            throw new NullValueException();
         }
 
         if (phone.isBlank()) {
-            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
+            throw new EmptyValueException();
         }
 
-        if (isInvalidPhoneFormat(phone)) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
+        if (!phone.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$")) {
+            throw new InvalidFormatException();
         }
 
         return new Phone(phone);
