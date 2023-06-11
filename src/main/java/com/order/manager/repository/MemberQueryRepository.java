@@ -5,6 +5,7 @@ import com.order.manager.domain.wrapper.account.Password;
 import com.order.manager.domain.wrapper.account.Phone;
 import com.order.manager.domain.wrapper.account.UserId;
 import com.order.manager.dto.account.AccountDto;
+import com.order.manager.dto.account.AccountResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class MemberQueryRepository {
                 .where(account.userId.eq(userId))
                 .fetchFirst();
 
-        return result != null && result == 1;
+        return result != null;
     }
 
     public boolean isPhoneExist(Phone phone) {
@@ -35,25 +36,25 @@ public class MemberQueryRepository {
                 .where(account.phone.eq(phone))
                 .fetchFirst();
 
-        return result != null && result == 1;
+        return result != null;
     }
 
-    public Account findAccountByUserId(UserId userId) {
+    public Account getByUserId(UserId userId) {
         return queryFactory
                 .selectFrom(account)
                 .where(account.userId.eq(userId))
                 .fetchOne();
     }
 
-    public AccountDto findAccountInfoByUserId(UserId userId) {
+    public AccountResponseDto findByUserId(UserId userId) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                AccountDto.class,
-                                account.userId.userId,
-                                account.password.password,
-                                account.name.name,
-                                account.phone.phone
+                                AccountResponseDto.class,
+                                account.userId,
+                                account.password,
+                                account.name,
+                                account.phone
                         )
                 )
                 .from(account)

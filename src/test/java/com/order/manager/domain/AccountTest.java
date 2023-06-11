@@ -4,10 +4,15 @@ import com.order.manager.domain.wrapper.account.Name;
 import com.order.manager.domain.wrapper.account.Password;
 import com.order.manager.domain.wrapper.account.Phone;
 import com.order.manager.domain.wrapper.account.UserId;
+import com.order.manager.exception.exception.EmptyValueException;
+import com.order.manager.exception.exception.InvalidFormatException;
+import com.order.manager.exception.exception.member.NullValueException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,47 +22,99 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 public class AccountTest {
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @NullSource
     @DisplayName("회원 정보 입력 - 아이디 미입력시 예외 발생")
-    void nullOrEmptyUserId_throwException(String userId) {
+    void nullUserId_throwException(String userId) {
         //given & when
         Throwable throwable = catchThrowable(() -> UserId.of(userId));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(NullValueException.class);
+        assertThat(throwable).hasMessage("! 필수 잆력값 입니다.");
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
+    @DisplayName("회원 정보 입력 - 아이디 공백 입력시 예외 발생")
+    void emptyUserId_throwException(String userId) {
+        //given & when
+        Throwable throwable = catchThrowable(() -> UserId.of(userId));
+
+        //then
+        assertThat(throwable).isInstanceOf(EmptyValueException.class);
+        assertThat(throwable).hasMessage("! 공백을 사용할 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
     @DisplayName("회원 정보 입력 - 비밀번호 미입력시 예외 발생")
-    void nullOrEmptyPassword_throwException(String password) {
+    void nullPassword_throwException(String password) {
         //given & when
         Throwable throwable = catchThrowable(() -> Password.of(password));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(NullValueException.class);
+        assertThat(throwable).hasMessage("! 필수 잆력값 입니다.");
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
+    @DisplayName("회원 정보 입력 - 비밀번호 공백 입력시 예외 발생")
+    void emptyPassword_throwException(String password) {
+        //given & when
+        Throwable throwable = catchThrowable(() -> Password.of(password));
+
+        //then
+        assertThat(throwable).isInstanceOf(EmptyValueException.class);
+        assertThat(throwable).hasMessage("! 공백을 사용할 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
     @DisplayName("회원 정보 입력 - 이름 미입력시 예외 발생")
-    void nullOrEmptyName_throwException(String name) {
+    void nullName_throwException(String name) {
         //given & when
         Throwable throwable = catchThrowable(() -> Name.of(name));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(NullValueException.class);
+        assertThat(throwable).hasMessage("! 필수 잆력값 입니다.");
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
+    @DisplayName("회원 정보 입력 - 이름 공백 입력시 예외 발생")
+    void emptyName_throwException(String name) {
+        //given & when
+        Throwable throwable = catchThrowable(() -> Name.of(name));
+
+        //then
+        assertThat(throwable).isInstanceOf(EmptyValueException.class);
+        assertThat(throwable).hasMessage("! 공백을 사용할 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
     @DisplayName("회원 정보 입력 - 연락처 미입력시 예외 발생")
-    void nullOrEmptyPhone_throwException(String phone) {
+    void nullPhone_throwException(String phone) {
         //given & when
         Throwable throwable = catchThrowable(() -> Password.of(phone));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(NullValueException.class);
+        assertThat(throwable).hasMessage("! 필수 잆력값 입니다.");
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @DisplayName("회원 정보 입력 - 연락처 공백 입력시 예외 발생")
+    void emptyPhone_throwException(String phone) {
+        //given & when
+        Throwable throwable = catchThrowable(() -> Password.of(phone));
+
+        //then
+        assertThat(throwable).isInstanceOf(EmptyValueException.class);
+        assertThat(throwable).hasMessage("! 공백을 사용할 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -68,7 +125,7 @@ public class AccountTest {
         Throwable throwable = catchThrowable(() -> UserId.of(userId));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(InvalidFormatException.class);
         assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요.");
     }
 
@@ -80,7 +137,7 @@ public class AccountTest {
         Throwable throwable = catchThrowable(() -> Password.of(password));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(InvalidFormatException.class);
         assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요.");
     }
 
@@ -92,7 +149,7 @@ public class AccountTest {
         Throwable throwable = catchThrowable(() -> Name.of(name));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(InvalidFormatException.class);
         assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요.");
     }
 
@@ -104,7 +161,7 @@ public class AccountTest {
         Throwable throwable = catchThrowable(() -> Phone.of(phone));
 
         //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(InvalidFormatException.class);
         assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요.");
     }
 

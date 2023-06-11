@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 
-import static com.order.manager.util.validation.PatternMatcher.isInvalidPhoneFormat;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Contact {
@@ -29,7 +27,7 @@ public class Contact {
             throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
         }
 
-        if (isInvalidPhoneFormat(contact)) {
+        if (contact.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$")) {
             throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
         }
 

@@ -15,10 +15,11 @@ public class DeliveryDto {
 
     private Integer deliveryTips;
 
-    public static Delivery toEntity(Order order, DeliveryCompany deliveryCompany, Integer deliveryTips) {
+    public static Delivery toEntity(Long orderId, Long deliveryCompanyId, Integer deliveryTips) {
         return Delivery.createDeliveryInfo(
-                order,
-                deliveryCompany,
-                DeliveryTips.of(deliveryTips));
+                Order.createFromKey(orderId),
+                DeliveryCompany.createFromKey(deliveryCompanyId),
+                DeliveryTips.of(deliveryTips)
+        );
     }
 }

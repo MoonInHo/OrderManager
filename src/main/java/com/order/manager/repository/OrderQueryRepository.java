@@ -1,11 +1,10 @@
 package com.order.manager.repository;
 
-import com.order.manager.domain.entity.DeliveryCompany;
-import com.order.manager.domain.entity.Order;
 import com.order.manager.domain.wrapper.delivery.Company;
 import com.order.manager.dto.delivery.DeliveryDetailResponseDto;
 import com.order.manager.dto.delivery.DeliveryTrackingResponseDto;
 import com.order.manager.dto.order.CompletedOrderResponseDto;
+import com.order.manager.dto.order.OrderTypeResponseDto;
 import com.order.manager.dto.order.PreparingOrderResponseDto;
 import com.order.manager.dto.order.WaitingOrderResponseDto;
 import com.order.manager.enums.state.DeliveryState;
@@ -36,15 +35,21 @@ public class OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Order findOrderByOrderId(Long orderId) {
+    public OrderTypeResponseDto findOrderTypeByOrderIdAndStoreId(Long orderId, Long storeId) {
         return queryFactory
-                .selectFrom(order)
-                .where(order.id.eq(orderId))
+                .select(
+                        Projections.constructor(
+                                OrderTypeResponseDto.class,
+                                order.orderType,
+                                order.orderState
+                        )
+                )
+                .from(order)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
                 .fetchOne();
     }
 
-    //TODO 코드 합칠수있는 방법 생각해보기
-    public List<WaitingOrderResponseDto> findWaitingOrder() {
+    public List<WaitingOrderResponseDto> findWaitingOrder(Long storeId) {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -66,12 +71,12 @@ public class OrderQueryRepository {
                 )
                 .from(order)
                 .join(order.customer, customer)
-                .where(order.orderState.eq(OrderState.WAITING))
+                .where(order.store.id.eq(storeId), order.orderState.eq(OrderState.WAITING))
                 .orderBy(order.orderTimestamp.orderTimestamp.asc())
                 .fetch();
     }
 
-    public List<PreparingOrderResponseDto> findPreparingOrder() {
+    public List<PreparingOrderResponseDto> findPreparingOrder(Long storeId) {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -94,12 +99,12 @@ public class OrderQueryRepository {
                 )
                 .from(order)
                 .join(order.customer, customer)
-                .where(order.orderState.eq(OrderState.PREPARING))
+                .where(order.store.id.eq(storeId), order.orderState.eq(OrderState.PREPARING))
                 .orderBy(order.orderTimestamp.orderTimestamp.asc())
                 .fetch();
     }
 
-    public List<CompletedOrderResponseDto> findCompleteOrder() {
+    public List<CompletedOrderResponseDto> findCompleteOrder(Long storeId) {
 
         Expression<String> customerInfo = getCustomerInfo();
         Expression<String> menuName = getMenuName();
@@ -119,23 +124,23 @@ public class OrderQueryRepository {
                 )
                 .from(order)
                 .join(order.customer, customer)
-                .where(order.orderState.eq(OrderState.COMPLETE))
+                .where(order.store.id.eq(storeId), order.orderState.eq(OrderState.COMPLETE))
                 .fetch();
     }
 
-    public OrderState findOrderStateByOrderId(Long orderId) {
+    public OrderState findOrderStateByOrderId(Long orderId, Long storeId) {
         return queryFactory
                 .select(order.orderState)
                 .from(order)
-                .where(order.id.eq(orderId))
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
                 .fetchOne();
     }
 
-    public Long updateOrderState(Long orderId, OrderState orderStateCode) {
+    public Long updateOrderState(Long orderId, Long storeId, OrderState orderStateCode) {
         return queryFactory
                 .update(order)
                 .set(order.orderState, orderStateCode)
-                .where(order.id.eq(orderId))
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
                 .execute();
     }
 
@@ -176,14 +181,15 @@ public class OrderQueryRepository {
         return customerInfo;
     }
 
-    public DeliveryCompany findDeliveryCompanyByCompanyName(Company companyName) {
+    public Long findDeliveryCompanyIdByCompanyName(Company companyName) {
         return queryFactory
-                .selectFrom(deliveryCompany)
+                .select(deliveryCompany.id)
+                .from(deliveryCompany)
                 .where(deliveryCompany.company.eq(companyName))
                 .fetchOne();
     }
 
-    public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState() {
+    public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState(Long storeId) {
         return queryFactory
                 .select(
                         Projections.constructor(
@@ -199,12 +205,16 @@ public class OrderQueryRepository {
                 )
                 .from(order)
                 .join(order.delivery, delivery)
-                .where(order.orderType.eq(OrderType.DELIVERY), delivery.deliveryState.ne(DeliveryState.COMPLETE))
+                .where(
+                        order.store.id.eq(storeId),
+                        order.orderType.eq(OrderType.DELIVERY),
+                        delivery.deliveryState.ne(DeliveryState.COMPLETE)
+                )
                 .fetch();
     }
 
     //TODO fetch join 사용 고민하기
-    public List<DeliveryDetailResponseDto> findDeliveryDetail(Long deliveryId) {
+    public List<DeliveryDetailResponseDto> findDeliveryDetail(Long storeId, Long deliveryId) {
         return queryFactory
                 .select(
                         Projections.constructor(
@@ -225,7 +235,7 @@ public class OrderQueryRepository {
                 .join(delivery.deliveryCompany, deliveryCompany)
                 .join(delivery.order, order)
                 .join(order.customer, customer)
-                .where(delivery.id.eq(deliveryId))
+                .where(order.store.id.eq(storeId), delivery.id.eq(deliveryId))
                 .fetch();
     }
 }

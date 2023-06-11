@@ -1,9 +1,13 @@
 package com.order.manager.controller;
 
+import com.order.manager.dto.ResponseMessageDto;
+import com.order.manager.dto.ResponseStatusDto;
 import com.order.manager.dto.delivery.DeliveryRequestDto;
 import com.order.manager.enums.state.DeliveryState;
 import com.order.manager.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,31 +18,36 @@ public class DeliveryApiController {
 
     private final DeliveryService deliveryService;
 
-    @PatchMapping("/{deliveryId}/assignment")
-    public ResponseEntity<String> deliveryDriverAssignment(@PathVariable Long deliveryId, @RequestBody DeliveryRequestDto deliveryRequestDto) {
+    @PatchMapping("/{deliveryId}/{deliveryDriverId}/assignment")
+    public ResponseEntity<ResponseMessageDto> deliveryDriverAssignment(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
 
-        deliveryService.deliveryDriverAssignment(deliveryId, deliveryRequestDto);
+        deliveryService.deliveryDriverAssignment(deliveryId, deliveryDriverId);
 
-        return ResponseEntity.ok("배달원 배정되었습니다.");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ResponseMessageDto("배달원이 배정 되었습니다."));
     }
 
-    @PatchMapping("/{deliveryId}/pick-up")
-    public ResponseEntity<String> deliveryPickUp(@PathVariable Long deliveryId, @RequestBody DeliveryRequestDto requestDeliveryDto) {
-
-        Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
+    @PatchMapping("/{deliveryId}/{deliveryDriverId}/pick-up")
+    public ResponseEntity<ResponseMessageDto> deliveryPickUp(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
 
         deliveryService.deliveryPickUp(deliveryId, deliveryDriverId, DeliveryState.PICKUP);
 
-        return ResponseEntity.ok("배달원이 물품을 픽업했습니다");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ResponseMessageDto("배달원이 물품을 픽업했습니다"));
     }
 
-    @PatchMapping("/{deliveryId}/complete")
-    public ResponseEntity<String> deliveryComplete(@PathVariable Long deliveryId, @RequestBody DeliveryRequestDto requestDeliveryDto) {
-
-        Long deliveryDriverId = requestDeliveryDto.getDeliveryDriverId();
+    @PatchMapping("/{deliveryId}/{deliveryDriverId}/complete")
+    public ResponseEntity<ResponseMessageDto> deliveryComplete(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
 
         deliveryService.deliveryComplete(deliveryId, deliveryDriverId, DeliveryState.COMPLETE);
 
-        return ResponseEntity.ok("배달원이 배달을 완료했습니다");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ResponseMessageDto("배달원이 배달을 완료했습니다"));
     }
 }

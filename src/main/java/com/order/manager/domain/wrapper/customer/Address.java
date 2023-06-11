@@ -21,14 +21,18 @@ public class Address {
 
     public static Address of(String address, String addressDetail) {
 
-        if (address == null || address.isBlank()) {
+        if (isNullAndEmptyAddress(address)) {
             throw new IllegalArgumentException("주소를 입력해주세요");
         }
 
-        if (addressDetail == null || addressDetail.isBlank()) {
+        if (isNullAndEmptyAddress(addressDetail)) {
             throw new IllegalArgumentException("상세주소를 입력해주세요");
         }
 
         return new Address(address, addressDetail);
+    }
+
+    private static boolean isNullAndEmptyAddress(String address) {
+        return address == null || address.isBlank();
     }
 }

@@ -1,12 +1,13 @@
 package com.order.manager.domain.wrapper.account;
 
+import com.order.manager.exception.exception.EmptyValueException;
+import com.order.manager.exception.exception.InvalidFormatException;
+import com.order.manager.exception.exception.member.NullValueException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-
-import static com.order.manager.util.validation.PatternMatcher.isInvalidUserIdFormat;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
@@ -22,15 +23,15 @@ public class UserId {
     public static UserId of(String userId) {
 
         if (userId == null) {
-            throw new IllegalArgumentException("! 아이디를 입력해 주세요.");
+            throw new NullValueException();
         }
 
         if (userId.isBlank()) {
-            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
+            throw new EmptyValueException();
         }
 
-        if (isInvalidUserIdFormat(userId)) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
+        if (!userId.matches("^[a-zA-Z0-9]{5,}$")) {
+            throw new InvalidFormatException();
         }
 
         return new UserId(userId);

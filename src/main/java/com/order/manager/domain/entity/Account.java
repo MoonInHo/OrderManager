@@ -2,7 +2,6 @@ package com.order.manager.domain.entity;
 
 import com.order.manager.domain.wrapper.account.*;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
 
@@ -36,8 +34,8 @@ public class Account {
     @Embedded
     private Role role;
 
-    @OneToMany(mappedBy = "account")
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Store> store = new ArrayList<>();
 
     private Account(UserId userId, Password password,Name name, Phone phone) {
         this.userId = userId;
@@ -49,6 +47,9 @@ public class Account {
 
     public static Account createMember(UserId userId, Password password, Name name, Phone phone) {
         return new Account(userId, password, name, phone);
+    }
+    public Long isUserKey() {
+        return id;
     }
 
     public String isUserId() {

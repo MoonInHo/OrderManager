@@ -39,9 +39,6 @@ public class MemberControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @MockBean
-    private MemberApiController memberController;
-
-    @MockBean
     private MemberService memberService;
 
 
@@ -139,7 +136,7 @@ public class MemberControllerTest {
         Account account = accountDto.toEntity();
 
         //when
-        account.passwordEncrypt(passwordEncoder.encode(account.isPassword()));
+        accountDto.passwordEncrypt(passwordEncoder.encode(account.isPassword()));
 
         //then
         assertThat(passwordEncoder.matches(accountDto.getPassword(), account.isPassword()));

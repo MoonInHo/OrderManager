@@ -35,8 +35,8 @@ public class Order {
     private CustomerRequest customerRequest;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetail = new ArrayList<>();
@@ -45,7 +45,7 @@ public class Order {
     private Delivery delivery;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
@@ -56,4 +56,12 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
+
+    private Order(Long id) {
+        this.id = id;
+    }
+
+    public static Order createFromKey(Long id) {
+        return new Order(id);
+    }
 }
