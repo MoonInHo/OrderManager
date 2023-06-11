@@ -2,7 +2,7 @@ package com.order.manager.exception.handler;
 
 import com.order.manager.exception.code.ErrorCode;
 import com.order.manager.exception.dto.ErrorResponseDto;
-import com.order.manager.exception.exception.ChangeOrderStatusException;
+import com.order.manager.exception.exception.NotChangedOrderStatusException;
 import com.order.manager.exception.exception.EmptyValueException;
 import com.order.manager.exception.exception.InvalidFormatException;
 import com.order.manager.exception.exception.NotFoundStateCodeException;
@@ -67,8 +67,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ChangeOrderStatusException.class)
-    public ErrorResponseDto changeOrderStatusException(ChangeOrderStatusException e) {
+    @ExceptionHandler(NotChangedOrderStatusException.class)
+    public ErrorResponseDto changeOrderStatusException(NotChangedOrderStatusException e) {
         return new ErrorResponseDto(ErrorCode.CHANGE_ORDER_STATE_ERROR, e.getMessage());
     }
 
@@ -91,8 +91,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NotWaitingException.class)
-    public ErrorResponseDto notDeliveryException(NotWaitingException e) {
+    @ExceptionHandler(InvalidOrderStateException.class)
+    public ErrorResponseDto notDeliveryException(InvalidOrderStateException e) {
         return new ErrorResponseDto(ErrorCode.NOT_STATE_IN_WAITING_ERROR, e.getMessage());
     }
 

@@ -9,11 +9,8 @@ import com.order.manager.dto.order.PreparingOrderResponseDto;
 import com.order.manager.dto.order.WaitingOrderResponseDto;
 import com.order.manager.enums.state.OrderState;
 import com.order.manager.enums.type.OrderType;
-import com.order.manager.exception.exception.ChangeOrderStatusException;
-import com.order.manager.exception.exception.delivery.EmptyDeliveryException;
-import com.order.manager.exception.exception.delivery.EmptyDeliveryListException;
-import com.order.manager.exception.exception.delivery.NotDeliveryException;
-import com.order.manager.exception.exception.delivery.NotReadyException;
+import com.order.manager.exception.exception.NotChangedOrderStatusException;
+import com.order.manager.exception.exception.delivery.*;
 import com.order.manager.exception.exception.order.EmptyOrderListException;
 import com.order.manager.exception.exception.order.InvalidOrderTypeException;
 import com.order.manager.repository.DeliveryRepository;
@@ -72,32 +69,63 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderState findOrderState(Long orderId, Long storeId) {
+    public void changeOrderStateToPreparing(Long storeId, Long orderId) {
 
-        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(orderId, storeId);
-        if (orderState == null) {
-            throw new EmptyOrderListException();
+        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
+        if (isNotWaiting(orderState)) {
+            throw new InvalidOrderStateException("주문 대기중 상태에서만 가능한 요청입니다.");
         }
-        return orderState;
-    }
 
-    @Transactional
-    public void changeOrderState(Long orderId, Long storeId, OrderState orderStateCode) {
-
-        Long updatedRow = orderQueryRepository.updateOrderState(orderId, storeId, orderStateCode);
+        Long updatedRow = orderQueryRepository.updateOrderStateToPreparing(storeId, orderId);
         if (updatedRow == 0) {
-            throw new ChangeOrderStatusException();
+            throw new NotChangedOrderStatusException();
         }
     }
 
     @Transactional
-    public void changeOrderStateToPickUp(Long orderId, Long storeId, OrderState orderStateCode) {
+    public void changeOrderStateToReady(Long storeId, Long orderId) {
 
-        OrderType orderType = orderQueryRepository.findOrderTypeByOrderId(orderId);
-        if (isNotTogo(orderType)) {
+        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
+        if (isNotPreparing(orderState)) {
+            throw new InvalidOrderStateException("주문 준비중 상태에서만 가능한 요청입니다.");
+        }
+
+        Long updatedRow = orderQueryRepository.updateOrderStateToReady(storeId, orderId);
+        if (updatedRow == 0) {
+            throw new NotChangedOrderStatusException();
+        }
+    }
+
+    @Transactional
+    public void changeOrderStateToCancel(Long storeId, Long orderId) {
+
+        OrderState orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
+
+        if (isCancel(orderState)) {
+            throw new InvalidOrderStateException("이미 취소된 주문입니다.");
+        }
+
+        Long updatedRow = orderQueryRepository.updateOrderStateToCancel(storeId, orderId);
+        if (updatedRow == 0) {
+            throw new NotChangedOrderStatusException();
+        }
+    }
+
+    @Transactional
+    public void toPickup(Long storeId, Long orderId) {
+
+        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypeByOrderIdAndStoreId(storeId, orderId);
+        if (isNotTogo(orderTypes)) {
             throw new InvalidOrderTypeException();
         }
-        orderQueryRepository.updateOrderState(orderId, storeId, orderStateCode);
+        if (isNotReady(orderTypes)) {
+            throw new InvalidOrderStateException("주문 준비완료 상태에서만 가능한 요청입니다.");
+        }
+
+        Long updatedRow = orderQueryRepository.updateOrderStateToComplete(storeId, orderId);
+        if (updatedRow == 0) {
+            throw new NotChangedOrderStatusException();
+        }
     }
 
     @Transactional
@@ -116,8 +144,6 @@ public class OrderService {
 
         deliveryRepository.save(delivery);
     }
-
-
 
     @Transactional
     public List<DeliveryTrackingResponseDto> lookupInProgressDelivery(Long storeId) {
@@ -139,6 +165,34 @@ public class OrderService {
         return deliveryInfo;
     }
 
+    private boolean isNotWaiting(OrderState orderState) {
+        return !orderState.equals(OrderState.WAITING);
+    }
+
+    private boolean isNotPreparing(OrderState orderState) {
+        return !orderState.equals(OrderState.PREPARING);
+    }
+
+    private boolean isNotReady(OrderState orderState) {
+        return !orderState.equals(OrderState.READY);
+    }
+
+    private boolean isNotReady(OrderTypeResponseDto orderState) {
+        return !orderState.getOrderState().equals(OrderState.READY);
+    }
+
+    private boolean isCancel(OrderState orderState) {
+        return orderState.equals(OrderState.CANCEL);
+    }
+
+    private boolean isNotTogo(OrderTypeResponseDto orderType) {
+        return !orderType.getOrderType().equals(OrderType.TOGO);
+    }
+
+    private boolean isNotDelivery(OrderType orderType) {
+        return !orderType.equals(OrderType.DELIVERY);
+    }
+
     private boolean isEmptyWaitingOrder(List<WaitingOrderResponseDto> waitingOrder) {
         return waitingOrder.isEmpty();
     }
@@ -157,18 +211,6 @@ public class OrderService {
 
     private boolean isEmptyDeliveryDetail(List<DeliveryDetailResponseDto> deliveryInfo) {
         return deliveryInfo.isEmpty();
-    }
-
-    private boolean isNotTogo(OrderType orderType) {
-        return !orderType.equals(OrderType.TOGO);
-    }
-
-    private boolean isNotDelivery(OrderType orderType) {
-        return !orderType.equals(OrderType.DELIVERY);
-    }
-
-    private boolean isNotReady(OrderState orderState) {
-        return !orderState.equals(OrderState.READY);
     }
 
     private void orderTypeValidation(OrderTypeResponseDto orderDivision) {
