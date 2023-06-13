@@ -32,7 +32,7 @@ public class DeliveryApiController {
     @PatchMapping("/{deliveryId}/{deliveryDriverId}/pick-up")
     public ResponseEntity<ResponseMessageDto> deliveryPickUp(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
 
-        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId, DeliveryState.PICKUP);
+        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -43,7 +43,7 @@ public class DeliveryApiController {
     @PatchMapping("/{deliveryId}/{deliveryDriverId}/complete")
     public ResponseEntity<ResponseMessageDto> deliveryComplete(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
 
-        deliveryService.deliveryComplete(deliveryId, deliveryDriverId, DeliveryState.COMPLETE);
+        deliveryService.deliveryComplete(deliveryId, deliveryDriverId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

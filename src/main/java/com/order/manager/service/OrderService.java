@@ -7,9 +7,11 @@ import com.order.manager.dto.order.CompletedOrderResponseDto;
 import com.order.manager.dto.order.OrderTypeResponseDto;
 import com.order.manager.dto.order.PreparingOrderResponseDto;
 import com.order.manager.dto.order.WaitingOrderResponseDto;
+import com.order.manager.enums.state.DeliveryState;
 import com.order.manager.enums.state.OrderState;
 import com.order.manager.enums.type.OrderType;
-import com.order.manager.exception.exception.NotChangedOrderStatusException;
+import com.order.manager.exception.exception.IncompleteDeliveryException;
+import com.order.manager.exception.exception.NotChangedOrderStateException;
 import com.order.manager.exception.exception.delivery.*;
 import com.order.manager.exception.exception.order.EmptyOrderListException;
 import com.order.manager.exception.exception.order.InvalidOrderTypeException;
@@ -78,7 +80,7 @@ public class OrderService {
 
         Long updatedRow = orderQueryRepository.updateOrderStateToPreparing(storeId, orderId);
         if (updatedRow == 0) {
-            throw new NotChangedOrderStatusException();
+            throw new NotChangedOrderStateException();
         }
     }
 
@@ -92,7 +94,7 @@ public class OrderService {
 
         Long updatedRow = orderQueryRepository.updateOrderStateToReady(storeId, orderId);
         if (updatedRow == 0) {
-            throw new NotChangedOrderStatusException();
+            throw new NotChangedOrderStateException();
         }
     }
 
@@ -107,14 +109,33 @@ public class OrderService {
 
         Long updatedRow = orderQueryRepository.updateOrderStateToCancel(storeId, orderId);
         if (updatedRow == 0) {
-            throw new NotChangedOrderStatusException();
+            throw new NotChangedOrderStateException();
+        }
+    }
+
+    @Transactional
+    public void changeOrderStateToComplete(Long storeId, Long orderId) {
+
+        OrderType orderType = orderQueryRepository.findOrderTypeByOrderId(storeId, orderId);
+        if (isNotDelivery(orderType)) {
+            throw new InvalidOrderTypeException();
+        }
+
+        DeliveryState deliveryState = orderQueryRepository.findDeliveryState(storeId, orderId);
+        if (incompleteDelivery(deliveryState)) {
+            throw new IncompleteDeliveryException();
+        }
+
+        Long updatedRow = orderQueryRepository.updateOrderStateToComplete(storeId, orderId);
+        if (updatedRow == 0) {
+            throw new NotChangedOrderStateException();
         }
     }
 
     @Transactional
     public void toPickup(Long storeId, Long orderId) {
 
-        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypeByOrderIdAndStoreId(storeId, orderId);
+        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypes(storeId, orderId);
         if (isNotTogo(orderTypes)) {
             throw new InvalidOrderTypeException();
         }
@@ -124,7 +145,7 @@ public class OrderService {
 
         Long updatedRow = orderQueryRepository.updateOrderStateToComplete(storeId, orderId);
         if (updatedRow == 0) {
-            throw new NotChangedOrderStatusException();
+            throw new NotChangedOrderStateException();
         }
     }
 
@@ -136,7 +157,7 @@ public class OrderService {
 
         Company companyName = findByCompanyName(inputCompanyName);
 
-        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypeByOrderIdAndStoreId(orderId, storeId);
+        OrderTypeResponseDto orderTypes = orderQueryRepository.findOrderTypes(orderId, storeId);
         orderTypeValidation(orderTypes);
 
         Long deliveryCompanyId = orderQueryRepository.findDeliveryCompanyIdByCompanyName(companyName);
@@ -191,6 +212,10 @@ public class OrderService {
 
     private boolean isNotDelivery(OrderType orderType) {
         return !orderType.equals(OrderType.DELIVERY);
+    }
+
+    private static boolean incompleteDelivery(DeliveryState deliveryState) {
+        return !deliveryState.equals(DeliveryState.COMPLETE);
     }
 
     private boolean isEmptyWaitingOrder(List<WaitingOrderResponseDto> waitingOrder) {

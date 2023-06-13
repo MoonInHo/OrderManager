@@ -7,6 +7,7 @@ import com.order.manager.enums.state.OrderState;
 import com.order.manager.enums.type.OrderType;
 import com.order.manager.enums.type.PaymentType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -61,7 +63,7 @@ public class Order {
         this.id = id;
     }
 
-    public static Order createFromKey(Long id) {
+    public static Order createKeyValue(Long id) {
         return new Order(id);
     }
 }

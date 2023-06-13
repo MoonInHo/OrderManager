@@ -2,23 +2,16 @@ package com.order.manager.service;
 
 import com.order.manager.dto.delivery.DeliveryResponseDto;
 import com.order.manager.enums.state.DeliveryState;
-import com.order.manager.enums.state.OrderState;
 import com.order.manager.exception.exception.delivery.*;
 import com.order.manager.repository.DeliveryQueryRepository;
-import com.order.manager.repository.OrderQueryRepository;
-import com.order.manager.repository.StoreQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.order.manager.util.account.LoggedInUserinfoProvider.loggedInUserKeyFetcher;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
 
-    private final OrderQueryRepository orderQueryRepository;
-    private final StoreQueryRepository storeQueryRepository;
     private final DeliveryQueryRepository deliveryQueryRepository;
 
     @Transactional
@@ -29,7 +22,7 @@ public class DeliveryService {
             throw new EmptyDeliveryException();
         }
         if (isNotWaiting(foundDelivery)) {
-            throw new NotReadyException();
+            throw new InvalidDeliveryStateException("배차 대기중이 아닙니다.");
         }
 
         Long driverCompanyId = deliveryQueryRepository.findDeliveryCompanyIdByDeliveryDriverId(deliveryDriverId);
@@ -37,14 +30,14 @@ public class DeliveryService {
             throw new CompanyMismatchException();
         }
 
-        Long updatedLow = deliveryQueryRepository.updateDeliveryStateAndDriverId(deliveryId, deliveryDriverId);
-        if (updatedLow == null) {
+        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToDispatch(deliveryId, deliveryDriverId);
+        if (updatedRow == null) {
             throw new DriverAssignmentFailureException();
         }
     }
 
     @Transactional
-    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
+    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId) {
 
         DeliveryResponseDto foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
         if (foundDelivery == null) {
@@ -56,13 +49,14 @@ public class DeliveryService {
         if (isNotDispatch(foundDelivery)) {
             throw new NotStateInDispatchException();
         }
-        deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
+        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToPickup(deliveryId);
+        if (updatedRow == 0) {
+            throw new NotChangedDeliveryStateException();
+        }
     }
 
     @Transactional
-    public void deliveryComplete(Long deliveryId, Long deliveryDriverId, DeliveryState deliveryState) {
-
-        Long storeId = storeQueryRepository.findStoreIdByUserKey(loggedInUserKeyFetcher());
+    public void deliveryComplete(Long deliveryId, Long deliveryDriverId) {
 
         DeliveryResponseDto foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
         if (foundDelivery == null) {
@@ -75,10 +69,10 @@ public class DeliveryService {
             throw new NotStateInPickUpException();
         }
 
-        Long orderId = foundDelivery.getOrderId();
-
-        deliveryQueryRepository.updateDeliveryState(deliveryId, deliveryState);
-//        orderQueryRepository.updateOrderStateToPreparing(orderId, storeId, OrderState.COMPLETE);
+        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToComplete(deliveryId);
+        if (updatedRow == 0) {
+            throw new NotChangedDeliveryStateException();
+        }
     }
 
     private boolean isNotWaiting(DeliveryResponseDto foundDelivery) {
