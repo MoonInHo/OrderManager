@@ -114,11 +114,12 @@ public class OrderQueryRepository {
                 .fetch();
     }
 
-    public OrderTypeResponseDto findOrderTypeByOrderIdAndStoreId(Long storeId, Long orderId) {
+    public OrderTypeResponseDto findOrderTypes(Long storeId, Long orderId) {
         return queryFactory
                 .select(
                         Projections.constructor(
                                 OrderTypeResponseDto.class,
+                                Expressions.asNumber(orderId).as("orderId"),
                                 order.orderType,
                                 order.orderState
                         )
@@ -132,6 +133,23 @@ public class OrderQueryRepository {
         return queryFactory
                 .select(order.orderState)
                 .from(order)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .fetchOne();
+    }
+
+    public OrderType findOrderTypeByOrderId(Long storeId, Long orderId) {
+        return queryFactory
+                .select(order.orderType)
+                .from(order)
+                .where(order.store.id.eq(storeId), order.id.eq(orderId))
+                .fetchOne();
+    }
+
+    public DeliveryState findDeliveryState(Long storeId, Long orderId) {
+        return queryFactory
+                .select(order.delivery.deliveryState)
+                .from(order)
+                .join(order.delivery, delivery)
                 .where(order.store.id.eq(storeId), order.id.eq(orderId))
                 .fetchOne();
     }

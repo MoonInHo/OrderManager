@@ -88,6 +88,19 @@ public class OrderApiController {
                 .body(new ResponseMessageDto("주문이 취소되었습니다"));
     }
 
+    @PatchMapping("/deliveries/{orderId}/complete")
+    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {
+
+        Long storeId = orderService.findStoreId();
+
+        orderService.changeOrderStateToComplete(storeId, orderId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(APPLICATION_JSON)
+                .body(new ResponseMessageDto("배달주문 처리가 완료되었습니다."));
+    }
+
     @PatchMapping("/{orderId}/pickup")
     public ResponseEntity<ResponseMessageDto> pickUpComplete(@PathVariable Long orderId) {
 

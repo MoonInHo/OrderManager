@@ -2,10 +2,7 @@ package com.order.manager.exception.handler;
 
 import com.order.manager.exception.code.ErrorCode;
 import com.order.manager.exception.dto.ErrorResponseDto;
-import com.order.manager.exception.exception.NotChangedOrderStatusException;
-import com.order.manager.exception.exception.EmptyValueException;
-import com.order.manager.exception.exception.InvalidFormatException;
-import com.order.manager.exception.exception.NotFoundStateCodeException;
+import com.order.manager.exception.exception.*;
 import com.order.manager.exception.exception.delivery.*;
 import com.order.manager.exception.exception.member.*;
 import com.order.manager.exception.exception.order.EmptyOrderListException;
@@ -67,9 +64,15 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NotChangedOrderStatusException.class)
-    public ErrorResponseDto changeOrderStatusException(NotChangedOrderStatusException e) {
+    @ExceptionHandler(NotChangedOrderStateException.class)
+    public ErrorResponseDto changeOrderStatusException(NotChangedOrderStateException e) {
         return new ErrorResponseDto(ErrorCode.CHANGE_ORDER_STATE_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidOrderStateException.class)
+    public ErrorResponseDto notDeliveryException(InvalidOrderStateException e) {
+        return new ErrorResponseDto(ErrorCode.INVALID_ORDER_STATE_ERROR, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -91,15 +94,15 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidOrderStateException.class)
-    public ErrorResponseDto notDeliveryException(InvalidOrderStateException e) {
-        return new ErrorResponseDto(ErrorCode.NOT_STATE_IN_WAITING_ERROR, e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DriverMismatchException.class)
     public ErrorResponseDto driverMismatchException(DriverMismatchException e) {
         return new ErrorResponseDto(ErrorCode.DRIVER_MISMATCH_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IncompleteDeliveryException.class)
+    public ErrorResponseDto incompleteDeliveryException(IncompleteDeliveryException e) {
+        return new ErrorResponseDto(ErrorCode.INCOMPLETE_DELIVERY_ERROR, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -136,5 +139,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CompanyMismatchException.class)
     public ErrorResponseDto companyMismatchException(CompanyMismatchException e) {
         return new ErrorResponseDto(ErrorCode.COMPANY_MISMATCH_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidDeliveryStateException.class)
+    public ErrorResponseDto invalidDeliveryStateException(InvalidDeliveryStateException e) {
+        return new ErrorResponseDto(ErrorCode.INVALID_DELIVERY_STATE_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NotChangedDeliveryStateException.class)
+    public ErrorResponseDto notChangedDeliveryStateException(NotChangedDeliveryStateException e) {
+        return new ErrorResponseDto(ErrorCode.INVALID_DELIVERY_STATE_ERROR, e.getMessage());
     }
 }

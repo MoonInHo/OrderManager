@@ -32,7 +32,7 @@ public class DeliveryCompany {
         this.id = id;
     }
 
-    public static DeliveryCompany createFromKey(Long id) {
+    public static DeliveryCompany createKeyValue(Long id) {
         return new DeliveryCompany(id);
     }
 }
