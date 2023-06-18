@@ -3,6 +3,7 @@ package com.order.manager.domain.wrapper.account;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
@@ -16,5 +17,9 @@ public class Role {
 
     public static Role of(String role) {
         return new Role(role);
+    }
+
+    public SimpleGrantedAuthority createRole() {
+        return new SimpleGrantedAuthority(this.role);
     }
 }

@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Password {
 
@@ -32,6 +31,10 @@ public class Password {
         }
 
         return new Password(password);
+    }
+
+    public String isPassword() {
+        return password;
     }
 
     public static Password encodedPassword(String password) {

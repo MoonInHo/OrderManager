@@ -19,6 +19,6 @@ public class AccountResponseDto {
     private Phone phone;
 
     public String isPassword() {
-        return password.getPassword();
+        return password.isPassword();
     }
 }
