@@ -7,6 +7,10 @@ import com.order.manager.exception.exception.delivery.*;
 import com.order.manager.exception.exception.member.*;
 import com.order.manager.exception.exception.order.EmptyOrderListException;
 import com.order.manager.exception.exception.order.InvalidOrderTypeException;
+import com.order.manager.exception.exception.verification.VerificationBlockedException;
+import com.order.manager.exception.exception.verification.VerificationCodeNotFoundException;
+import com.order.manager.exception.exception.verification.VerificationFailureException;
+import com.order.manager.exception.exception.verification.VerificationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -151,5 +155,29 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotChangedDeliveryStateException.class)
     public ErrorResponseDto notChangedDeliveryStateException(NotChangedDeliveryStateException e) {
         return new ErrorResponseDto(ErrorCode.INVALID_DELIVERY_STATE_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(VerificationCodeNotFoundException.class)
+    public ErrorResponseDto verificationCodeNotFoundException(VerificationCodeNotFoundException e) {
+        return new ErrorResponseDto(ErrorCode.VERIFICATION_CODE_NOT_FOUND_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(VerificationBlockedException.class)
+    public ErrorResponseDto verificationBlockedException(VerificationBlockedException e) {
+        return new ErrorResponseDto(ErrorCode.VERIFICATION_BLOCKED_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(VerificationFailureException.class)
+    public ErrorResponseDto verificationFailureException(VerificationFailureException e) {
+        return new ErrorResponseDto(ErrorCode.VERIFICATION_FAILURE_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(VerificationNotFoundException.class)
+    public ErrorResponseDto verificationNotFoundException(VerificationNotFoundException e) {
+        return new ErrorResponseDto(ErrorCode.VERIFICATION_NOT_FOUND_ERROR, e.getMessage());
     }
 }

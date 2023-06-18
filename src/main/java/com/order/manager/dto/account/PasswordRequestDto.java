@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasswordRequestDto {
 
+    private String userId;
+    private String phone;
     private String password;
     private String confirmPassword;
 }

@@ -4,12 +4,10 @@ import com.order.manager.exception.exception.EmptyValueException;
 import com.order.manager.exception.exception.InvalidFormatException;
 import com.order.manager.exception.exception.member.NullValueException;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class UserId {
 
@@ -35,5 +33,9 @@ public class UserId {
         }
 
         return new UserId(userId);
+    }
+
+    public String isUserId() {
+        return userId;
     }
 }

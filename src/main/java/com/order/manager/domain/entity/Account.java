@@ -4,7 +4,6 @@ import com.order.manager.domain.wrapper.account.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Store> store = new ArrayList<>();
 
-    private Account(UserId userId, Password password,Name name, Phone phone) {
+    private Account(UserId userId, Password password, Name name, Phone phone) {
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -53,14 +52,14 @@ public class Account {
     }
 
     public String isUserId() {
-        return userId.getUserId();
+        return userId.isUserId();
     }
 
     public String isPassword() {
-        return password.getPassword();
+        return password.isPassword();
     }
 
     public List<GrantedAuthority> createRole() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));
+        return Collections.singletonList(role.createRole());
     }
 }

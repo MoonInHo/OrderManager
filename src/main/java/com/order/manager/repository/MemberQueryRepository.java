@@ -1,6 +1,7 @@
 package com.order.manager.repository;
 
 import com.order.manager.domain.entity.Account;
+import com.order.manager.domain.wrapper.account.Name;
 import com.order.manager.domain.wrapper.account.Password;
 import com.order.manager.domain.wrapper.account.Phone;
 import com.order.manager.domain.wrapper.account.UserId;
@@ -76,5 +77,15 @@ public class MemberQueryRepository {
                 .set(account.password, newPassword)
                 .where(account.userId.eq(userId))
                 .execute();
+    }
+
+    public boolean isAccountNotExist(UserId userId, Name name, Phone phone) {
+        Integer result = queryFactory
+                .selectOne()
+                .from(account)
+                .where(account.userId.eq(userId), account.name.eq(name), account.phone.eq(phone))
+                .fetchFirst();
+
+        return result == null;
     }
 }

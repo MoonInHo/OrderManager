@@ -81,12 +81,12 @@ public class MemberServiceTest {
     @Test
     @DisplayName("아이디 찾기 - 등록되지 않은 연락처로 아이디찾기 시도시 예외 발생")
     void unregisteredPhone_findUserId_throwException() {
-        //given
+        //givenw
         String phone = "010-5678-1234";
         given(memberQueryRepository.findUserIdByPhone(Phone.of(phone))).willReturn(null);
 
         //when
-        Throwable throwable = catchThrowable(() -> memberService.findUserId(phone));
+        Throwable throwable = catchThrowable(() -> memberService.findUserIdByPhone(phone));
 
         //then
         assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
@@ -119,7 +119,7 @@ public class MemberServiceTest {
         given(memberQueryRepository.findUserIdByPhone(Phone.of(userId))).willReturn(null);
 
         //when
-        Throwable throwable = catchThrowable(() -> memberService.findUserId(userId));
+        Throwable throwable = catchThrowable(() -> memberService.findUserIdByPhone(userId));
 
         //then
         assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
