@@ -32,4 +32,14 @@ public class DeliveryDriver {
 
     @OneToMany(mappedBy = "deliveryDriver")
     private List<Delivery> delivery = new ArrayList<>();
+
+    private DeliveryDriver(DriverName driverName, DriverPhone driverPhone, DeliveryCompany deliveryCompany) {
+        this.driverName = driverName;
+        this.driverPhone = driverPhone;
+        this.deliveryCompany = deliveryCompany;
+    }
+
+    public static DeliveryDriver createDeilveryDriver(DriverName driverName, DriverPhone driverPhone, DeliveryCompany deliveryCompany) {
+        return new DeliveryDriver(driverName, driverPhone, deliveryCompany);
+    }
 }

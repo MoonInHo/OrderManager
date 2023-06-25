@@ -26,4 +26,13 @@ public class Customer {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Order> order = new ArrayList<>();
+
+    private Customer(Address address, Contact contact) {
+        this.address = address;
+        this.contact = contact;
+    }
+
+    public static Customer createCustomer(Address address, Contact contact) {
+        return new Customer(address, contact);
+    }
 }

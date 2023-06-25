@@ -16,8 +16,4 @@ public class VerificationCode {
     public static VerificationCode of(String verificationCode) {
         return new VerificationCode(verificationCode);
     }
-
-    public String isVerificationCode() {
-        return verificationCode;
-    }
 }

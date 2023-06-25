@@ -29,4 +29,12 @@ public class Store {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<Menu> menu = new ArrayList<>();
+
+    private Store(Long id) {
+        this.id = id;
+    }
+
+    public static Store createKeyValue(Long storeId) {
+        return new Store(storeId);
+    }
 }
