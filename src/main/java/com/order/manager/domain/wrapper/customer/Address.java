@@ -10,7 +10,6 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Address {
 
-    @Pattern(regexp = "/^((\\S+[시군구])(\\S+))+$/")
     private final String address;
     private final String addressDetail;
 
@@ -31,7 +30,6 @@ public class Address {
 
         return new Address(address, addressDetail);
     }
-
     private static boolean isNullAndEmptyAddress(String address) {
         return address == null || address.isBlank();
     }

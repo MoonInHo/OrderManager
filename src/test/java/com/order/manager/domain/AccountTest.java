@@ -1,9 +1,11 @@
 package com.order.manager.domain;
 
+import com.order.manager.domain.entity.Account;
 import com.order.manager.domain.wrapper.account.Name;
 import com.order.manager.domain.wrapper.account.Password;
 import com.order.manager.domain.wrapper.account.Phone;
 import com.order.manager.domain.wrapper.account.UserId;
+import com.order.manager.dto.account.AccountDto;
 import com.order.manager.exception.exception.EmptyValueException;
 import com.order.manager.exception.exception.InvalidFormatException;
 import com.order.manager.exception.exception.member.NullValueException;
@@ -11,15 +13,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("[유닛 테스트] - 회원 도메인")
 public class AccountTest {
+
+    private final PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
 
     @ParameterizedTest
     @NullSource
@@ -142,7 +149,7 @@ public class AccountTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"김", "김 코딩", "a김코딩", "김코딩메이트", "codingKim"})
+    @ValueSource(strings = {"김", "김 코딩", "김코딩테스트", "codingKim"})
     @DisplayName("회원 정보 입력 - 올바르지 않은 형식의 이름 입력시 예외 발생")
     void invalidName_throwException(String name) {
         //given & when
@@ -166,55 +173,62 @@ public class AccountTest {
     }
 
     @Test
-    @DisplayName("회원 정보 입력 - 올바른 아이디 입력시 아이디 객체 반환")
+    @DisplayName("회원 정보 입력 - 올바른 아이디 입력시 아이디 객체 생성")
     void properUserId_returnUserIdObject() {
         //given & when
-        String userId = "test123";
-        UserId packedUserId = UserId.of(userId);
+        UserId userId = UserId.of("test123");
 
         //then
-        assertThat(packedUserId).isNotNull();
-        assertThat(packedUserId).isInstanceOf(UserId.class);
-        assertThat(packedUserId.getUserId()).isEqualTo("test123");
+        assertThat(userId).isNotNull();
+        assertThat(userId).isInstanceOf(UserId.class);
+        assertThat(userId.isUserId()).isEqualTo("test123");
     }
 
     @Test
-    @DisplayName("회원 정보 입력 - 올바른 비밀번호 입력시 비밀번호 객체 반환")
+    @DisplayName("회원 정보 입력 - 올바른 비밀번호 입력시 비밀번호 객체 생성")
     void properUserId_returnPasswordObject() {
         //given & when
-        String userId = "testPassword123!";
-        Password packedPassword = Password.of(userId);
+        Password password = Password.of("testPassword123!");
 
         //then
-        assertThat(packedPassword).isNotNull();
-        assertThat(packedPassword).isInstanceOf(Password.class);
-        assertThat(packedPassword.getPassword()).isEqualTo("testPassword123!");
+        assertThat(password).isNotNull();
+        assertThat(password).isInstanceOf(Password.class);
+        assertThat(password.isPassword()).isEqualTo("testPassword123!");
     }
 
     @Test
-    @DisplayName("회원 정보 입력 - 올바른 이름 입력시 이름 객체 반환")
+    @DisplayName("회원 정보 입력 - 올바른 이름 입력시 이름 객체 생성")
     void properName_returnNameObject() {
         //given & when
-        String userId = "김코딩";
-        Name packedName = Name.of(userId);
+        Name name = Name.of("김코딩");
 
         //then
-        assertThat(packedName).isNotNull();
-        assertThat(packedName).isInstanceOf(Name.class);
-        assertThat(packedName.getName()).isEqualTo("김코딩");
+        assertThat(name).isNotNull();
+        assertThat(name).isInstanceOf(Name.class);
+        assertThat(name.getName()).isEqualTo("김코딩");
     }
 
     @Test
-    @DisplayName("회원 정보 입력 - 올바른 연락처 입력시 연락처 객체 반환")
+    @DisplayName("회원 정보 입력 - 올바른 연락처 입력시 연락처 객체 생성")
     void properPhone_returnPhoneObject() {
         //given & when
-        String userId = "010-1234-5678";
-        Phone packedPhone = Phone.of(userId);
+        Phone phone = Phone.of("010-1234-5678");
 
         //then
-        assertThat(packedPhone).isNotNull();
-        assertThat(packedPhone).isInstanceOf(Phone.class);
-        assertThat(packedPhone.getPhone()).isEqualTo("010-1234-5678");
+        assertThat(phone).isNotNull();
+        assertThat(phone).isInstanceOf(Phone.class);
+        assertThat(phone.getPhone()).isEqualTo("010-1234-5678");
     }
 
+    @Test
+    @DisplayName("회원 정보 입력 - 올바른 형식의 정보 입력시 회원 객체 생성")
+    void properFormatInfo_createAccountObject() {
+        //given & when
+        AccountDto accountDto = AccountDto.createAccountDto("innovation123", "goodPassword123!", "김개발", "010-1234-5678");
+        accountDto.passwordEncrypt(passwordEncoder.encode(accountDto.getPassword()));
+        Account account = accountDto.toEntity();
+
+        //then
+        assertThat(account).isNotNull();
+    }
 }

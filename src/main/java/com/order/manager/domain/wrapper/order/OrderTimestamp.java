@@ -11,13 +11,12 @@ import java.time.format.DateTimeFormatter;
 public class OrderTimestamp {
 
     @Column(nullable = false)
-    private final LocalDateTime orderTimestamp;
+    private final String orderTimestamp;
 
     private OrderTimestamp(String formattedDateTime) {
-        this.orderTimestamp = LocalDateTime.parse(formattedDateTime);
+        this.orderTimestamp = formattedDateTime;
     }
 
-    //TODO 주문 생성 기능 생성시 타임포매터 적용하기
     public static OrderTimestamp of(LocalDateTime orderTimestamp) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss");

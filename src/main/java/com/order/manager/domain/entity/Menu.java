@@ -32,4 +32,14 @@ public class Menu {
 
     @OneToMany(mappedBy = "menu")
     private List<OrderDetail> orderDetail = new ArrayList<>();
+
+    private Menu(MenuName menuName, Price price, Store store) {
+        this.menuName = menuName;
+        this.price = price;
+        this.store = store;
+    }
+
+    public static Menu createMenu(MenuName menuName, Price price, Store store) {
+        return new Menu(menuName, price, store);
+    }
 }
