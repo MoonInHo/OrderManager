@@ -47,6 +47,7 @@ public class Account {
     public static Account createMember(UserId userId, Password password, Name name, Phone phone) {
         return new Account(userId, password, name, phone);
     }
+
     public Long isUserKey() {
         return id;
     }

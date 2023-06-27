@@ -50,10 +50,11 @@ public class MemberApiController {
                 .body(new ResponseStatusDto(AccountResponseStatus.SIGN_UP_SUCCESS, "회원가입이 완료되었습니다"));
     }
 
+    //TODO 인증번호 5분간 유지되는 기능 추가하기
     @PostMapping("/find-id")
     public ResponseEntity<?> requestVerificationCodeToFindUserId(@RequestBody VerificationRequestDto verificationRequestDto) {
 
-        String verificationCode = memberService.generateVerification();
+        String verificationCode = memberService.generateVerificationCode();
 
         memberService.saveVerificationToUserId(verificationRequestDto, verificationCode);
 
@@ -83,7 +84,7 @@ public class MemberApiController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> requestVerificationCodeToResetPassword(@RequestBody VerificationRequestDto verificationRequestDto) {
 
-        String verificationCode = memberService.generateVerification();
+        String verificationCode = memberService.generateVerificationCode();
 
         memberService.saveVerificationToPassword(verificationRequestDto, verificationCode);
 

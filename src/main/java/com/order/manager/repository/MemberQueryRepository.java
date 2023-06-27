@@ -1,10 +1,7 @@
 package com.order.manager.repository;
 
 import com.order.manager.domain.entity.Account;
-import com.order.manager.domain.wrapper.account.Name;
-import com.order.manager.domain.wrapper.account.Password;
-import com.order.manager.domain.wrapper.account.Phone;
-import com.order.manager.domain.wrapper.account.UserId;
+import com.order.manager.domain.wrapper.account.*;
 import com.order.manager.dto.account.AccountDto;
 import com.order.manager.dto.account.AccountResponseDto;
 import com.querydsl.core.types.Projections;
@@ -79,13 +76,28 @@ public class MemberQueryRepository {
                 .execute();
     }
 
-    public boolean isAccountNotExist(UserId userId, Name name, Phone phone) {
+    public boolean isAccountNotExist(Phone phone) {
         Integer result = queryFactory
                 .selectOne()
                 .from(account)
-                .where(account.userId.eq(userId), account.name.eq(name), account.phone.eq(phone))
+                .where(account.phone.eq(phone))
                 .fetchFirst();
 
         return result == null;
+    }
+
+    public void updateVerificationFailureCount() {
+        queryFactory
+                .update(account)
+                .set(account.verificationFailureCount, account.verificationFailureCount.add(1))
+                .execute();
+    }
+
+    public Integer findVerificationFailureCountByPhone(Phone phone) {
+        return queryFactory
+                .select(account.verificationFailureCount)
+                .from(account)
+                .where(account.phone.eq(phone))
+                .fetchOne();
     }
 }

@@ -15,7 +15,7 @@ public class VerificationQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public boolean verificationExist(Phone phone) {
+    public boolean isVerificationExist(Phone phone) {
         Integer result = queryFactory
                 .selectOne()
                 .from(verification)
