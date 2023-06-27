@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("[유닛 테스트] - 회원 컨트롤러")
 @WebMvcTest(MemberApiController.class)
 @Import(SecurityConfig.class)
-public class MemberControllerTest {
+public class MemberApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -152,7 +152,7 @@ public class MemberControllerTest {
         String phone = "010-1234-5678";
         VerificationRequestDto verificationDto = new VerificationRequestDto(null, null, phone, null);
         Map<String, String> verificationMap = new ConcurrentHashMap<>();
-        String verificationCode = memberService.generateVerification();
+        String verificationCode = memberService.generateVerificationCode();
 
         verificationMap.put(phone, verificationCode);
 

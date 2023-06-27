@@ -9,7 +9,10 @@ import com.order.manager.dto.account.PasswordRequestDto;
 import com.order.manager.dto.account.VerificationRequestDto;
 import com.order.manager.enums.VerificationType;
 import com.order.manager.exception.exception.InvalidFormatException;
-import com.order.manager.exception.exception.member.*;
+import com.order.manager.exception.exception.member.MemberNotFoundException;
+import com.order.manager.exception.exception.member.PhoneExistException;
+import com.order.manager.exception.exception.member.SamePasswordException;
+import com.order.manager.exception.exception.member.UserIdExistException;
 import com.order.manager.exception.exception.verification.VerificationCodeNotFoundException;
 import com.order.manager.exception.exception.verification.VerificationNotFoundException;
 import com.order.manager.repository.MemberQueryRepository;
@@ -47,7 +50,7 @@ public class MemberService {
         memberRepository.save(account);
     }
 
-    public String generateVerification() {
+    public String generateVerificationCode() {
         return String.valueOf(new Random().nextInt(900000) + 100000);
     }
 
@@ -56,7 +59,7 @@ public class MemberService {
 
         Phone phone = Phone.of(verificationRequestDto.getPhone());
 
-        boolean verificationExist = verificationQueryRepository.verificationExist(phone);
+        boolean verificationExist = verificationQueryRepository.isVerificationExist(phone);
         if (verificationExist) {
             verificationQueryRepository.deleteVerificationByPhone(phone);
         }
@@ -69,8 +72,6 @@ public class MemberService {
     public void validateVerificationCodeUserId(Phone phone, VerificationCode verificationCode) {
 
         boolean notMatchedVerificationCode = verificationQueryRepository.notMatchedVerificationCode(phone, verificationCode);
-
-        verificationQueryRepository.deleteVerificationByPhone(phone);
 
         if (notMatchedVerificationCode) {
             throw new VerificationCodeNotFoundException();
@@ -94,7 +95,7 @@ public class MemberService {
         Name.of(verificationRequestDto.getName());
         Phone phone = Phone.of(verificationRequestDto.getPhone());
 
-        boolean verificationExist = verificationQueryRepository.verificationExist(phone);
+        boolean verificationExist = verificationQueryRepository.isVerificationExist(phone);
         if (verificationExist) {
             verificationQueryRepository.deleteVerificationByPhone(phone);
         }
@@ -117,16 +118,13 @@ public class MemberService {
         verificationQueryRepository.updateVerificationStatus(phone);
     }
 
-    @Transactional(noRollbackFor = MemberNotFoundException.class)
+    @Transactional
     public void findAccount(VerificationRequestDto verificationRequestDto) {
 
-        UserId userId = UserId.of(verificationRequestDto.getUserId());
-        Name name = Name.of(verificationRequestDto.getName());
         Phone phone = Phone.of(verificationRequestDto.getPhone());
 
-        boolean accountNotExist = memberQueryRepository.isAccountNotExist(userId, name, phone);
+        boolean accountNotExist = memberQueryRepository.isAccountNotExist(phone);
         if (accountNotExist) {
-            verificationQueryRepository.deleteVerificationByPhone(phone);
             throw new MemberNotFoundException();
         }
     }
