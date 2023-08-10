@@ -85,19 +85,4 @@ public class MemberQueryRepository {
 
         return result == null;
     }
-
-    public void updateVerificationFailureCount() {
-        queryFactory
-                .update(account)
-                .set(account.verificationFailureCount, account.verificationFailureCount.add(1))
-                .execute();
-    }
-
-    public Integer findVerificationFailureCountByPhone(Phone phone) {
-        return queryFactory
-                .select(account.verificationFailureCount)
-                .from(account)
-                .where(account.phone.eq(phone))
-                .fetchOne();
-    }
 }

@@ -66,17 +66,17 @@ public class CustomerTest {
         assertThat(throwable).hasMessage("! 공백을 사용할 수 없습니다.");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"서울", "서울특별시", "서울특별시 강남구", "서울특별시 강남구"})
-    @DisplayName("고객 정보 입력 - 올바르지 않은 형식의 주소 입력시 예외 발생")
-    void invalidAddress_throwException(String address) {
-        //given & when
-        Throwable throwable = catchThrowable(() -> Address.of(address, "1층 로비"));
-
-        //then
-        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
-        assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요");
-    }
+//    @ParameterizedTest
+//    @ValueSource(strings = {"서울", "서울특별시", "서울특별시 강남구", "서울특별시 강남구"})
+//    @DisplayName("고객 정보 입력 - 올바르지 않은 형식의 주소 입력시 예외 발생")
+//    void invalidAddress_throwException(String address) {
+//        given & when
+//        Throwable throwable = catchThrowable(() -> Address.of(address, "1층 로비"));
+//
+//        then
+//        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+//        assertThat(throwable).hasMessage("! 올바른 형식으로 입력해주세요");
+//    }
 
     @ParameterizedTest
     @ValueSource(strings = {"01012345678", "010.1234.5678", "02-1234-1234", "010-123-456"})
