@@ -1,0 +1,28 @@
+package com.mooninho.ordermanager.임시.dto.order;
+
+import com.mooninho.ordermanager.임시.enums.state.OrderState;
+import com.mooninho.ordermanager.임시.enums.type.OrderType;
+import com.mooninho.ordermanager.임시.enums.type.PaymentType;
+import com.mooninho.ordermanager.임시.domain.wrapper.order.CustomerRequest;
+import com.mooninho.ordermanager.임시.domain.wrapper.order.TotalPrice;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class WaitingOrderResponseDto {
+
+    private Long orderId;
+    private LocalDateTime orderTimestamp;
+    private String menuNames;
+    private TotalPrice totalPrice;
+    private String customerInfo;
+    private CustomerRequest customerRequest;
+    private OrderState orderState;
+    private OrderType orderType;
+    private PaymentType paymentType;
+}
