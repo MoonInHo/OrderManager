@@ -43,4 +43,14 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                 .fetchOne()
         );
     }
+
+    @Override
+    public Optional<Long> getMemberId(UserId userId) {
+        return Optional.ofNullable(queryFactory
+                .select(member.id)
+                .from(member)
+                .where(member.userId.eq(userId))
+                .fetchOne()
+        );
+    }
 }

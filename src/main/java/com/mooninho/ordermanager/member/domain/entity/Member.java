@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.member.domain.entity;
 
 import com.mooninho.ordermanager.member.domain.vo.*;
-import com.mooninho.ordermanager.임시.domain.entity.Store;
+import com.mooninho.ordermanager.store.domain.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -44,6 +44,10 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Store> stores = new ArrayList<>();
 
+    private Member(Long id) {
+        this.id = id;
+    }
+
     private Member(UserId userId, Password password, Name name, Phone phone) {
         this.userId = userId;
         this.password = password;
@@ -54,6 +58,10 @@ public class Member {
 
     public static Member createMember(UserId userId, Password password, Name name, Phone phone) {
         return new Member(userId, password, name, phone);
+    }
+
+    public static Member createKeyObject(Long memberId) {
+        return new Member(memberId);
     }
 
     public void passwordEncrypt(PasswordEncoder passwordEncoder) {
