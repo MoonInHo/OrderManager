@@ -1,8 +1,8 @@
 //package com.mooninho.ordermanager.domain;
 //
-//import com.mooninho.ordermanager.임시.domain.entity.Menu;
-//import com.mooninho.ordermanager.임시.domain.wrapper.menu.MenuName;
-//import com.mooninho.ordermanager.임시.domain.wrapper.menu.Price;
+//import com.mooninho.ordermanager.menu.domain.entity.Menu;
+//import com.mooninho.ordermanager.menu.domain.vo.MenuName;
+//import com.mooninho.ordermanager.menu.domain.vo.Price;
 //import com.mooninho.ordermanager.임시.dto.menu.MenuDto;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;

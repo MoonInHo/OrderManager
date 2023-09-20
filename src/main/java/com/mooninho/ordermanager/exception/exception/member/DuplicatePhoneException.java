@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.exception.exception;
+package com.mooninho.ordermanager.exception.exception.member;
 
 import com.mooninho.ordermanager.exception.ApplicationException;
 import com.mooninho.ordermanager.exception.ErrorCode;

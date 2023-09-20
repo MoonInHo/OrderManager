@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.member.application.dto;
+package com.mooninho.ordermanager.member.application.dto.request;
 
 public record SignInRequestDto(
         String userId,

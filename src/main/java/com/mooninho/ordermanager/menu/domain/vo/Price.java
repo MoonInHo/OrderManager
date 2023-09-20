@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.임시.domain.wrapper.menu;
+package com.mooninho.ordermanager.menu.domain.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;

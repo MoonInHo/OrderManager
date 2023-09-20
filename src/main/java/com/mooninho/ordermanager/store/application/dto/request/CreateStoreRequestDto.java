@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.store.application.dto;
+package com.mooninho.ordermanager.store.application.dto.request;
 
 import com.mooninho.ordermanager.member.domain.entity.Member;
 import com.mooninho.ordermanager.store.domain.entity.Store;
