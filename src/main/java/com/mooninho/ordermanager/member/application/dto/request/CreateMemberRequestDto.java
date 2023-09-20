@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.member.application.dto;
+package com.mooninho.ordermanager.member.application.dto.request;
 
 import com.mooninho.ordermanager.member.domain.vo.Name;
 import com.mooninho.ordermanager.member.domain.vo.Password;

@@ -7,6 +7,13 @@ public enum ErrorCode {
     DUPLICATE_USERID_ERROR,
     DUPLICATE_PHONE_ERROR,
 
+    // Store
+    DUPLICATE_STORE_NAME_ERROR,
+
+    // Menu
+    DUPLICATE_MENU_NAME_ERROR,
+
     // Global
     INVALID_REQUEST,
+    UNAUTHORIZED_POSTING_ERROR,
 }

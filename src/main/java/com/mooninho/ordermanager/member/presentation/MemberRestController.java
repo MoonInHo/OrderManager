@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.member.presentation;
 
-import com.mooninho.ordermanager.member.application.dto.CreateMemberRequestDto;
-import com.mooninho.ordermanager.member.application.dto.SignInRequestDto;
+import com.mooninho.ordermanager.member.application.dto.request.CreateMemberRequestDto;
+import com.mooninho.ordermanager.member.application.dto.request.SignInRequestDto;
 import com.mooninho.ordermanager.member.application.security.JwtUtil;
 import com.mooninho.ordermanager.member.application.service.MemberService;
 import com.mooninho.ordermanager.member.domain.entity.Member;
@@ -49,5 +49,6 @@ public class MemberRestController {
         return ResponseEntity.ok().body(jwtUtil.generateToken(member.userId()));
     }
 
+    //TODO 로그인 시도를 n번 시도시 토큰을 어떻게 관리할지 고민
     //TODO Redis 학습 후에 로그아웃 기능 구현
 }

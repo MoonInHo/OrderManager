@@ -34,7 +34,8 @@ public class OrderService {
 
     @Transactional
     public Long findStoreId() {
-        return storeQueryRepository.findStoreIdByUserKey(1L);
+//        return storeQueryRepository.findStoreIdByUserKey(1L);
+        return null;
     }
 
     @Transactional

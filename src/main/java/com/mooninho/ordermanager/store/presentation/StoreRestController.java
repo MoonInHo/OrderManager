@@ -1,6 +1,6 @@
 package com.mooninho.ordermanager.store.presentation;
 
-import com.mooninho.ordermanager.store.application.dto.CreateStoreRequestDto;
+import com.mooninho.ordermanager.store.application.dto.request.CreateStoreRequestDto;
 import com.mooninho.ordermanager.store.application.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

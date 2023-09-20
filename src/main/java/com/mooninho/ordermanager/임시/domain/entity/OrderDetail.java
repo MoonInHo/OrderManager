@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.임시.domain.entity;
 
+import com.mooninho.ordermanager.menu.domain.entity.Menu;
 import com.mooninho.ordermanager.임시.domain.wrapper.order.Quantity;
 import com.mooninho.ordermanager.임시.domain.wrapper.order.TotalMenuPrice;
 import jakarta.persistence.*;

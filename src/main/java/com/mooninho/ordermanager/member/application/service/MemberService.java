@@ -1,8 +1,8 @@
 package com.mooninho.ordermanager.member.application.service;
 
-import com.mooninho.ordermanager.exception.exception.DuplicatePhoneException;
-import com.mooninho.ordermanager.exception.exception.DuplicateUserIdException;
-import com.mooninho.ordermanager.member.application.dto.CreateMemberRequestDto;
+import com.mooninho.ordermanager.exception.exception.member.DuplicatePhoneException;
+import com.mooninho.ordermanager.exception.exception.member.DuplicateUserIdException;
+import com.mooninho.ordermanager.member.application.dto.request.CreateMemberRequestDto;
 import com.mooninho.ordermanager.member.domain.vo.Phone;
 import com.mooninho.ordermanager.member.domain.vo.UserId;
 import com.mooninho.ordermanager.member.domain.entity.Member;

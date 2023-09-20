@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.store.domain.entity;
 
 import com.mooninho.ordermanager.member.domain.entity.Member;
-import com.mooninho.ordermanager.임시.domain.entity.Menu;
+import com.mooninho.ordermanager.menu.domain.entity.Menu;
 import com.mooninho.ordermanager.임시.domain.entity.Order;
 import com.mooninho.ordermanager.store.domain.vo.StoreName;
 import jakarta.persistence.*;
@@ -42,7 +42,7 @@ public class Store {
         this.member = member;
     }
 
-    public static Store createKeyValue(Long storeId) {
+    public static Store createKeyObject(Long storeId) {
         return new Store(storeId);
     }
 
