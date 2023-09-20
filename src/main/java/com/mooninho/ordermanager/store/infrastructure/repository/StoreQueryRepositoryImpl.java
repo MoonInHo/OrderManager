@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.임시.repository;
+package com.mooninho.ordermanager.store.infrastructure.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class StoreQueryRepository {
+public class StoreQueryRepositoryImpl implements StoreQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 

@@ -3,7 +3,7 @@ package com.mooninho.ordermanager.exception;
 public enum ErrorCode {
 
     // Member
-    MISSING_NAME_ERROR,
+    NOT_FOUND_USER_ERROR,
     DUPLICATE_USERID_ERROR,
     DUPLICATE_PHONE_ERROR,
 

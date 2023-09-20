@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.임시.service;
 
+import com.mooninho.ordermanager.store.infrastructure.repository.StoreQueryRepositoryImpl;
 import com.mooninho.ordermanager.임시.domain.entity.Delivery;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDetailResponseDto;
@@ -15,7 +16,6 @@ import com.mooninho.ordermanager.임시.enums.state.OrderState;
 import com.mooninho.ordermanager.임시.enums.type.OrderType;
 import com.mooninho.ordermanager.임시.repository.DeliveryRepository;
 import com.mooninho.ordermanager.임시.repository.OrderQueryRepository;
-import com.mooninho.ordermanager.임시.repository.StoreQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,19 +23,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company.findByCompanyName;
-import static com.mooninho.ordermanager.임시.util.account.LoggedInUserinfoProvider.loggedInUserKeyFetcher;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final DeliveryRepository deliveryRepository;
-    private final StoreQueryRepository storeQueryRepository;
+    private final StoreQueryRepositoryImpl storeQueryRepository;
     private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
     public Long findStoreId() {
-        return storeQueryRepository.findStoreIdByUserKey(loggedInUserKeyFetcher());
+        return storeQueryRepository.findStoreIdByUserKey(1L);
     }
 
     @Transactional

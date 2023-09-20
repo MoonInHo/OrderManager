@@ -44,9 +44,9 @@ public class MemberRestController {
                 )
         );
 
-        Member principal = (Member) authenticate.getPrincipal();
+        Member member = (Member) authenticate.getPrincipal();
 
-        return ResponseEntity.ok().body(jwtUtil.generateToken(principal.userId()));
+        return ResponseEntity.ok().body(jwtUtil.generateToken(member.userId()));
     }
 
     //TODO Redis 학습 후에 로그아웃 기능 구현
