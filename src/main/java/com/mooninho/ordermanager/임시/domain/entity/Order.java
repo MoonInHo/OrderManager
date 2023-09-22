@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.임시.domain.entity;
 
+import com.mooninho.ordermanager.customer.domain.entity.Customer;
 import com.mooninho.ordermanager.store.domain.entity.Store;
 import com.mooninho.ordermanager.임시.domain.wrapper.order.CustomerRequest;
 import com.mooninho.ordermanager.임시.domain.wrapper.order.OrderTimestamp;

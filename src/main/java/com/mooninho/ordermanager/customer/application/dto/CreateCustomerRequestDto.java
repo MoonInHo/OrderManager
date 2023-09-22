@@ -1,4 +1,4 @@
-package com.mooninho.ordermanager.임시.dto.customer;
+package com.mooninho.ordermanager.customer.application.dto;
 
 import com.mooninho.ordermanager.customer.domain.entity.Customer;
 import com.mooninho.ordermanager.customer.domain.vo.Address;
@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerDto {
+public class CreateCustomerRequestDto {
 
     private String address;
     private String addressDetail;
     private String contact;
 
     public Customer toEntity() {
-        return Customer.createCustomer(Address.of(address, addressDetail), Contact.of(contact));
+        return Customer.createCustomer(
+                Address.of(address, addressDetail),
+                Contact.of(contact)
+        );
     }
 }

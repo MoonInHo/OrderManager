@@ -13,6 +13,9 @@ public enum ErrorCode {
     // Menu
     DUPLICATE_MENU_NAME_ERROR,
 
+    // Customer
+    DUPLICATE_CONTACT_ERROR,
+
     // Global
     INVALID_REQUEST,
     UNAUTHORIZED_POSTING_ERROR,

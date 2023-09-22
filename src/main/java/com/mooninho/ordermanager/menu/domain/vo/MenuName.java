@@ -17,7 +17,7 @@ public class MenuName {
     public static MenuName of(String menuName) {
 
         if (menuName == null || menuName.isBlank()) {
-            throw new IllegalArgumentException("메뉴명을 입력해주세요");
+            throw new IllegalArgumentException("메뉴명을 입력하세요.");
         }
         return new MenuName(menuName);
     }

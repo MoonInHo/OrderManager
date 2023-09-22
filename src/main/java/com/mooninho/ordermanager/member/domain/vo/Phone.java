@@ -17,7 +17,7 @@ public class Phone {
     public static Phone of(String phone) {
 
         if (phone == null || phone.isEmpty()) {
-            throw new IllegalArgumentException("연락처를 입력해주세요.");
+            throw new IllegalArgumentException("연락처를 입력하세요.");
         }
         if (phone.contains(" ")) {
             throw new IllegalArgumentException("연락처엔 공백을 포함할 수 없습니다.");

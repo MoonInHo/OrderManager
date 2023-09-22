@@ -1,8 +1,8 @@
 //package com.mooninho.ordermanager.domain;
 //
-//import com.mooninho.ordermanager.임시.domain.entity.Customer;
-//import com.mooninho.ordermanager.임시.domain.wrapper.customer.Address;
-//import com.mooninho.ordermanager.임시.domain.wrapper.customer.Contact;
+//import com.mooninho.ordermanager.customer.domain.entity.Customer;
+//import com.mooninho.ordermanager.customer.domain.vo.Address;
+//import com.mooninho.ordermanager.customer.domain.vo.Contact;
 //import com.mooninho.ordermanager.임시.dto.customer.CustomerDto;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
