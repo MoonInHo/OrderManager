@@ -1,6 +1,5 @@
-package com.mooninho.ordermanager.임시.domain.wrapper.customer;
+package com.mooninho.ordermanager.customer.domain.vo;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Contact {
 
-    @Column(unique = true)
     private final String contact;
 
     private Contact(String contact) {
@@ -18,16 +16,14 @@ public class Contact {
 
     public static Contact of(String contact) {
 
-        if (contact == null) {
-            throw new IllegalArgumentException("! 연락처를 입력해주세요.");
+        if (contact == null || contact.isBlank()) {
+            throw new IllegalArgumentException("연락처를 입력하세요.");
         }
-
-        if (contact.isEmpty()) {
-            throw new IllegalArgumentException("! 공백을 사용할 수 없습니다.");
+        if (contact.contains(" ")) {
+            throw new IllegalArgumentException("연락처엔 공백을 사용할 수 없습니다.");
         }
-
         if (!contact.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$")) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요.");
+            throw new IllegalArgumentException("올바른 형식으로 입력해주세요.");
         }
 
         return new Contact(contact);

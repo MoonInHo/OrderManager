@@ -23,12 +23,14 @@ public class Menu {
     private Long id;
 
     @Embedded
+    @Column(nullable = false)
     private MenuName menuName;
 
     @Embedded
+    @Column(nullable = false)
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 

@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.임시.domain.wrapper.order;
 
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Address;
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Contact;
+import com.mooninho.ordermanager.customer.domain.vo.Address;
+import com.mooninho.ordermanager.customer.domain.vo.Contact;
 
 public class CustomerInfo {
 

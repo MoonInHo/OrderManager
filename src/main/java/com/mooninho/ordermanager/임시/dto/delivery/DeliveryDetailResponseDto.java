@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.임시.dto.delivery;
 
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Address;
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Contact;
+import com.mooninho.ordermanager.customer.domain.vo.Address;
+import com.mooninho.ordermanager.customer.domain.vo.Contact;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DeliveryTips;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DriverName;

@@ -17,7 +17,7 @@ public class Price {
     public static Price of(Integer price) {
 
         if (price == null) {
-            throw new IllegalArgumentException("가격을 입력해주세요");
+            throw new IllegalArgumentException("가격을 입력하세요.");
         }
         return new Price(price);
     }

@@ -1,7 +1,8 @@
-package com.mooninho.ordermanager.임시.domain.entity;
+package com.mooninho.ordermanager.customer.domain.entity;
 
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Address;
-import com.mooninho.ordermanager.임시.domain.wrapper.customer.Contact;
+import com.mooninho.ordermanager.임시.domain.entity.Order;
+import com.mooninho.ordermanager.customer.domain.vo.Address;
+import com.mooninho.ordermanager.customer.domain.vo.Contact;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,11 @@ public class Customer {
     private Long id;
 
     @Embedded
+    @Column(nullable = false)
     private Address address;
 
     @Embedded
+    @Column(nullable = false, unique = true)
     private Contact contact;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
