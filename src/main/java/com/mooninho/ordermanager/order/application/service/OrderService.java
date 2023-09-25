@@ -11,9 +11,9 @@ import com.mooninho.ordermanager.store.domain.repository.StoreRepository;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDetailResponseDto;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryRequestDto;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryTrackingResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.CompletedOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
 import com.mooninho.ordermanager.임시.dto.order.OrderTypeResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.PreparingOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.임시.dto.order.WaitingOrderResponseDto;
 import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
@@ -39,21 +39,34 @@ public class OrderService {
 
         List<GetWaitingOrderResponseDto> waitingOrders = orderRepository.getWaitingOrders(storeId);
         if (waitingOrders.isEmpty()) {
-            throw new EmptyOrderListException();
+            throw new EmptyOrderListException(); //TODO 예외 핸들러에서 catch 하는데 에러코드와 메세지를 반환하지 않는 이유 찾기
         }
-
         return waitingOrders;
     }
 
-//    @Transactional
-//    public List<CompletedOrderResponseDto> completeOrdersLookup(Long storeId) {
+    @Transactional(readOnly = true)
+    public List<GetPreparingOrderResponseDto> getPreparingOrders(Long storeId, String username) {
 
-//        List<CompletedOrderResponseDto> completeOrder = orderQueryRepository.findCompleteOrder(storeId);
-//        if (isEmptyCompleteOrder(completeOrder)) {
-//            throw new EmptyOrderListException();
-//        }
-//        return completeOrder;
-//    }
+        checkOwner(storeId, getOwnerId(username));
+
+        List<GetPreparingOrderResponseDto> preparingOrders = orderRepository.getPreparingOrders(storeId);
+        if (preparingOrders.isEmpty()) {
+            throw new EmptyOrderListException();
+        }
+        return preparingOrders;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetCompleteOrderResponseDto> getCompleteOrders(Long storeId, String username) {
+
+        checkOwner(storeId, getOwnerId(username));
+
+        List<GetCompleteOrderResponseDto> completeOrder = orderRepository.getCompleteOrders(storeId);
+        if (completeOrder.isEmpty()) {
+            throw new EmptyOrderListException();
+        }
+        return completeOrder;
+    }
 
     @Transactional
     public void changeOrderStateToPreparing(Long storeId, Long orderId) {
@@ -222,11 +235,11 @@ public class OrderService {
         return waitingOrder.isEmpty();
     }
 
-    private boolean isEmptyCompleteOrder(List<CompletedOrderResponseDto> completeOrder) {
+    private boolean isEmptyCompleteOrder(List<GetCompleteOrderResponseDto> completeOrder) {
         return completeOrder.isEmpty();
     }
 
-    private boolean isEmptyPreparingOrder(List<PreparingOrderResponseDto> preparingOrder) {
+    private boolean isEmptyPreparingOrder(List<GetPreparingOrderResponseDto> preparingOrder) {
         return preparingOrder.isEmpty();
     }
 
