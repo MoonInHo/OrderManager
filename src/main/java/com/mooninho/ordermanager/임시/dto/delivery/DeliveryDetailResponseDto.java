@@ -7,7 +7,7 @@ import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DeliveryTips;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DriverName;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DriverPhone;
 import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
-import com.mooninho.ordermanager.임시.enums.type.OrderType;
+import com.mooninho.ordermanager.order.domain.enums.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

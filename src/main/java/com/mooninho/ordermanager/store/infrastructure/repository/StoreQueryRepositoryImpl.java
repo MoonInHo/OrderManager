@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import static com.mooninho.ordermanager.owner.domain.entity.QOwner.owner;
 import static com.mooninho.ordermanager.store.domain.entity.QStore.store;
 
 @Repository
@@ -29,5 +30,17 @@ public class StoreQueryRepositoryImpl implements StoreQueryRepository {
                 .from(store)
                 .where(store.id.eq(storeId))
                 .fetchFirst() == null;
+    }
+
+    @Override
+    public boolean isOwner(Long storeId, Long ownerId) {
+        return queryFactory
+                .selectOne()
+                .from(store)
+                .where(
+                        store.id.eq(storeId),
+                        owner.id.eq(ownerId)
+                )
+                .fetchFirst() != null;
     }
 }

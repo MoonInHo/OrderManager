@@ -1,6 +1,6 @@
 package com.mooninho.ordermanager.customer.domain.entity;
 
-import com.mooninho.ordermanager.임시.domain.entity.Order;
+import com.mooninho.ordermanager.order.domain.entity.Order;
 import com.mooninho.ordermanager.customer.domain.vo.Address;
 import com.mooninho.ordermanager.customer.domain.vo.Contact;
 import jakarta.persistence.*;

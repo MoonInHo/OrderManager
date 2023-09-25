@@ -1,9 +1,9 @@
 package com.mooninho.ordermanager.store.application.service;
 
-import com.mooninho.ordermanager.exception.exception.member.UserNotFoundException;
+import com.mooninho.ordermanager.exception.exception.owner.OwnerNotFoundException;
 import com.mooninho.ordermanager.exception.exception.store.DuplicateStoreNameException;
-import com.mooninho.ordermanager.member.domain.repository.MemberRepository;
-import com.mooninho.ordermanager.member.domain.vo.UserId;
+import com.mooninho.ordermanager.owner.domain.repository.OwnerRepository;
+import com.mooninho.ordermanager.owner.domain.vo.Username;
 import com.mooninho.ordermanager.store.application.dto.request.CreateStoreRequestDto;
 import com.mooninho.ordermanager.store.domain.repository.StoreRepository;
 import com.mooninho.ordermanager.store.domain.vo.StoreName;
@@ -16,14 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final MemberRepository memberRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
     public void createStore(CreateStoreRequestDto createStoreRequestDto, String userId) {
 
         checkDuplicateStoreName(createStoreRequestDto.getStoreName());
 
-        storeRepository.save(createStoreRequestDto.toEntity(getMemberId(userId)));
+        storeRepository.save(createStoreRequestDto.toEntity(getOwnerId(userId)));
     }
 
     @Transactional(readOnly = true)
@@ -36,9 +36,9 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    protected Long getMemberId(String userId) {
+    protected Long getOwnerId(String username) {
 
-        return memberRepository.getMemberId(UserId.of(userId))
-                .orElseThrow(UserNotFoundException::new);
+        return ownerRepository.getOwnerId(Username.of(username))
+                .orElseThrow(OwnerNotFoundException::new);
     }
 }

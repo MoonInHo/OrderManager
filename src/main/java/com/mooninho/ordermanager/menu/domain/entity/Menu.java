@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.menu.domain.entity;
 
 import com.mooninho.ordermanager.store.domain.entity.Store;
-import com.mooninho.ordermanager.임시.domain.entity.OrderDetail;
+import com.mooninho.ordermanager.order.domain.entity.OrderDetail;
 import com.mooninho.ordermanager.menu.domain.vo.MenuName;
 import com.mooninho.ordermanager.menu.domain.vo.Price;
 import jakarta.persistence.*;
@@ -23,7 +23,7 @@ public class Menu {
     private Long id;
 
     @Embedded
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private MenuName menuName;
 
     @Embedded
