@@ -1,7 +1,7 @@
 package com.mooninho.ordermanager.임시.dto.order;
 
-import com.mooninho.ordermanager.임시.enums.state.OrderState;
-import com.mooninho.ordermanager.임시.enums.type.OrderType;
+import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
+import com.mooninho.ordermanager.order.domain.enums.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class OrderTypeResponseDto {
 
     private OrderType orderType;
-    private OrderState orderState;
+    private OrderStatus orderState;
 }

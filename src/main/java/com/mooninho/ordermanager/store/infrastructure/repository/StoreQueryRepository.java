@@ -7,4 +7,6 @@ public interface StoreQueryRepository {
     boolean isExistStoreName(StoreName storeName);
 
     boolean isNotOwner(Long storeId, Long memberId);
+
+    boolean isOwner(Long storeId, Long ownerId);
 }

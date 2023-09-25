@@ -2,9 +2,13 @@ package com.mooninho.ordermanager.exception;
 
 public enum ErrorCode {
 
+    // Global
+    INVALID_REQUEST,
+    UNAUTHORIZED_POSTING_ERROR,
+
     // Member
     NOT_FOUND_USER_ERROR,
-    DUPLICATE_USERID_ERROR,
+    DUPLICATE_USERNAME_ERROR,
     DUPLICATE_PHONE_ERROR,
 
     // Store
@@ -16,7 +20,6 @@ public enum ErrorCode {
     // Customer
     DUPLICATE_CONTACT_ERROR,
 
-    // Global
-    INVALID_REQUEST,
-    UNAUTHORIZED_POSTING_ERROR,
+    // Order
+    EMPTY_ORDER_LIST_ERROR,
 }

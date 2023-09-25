@@ -1,6 +1,6 @@
 package com.mooninho.ordermanager.config;
 
-import com.mooninho.ordermanager.member.application.security.JwtFilter;
+import com.mooninho.ordermanager.owner.application.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/members/sign-up", "/api/members/sign-in").permitAll()
+                        .requestMatchers("/api/owners/sign-up", "/api/owners/sign-in").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(

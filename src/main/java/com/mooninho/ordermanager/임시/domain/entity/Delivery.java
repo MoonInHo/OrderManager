@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.임시.domain.entity;
 
+import com.mooninho.ordermanager.order.domain.entity.Order;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DeliveryTips;
 import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
 import jakarta.persistence.*;

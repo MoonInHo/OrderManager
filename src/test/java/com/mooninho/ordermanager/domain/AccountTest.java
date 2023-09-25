@@ -29,9 +29,9 @@
 //    @ParameterizedTest
 //    @NullSource
 //    @DisplayName("회원 정보 입력 - 아이디 미입력시 예외 발생")
-//    void nullUserId_throwException(String userId) {
+//    void nullUserId_throwException(String username) {
 //        //given & when
-//        Throwable throwable = catchThrowable(() -> UserId.of(userId));
+//        Throwable throwable = catchThrowable(() -> UserId.of(username));
 //
 //        //then
 //        assertThat(throwable).isInstanceOf(NullValueException.class);
@@ -41,9 +41,9 @@
 //    @ParameterizedTest
 //    @EmptySource
 //    @DisplayName("회원 정보 입력 - 아이디 공백 입력시 예외 발생")
-//    void emptyUserId_throwException(String userId) {
+//    void emptyUserId_throwException(String username) {
 //        //given & when
-//        Throwable throwable = catchThrowable(() -> UserId.of(userId));
+//        Throwable throwable = catchThrowable(() -> UserId.of(username));
 //
 //        //then
 //        assertThat(throwable).isInstanceOf(EmptyValueException.class);
@@ -125,9 +125,9 @@
 //    @ParameterizedTest
 //    @ValueSource(strings = {"test", "test 123", "test123!"})
 //    @DisplayName("회원 정보 입력 - 올바르지 않은 형식의 아이디 입력시 예외 발생")
-//    void invalidUserId_throwException(String userId) {
+//    void invalidUserId_throwException(String username) {
 //        //given & when
-//        Throwable throwable = catchThrowable(() -> UserId.of(userId));
+//        Throwable throwable = catchThrowable(() -> UserId.of(username));
 //
 //        //then
 //        assertThat(throwable).isInstanceOf(InvalidFormatException.class);
@@ -174,12 +174,12 @@
 //    @DisplayName("회원 정보 입력 - 올바른 아이디 입력시 아이디 객체 생성")
 //    void properUserId_returnUserIdObject() {
 //        //given & when
-//        UserId userId = UserId.of("test123");
+//        UserId username = UserId.of("test123");
 //
 //        //then
-//        assertThat(userId).isNotNull();
-//        assertThat(userId).isInstanceOf(UserId.class);
-//        assertThat(userId.userId()).isEqualTo("test123");
+//        assertThat(username).isNotNull();
+//        assertThat(username).isInstanceOf(UserId.class);
+//        assertThat(username.username()).isEqualTo("test123");
 //    }
 //
 //    @Test

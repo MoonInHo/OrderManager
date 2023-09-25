@@ -2,7 +2,7 @@ package com.mooninho.ordermanager.임시.dto.delivery;
 
 import com.mooninho.ordermanager.임시.domain.entity.Delivery;
 import com.mooninho.ordermanager.임시.domain.entity.DeliveryCompany;
-import com.mooninho.ordermanager.임시.domain.entity.Order;
+import com.mooninho.ordermanager.order.domain.entity.Order;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DeliveryTips;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class DeliveryDto {
             Integer deliveryTips
     ) {
         return Delivery.createDeliveryInfo(
-                Order.createKeyValue(orderId),
+                Order.createKeyObject(orderId),
                 DeliveryCompany.createKeyValue(deliveryCompanyId),
                 DeliveryTips.of(deliveryTips)
         );
