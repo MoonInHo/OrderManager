@@ -9,15 +9,17 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class GetWaitingOrderResponseDto {
+public class GetPreparingOrderResponseDto {
 
     private Long id;
     private String orderTimestamp;
+//    private List<String> menuNames;
     private String totalPrice;
-    private List<String> menuNames;
     private String address;
+    private String addressDetail;
     private String contact;
     private String customerRequest;
     private OrderType orderType;
     private PaymentType paymentType;
+
 }

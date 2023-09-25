@@ -2,6 +2,8 @@ package com.mooninho.ordermanager.order.presentation;
 
 import com.mooninho.ordermanager.order.application.service.OrderService;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,22 +26,24 @@ public class OrderRestController {
         return ResponseEntity.ok()
                 .body(orderService.getWaitingOrders(storeId, authentication.getName()));
     }
-//
-//    @GetMapping("/preparing")
-//    public List<PreparingOrderResponseDto> preparingOrdersLookup() {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        return orderService.findPreparingOrders(storeId);
-//    }
-//
-//    @GetMapping("/complete")
-//    public List<CompletedOrderResponseDto> completedOrdersLookup() {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        return orderService.completeOrdersLookup(storeId);
-//    }
+
+    @GetMapping("/{storeId}/preparing")
+    public ResponseEntity<List<GetPreparingOrderResponseDto>> getPreparingOrders(
+            @PathVariable Long storeId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getPreparingOrders(storeId, authentication.getName()));
+    }
+
+    @GetMapping("/{storeId}/complete")
+    public ResponseEntity<List<GetCompleteOrderResponseDto>> getCompleteOrders(
+            @PathVariable Long storeId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getCompleteOrders(storeId, authentication.getName()));
+    }
 //
 //    @PatchMapping("/{orderId}/accept")
 //    public ResponseEntity<ResponseMessageDto> acceptOrders(@PathVariable Long orderId) {

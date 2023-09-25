@@ -2,11 +2,12 @@ package com.mooninho.ordermanager.order.infrastructure.repository;
 
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.domain.enums.OrderType;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDetailResponseDto;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryTrackingResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.CompletedOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
 import com.mooninho.ordermanager.임시.dto.order.OrderTypeResponseDto;
 import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
 import com.querydsl.core.types.Projections;
@@ -34,12 +35,12 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                                 GetWaitingOrderResponseDto.class,
                                 order.id,
                                 order.orderTimestamp.orderTimestamp,
-                                order.totalPrice.totalPrice,
 //                                ExpressionUtils.list(String.class, menuNames), // TODO List 방식으로 조회
 //                                Expressions.constant(menuNames),
+                                order.totalPrice.totalPrice,
                                 customer.address.address,
-                                customer.address.addressDetail,
-                                order.customerRequest.customerRequest,
+                                customer.contact.contact,
+                                order.customerRequest.customerRequest, //TODO 매장요청, 라이더 요청으로 분할 & 처리 예정시간 추가
                                 order.orderType,
                                 order.paymentType
                         )
@@ -54,57 +55,59 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .fetch();
     }
 
-    public List<GetWaitingOrderResponseDto> findPreparingOrder(Long storeId) {
+    @Override
+    public List<GetPreparingOrderResponseDto> getPreparingOrders(Long storeId) {
 
-//        Expression<String> customerInfo = getCustomerInfo();
-//        Expression<String> menuName = getMenuName();
-//
-//        return queryFactory
-//                .select(
-//                        Projections.constructor(
-//                                PreparingOrderResponseDto.class,
-//                                order.id,
-//                                order.orderTimestamp.orderTimestamp,
-//                                menuName,
-//                                order.totalPrice,
-//                                customerInfo,
-////                                order.orderDetail,
-//                                order.orderState,
-//                                order.orderType,
-//                                order.paymentType
-//                        )
-//                )
-//                .from(order)
-//                .join(order.customer, customer)
-//                .where(order.store.id.eq(storeId), order.orderState.eq(OrderState.PREPARING))
-//                .orderBy(order.orderTimestamp.orderTimestamp.asc())
-//                .fetch();
-        return null;
+        return queryFactory
+                .select(
+                        Projections.fields(
+                                GetPreparingOrderResponseDto.class,
+                                order.id,
+                                order.orderTimestamp.orderTimestamp,
+                                //menuNames
+                                order.totalPrice.totalPrice,
+                                customer.address.address,
+                                customer.address.addressDetail,
+                                customer.contact.contact,
+                                order.customerRequest.customerRequest,
+                                order.orderType,
+                                order.paymentType
+                        )
+                )
+                .from(order)
+                .join(order.customer, customer)
+                .where(
+                        order.store.id.eq(storeId),
+                        order.orderStatus.eq(OrderStatus.PREPARING)
+                )
+                .orderBy(order.id.asc())
+                .fetch();
     }
 
-    public List<CompletedOrderResponseDto> findCompleteOrder(Long storeId) {
+    @Override
+    public List<GetCompleteOrderResponseDto> getCompleteOrders(Long storeId) {
 
-//        Expression<String> customerInfo = getCustomerInfo();
-//        Expression<String> menuName = getMenuName();
-//
-//        return queryFactory
-//                .select(
-//                        Projections.constructor(
-//                                CompletedOrderResponseDto.class,
-//                                order.orderTimestamp.orderTimestamp,
-//                                order.orderType,
-//                                order.paymentType,
-//                                menuName,
-//                                order.totalPrice,
-//                                customerInfo,
-//                                order.orderState
-//                        )
-//                )
-//                .from(order)
-//                .join(order.customer, customer)
-//                .where(order.store.id.eq(storeId), order.orderState.eq(OrderState.COMPLETE))
-//                .fetch();
-        return null;
+        return queryFactory
+                .select(
+                        Projections.fields(
+                                GetCompleteOrderResponseDto.class,
+                                order.id,
+                                order.orderTimestamp.orderTimestamp,
+                                //menuNames
+                                order.totalPrice.totalPrice,
+                                customer.address.address,
+                                order.orderType,
+                                order.paymentType
+                        )
+                )
+                .from(order)
+                .join(order.customer, customer)
+                .where(
+                        order.store.id.eq(storeId),
+                        order.orderStatus.eq(OrderStatus.COMPLETE)
+                )
+                .orderBy(order.id.desc())
+                .fetch();
     }
 
     public OrderTypeResponseDto findOrderTypes(Long storeId, Long orderId) {

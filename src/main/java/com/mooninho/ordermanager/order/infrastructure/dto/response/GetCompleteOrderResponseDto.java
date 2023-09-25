@@ -5,19 +5,15 @@ import com.mooninho.ordermanager.order.domain.enums.PaymentType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
-public class GetWaitingOrderResponseDto {
+public class GetCompleteOrderResponseDto {
 
     private Long id;
-    private String orderTimestamp;
+    private String orderTimeStamp;
+//    private List<String> menuNames;
     private String totalPrice;
-    private List<String> menuNames;
     private String address;
-    private String contact;
-    private String customerRequest;
     private OrderType orderType;
     private PaymentType paymentType;
 }
