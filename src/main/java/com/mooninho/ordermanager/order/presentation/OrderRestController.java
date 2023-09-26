@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.order.presentation;
 
 import com.mooninho.ordermanager.order.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.order.application.service.OrderService;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
@@ -44,6 +45,16 @@ public class OrderRestController {
     ) {
         return ResponseEntity.ok()
                 .body(orderService.getCompleteOrders(storeId, authentication.getName()));
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<GetOrderDetailResponseDto> getOrderDetail(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getOrderDetail(storeId, orderId, authentication.getName()));
     }
 
     @PatchMapping("/{orderId}/accept")

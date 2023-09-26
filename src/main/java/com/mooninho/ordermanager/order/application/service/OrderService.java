@@ -11,6 +11,7 @@ import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.domain.repository.OrderCancelHistoryRepository;
 import com.mooninho.ordermanager.order.domain.repository.OrderRepository;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.owner.domain.repository.OwnerRepository;
@@ -68,6 +69,15 @@ public class OrderService {
             throw new EmptyOrderListException();
         }
         return completeOrder;
+    }
+
+    @Transactional(readOnly = true)
+    public GetOrderDetailResponseDto getOrderDetail(Long storeId, Long orderId, String username) {
+
+        checkOwner(storeId, getOwnerId(username));
+
+        return orderRepository.getOrderDetail(orderId)
+                .orElseThrow(NotFoundOrderException::new);
     }
 
     @Transactional
