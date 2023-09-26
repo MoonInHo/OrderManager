@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.order.presentation;
 
+import com.mooninho.ordermanager.order.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.order.application.service.OrderService;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/{storeId}/orders")
 @RequiredArgsConstructor
 public class OrderRestController {
 
     private final OrderService orderService;
 
-    @GetMapping("/{storeId}/waiting")
+    @GetMapping("/waiting")
     public ResponseEntity<List<GetWaitingOrderResponseDto>> getWaitingOrders(
             @PathVariable Long storeId,
             Authentication authentication
@@ -27,7 +28,7 @@ public class OrderRestController {
                 .body(orderService.getWaitingOrders(storeId, authentication.getName()));
     }
 
-    @GetMapping("/{storeId}/preparing")
+    @GetMapping("/preparing")
     public ResponseEntity<List<GetPreparingOrderResponseDto>> getPreparingOrders(
             @PathVariable Long storeId,
             Authentication authentication
@@ -36,7 +37,7 @@ public class OrderRestController {
                 .body(orderService.getPreparingOrders(storeId, authentication.getName()));
     }
 
-    @GetMapping("/{storeId}/complete")
+    @GetMapping("/complete")
     public ResponseEntity<List<GetCompleteOrderResponseDto>> getCompleteOrders(
             @PathVariable Long storeId,
             Authentication authentication
@@ -44,45 +45,39 @@ public class OrderRestController {
         return ResponseEntity.ok()
                 .body(orderService.getCompleteOrders(storeId, authentication.getName()));
     }
-//
-//    @PatchMapping("/{orderId}/accept")
-//    public ResponseEntity<ResponseMessageDto> acceptOrders(@PathVariable Long orderId) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        orderService.changeOrderStateToPreparing(storeId, orderId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(APPLICATION_JSON)
-//                .body(new ResponseMessageDto("주문이 수락되었습니다"));
-//    }
-//
-//    @PatchMapping("/{orderId}/ready")
-//    public ResponseEntity<ResponseMessageDto> readyOrders(@PathVariable Long orderId) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        orderService.changeOrderStateToReady(storeId, orderId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(APPLICATION_JSON)
-//                .body(new ResponseMessageDto("메뉴가 준비되었습니다."));
-//    }
-//
-//    @PatchMapping("/{orderId}/cancel")
-//    public ResponseEntity<ResponseMessageDto> cancelOrder(@PathVariable Long orderId) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        orderService.changeOrderStateToCancel(storeId, orderId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(new ResponseMessageDto("주문이 취소되었습니다"));
-//    }
+
+    @PatchMapping("/{orderId}/accept")
+    public ResponseEntity<Void> acceptOrders(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        orderService.changeOrderToPreparing(storeId, orderId, authentication.getName());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{orderId}/ready")
+    public ResponseEntity<Void> readyOrders(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        orderService.changeOrderToReady(storeId, orderId, authentication.getName());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancelOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        orderService.changeOrderToCancel(storeId, orderId, authentication.getName());
+
+        return ResponseEntity.ok().build();
+    }
 //
 //    @PatchMapping("/deliveries/{orderId}/complete")
 //    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {

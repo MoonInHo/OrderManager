@@ -2,22 +2,18 @@ package com.mooninho.ordermanager.order.application.service;
 
 import com.mooninho.ordermanager.exception.exception.global.UnauthorizedException;
 import com.mooninho.ordermanager.exception.exception.order.EmptyOrderListException;
+import com.mooninho.ordermanager.exception.exception.order.InvalidOrderStatusException;
+import com.mooninho.ordermanager.exception.exception.order.NotFoundOrderException;
 import com.mooninho.ordermanager.exception.exception.owner.OwnerNotFoundException;
+import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.domain.repository.OrderRepository;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.owner.domain.repository.OwnerRepository;
 import com.mooninho.ordermanager.owner.domain.vo.Username;
 import com.mooninho.ordermanager.store.domain.repository.StoreRepository;
-import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDetailResponseDto;
 import com.mooninho.ordermanager.임시.dto.delivery.DeliveryRequestDto;
-import com.mooninho.ordermanager.임시.dto.delivery.DeliveryTrackingResponseDto;
-import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.OrderTypeResponseDto;
-import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.WaitingOrderResponseDto;
-import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
-import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
-import com.mooninho.ordermanager.order.domain.enums.OrderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,46 +65,32 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderStateToPreparing(Long storeId, Long orderId) {
+    public void changeOrderToPreparing(Long storeId, Long orderId, String username) {
 
-//        OrderStatus orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
-//        if (isNotWaiting(orderState)) {
-//            throw new InvalidOrderStateException("주문 대기중 상태에서만 가능한 요청입니다.");
-//        }
+        checkOwner(storeId, getOwnerId(username));
+        validateOrderIsWaiting(orderId);
 
-//        Long updatedRow = orderQueryRepository.updateOrderStateToPreparing(storeId, orderId);
-//        if (updatedRow == 0) {
-//            throw new NotChangedOrderStateException();
-//        }
+        orderRepository.changeOrderToPreparing(orderId); // TODO 업데이트 실패 처리 로직 고민
     }
 
     @Transactional
-    public void changeOrderStateToReady(Long storeId, Long orderId) {
+    public void changeOrderToReady(Long storeId, Long orderId, String username) {
 
-//        OrderStatus orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
-//        if (isNotPreparing(orderState)) {
-//            throw new InvalidOrderStateException("주문 준비중 상태에서만 가능한 요청입니다.");
-//        }
+        checkOwner(storeId, getOwnerId(username));
+        validateOrderIsPreparing(orderId);
 
-//        Long updatedRow = orderQueryRepository.updateOrderStateToReady(storeId, orderId);
-//        if (updatedRow == 0) {
-//            throw new NotChangedOrderStateException();
-//        }
+        orderRepository.changeOrderToReady(orderId);
     }
 
     @Transactional
-    public void changeOrderStateToCancel(Long storeId, Long orderId) {
+    public void changeOrderToCancel(Long storeId, Long orderId, String username) {
 
-//        OrderStatus orderState = orderQueryRepository.findOrderStateByOrderId(storeId, orderId);
+        checkOwner(storeId, getOwnerId(username));
+        validateOrderIsCancel(orderId);
 
-//        if (isCancel(orderState)) {
-//            throw new InvalidOrderStateException("이미 취소된 주문입니다.");
-//        }
+        //TODO 주문 취소 사유 히스토리에 저장
 
-//        Long updatedRow = orderQueryRepository.updateOrderStateToCancel(storeId, orderId);
-//        if (updatedRow == 0) {
-//            throw new NotChangedOrderStateException();
-//        }
+        orderRepository.changeOrderToCancel(orderId);
     }
 
     @Transactional
@@ -198,68 +180,39 @@ public class OrderService {
         }
     }
 
-
-    private boolean isNotWaiting(OrderStatus orderState) {
-        return !orderState.equals(OrderStatus.WAITING);
+    @Transactional(readOnly = true)
+    protected OrderStatus getOrderStatus(Long orderId) {
+        return orderRepository.getOrderStatus(orderId)
+                .orElseThrow(NotFoundOrderException::new);
+    }
+    
+    private void validateOrderIsWaiting(Long orderId) {
+        if (isNotOrderStatusWaiting(getOrderStatus(orderId))) {
+            throw new InvalidOrderStatusException();
+        }
     }
 
-    private boolean isNotPreparing(OrderStatus orderState) {
-        return !orderState.equals(OrderStatus.PREPARING);
+    private void validateOrderIsPreparing(Long orderId) {
+        if (isNotOrderStatusPreparing(getOrderStatus(orderId))) {
+            throw new InvalidOrderStatusException();
+        }
     }
 
-    private boolean isNotReady(OrderStatus orderState) {
-        return !orderState.equals(OrderStatus.READY);
+    private void validateOrderIsCancel(Long orderId) {
+        if (isOrderStatusCancel(getOrderStatus(orderId))) {
+            throw new InvalidOrderStatusException();
+        }
     }
 
-    private boolean isNotReady(OrderTypeResponseDto orderState) {
-        return !orderState.getOrderState().equals(OrderStatus.READY);
+    private boolean isNotOrderStatusWaiting(OrderStatus orderStatus) {
+        return !orderStatus.equals(OrderStatus.WAITING);
     }
 
-    private boolean isCancel(OrderStatus orderState) {
-        return orderState.equals(OrderStatus.CANCEL);
+    private boolean isNotOrderStatusPreparing(OrderStatus orderStatus) {
+        return !orderStatus.equals(OrderStatus.PREPARING);
     }
 
-    private boolean isNotTogo(OrderTypeResponseDto orderType) {
-        return !orderType.getOrderType().equals(OrderType.TOGO);
-    }
-
-    private boolean isNotDelivery(OrderType orderType) {
-        return !orderType.equals(OrderType.DELIVERY);
-    }
-
-    private static boolean incompleteDelivery(DeliveryState deliveryState) {
-        return !deliveryState.equals(DeliveryState.COMPLETE);
-    }
-
-    private boolean isEmptyWaitingOrder(List<WaitingOrderResponseDto> waitingOrder) {
-        return waitingOrder.isEmpty();
-    }
-
-    private boolean isEmptyCompleteOrder(List<GetCompleteOrderResponseDto> completeOrder) {
-        return completeOrder.isEmpty();
-    }
-
-    private boolean isEmptyPreparingOrder(List<GetPreparingOrderResponseDto> preparingOrder) {
-        return preparingOrder.isEmpty();
-    }
-
-    private boolean isEmptyInProgressDelivery(List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList) {
-        return fetchedInProgressDeliveryList.isEmpty();
-    }
-
-    private boolean isEmptyDeliveryDetail(List<DeliveryDetailResponseDto> deliveryInfo) {
-        return deliveryInfo.isEmpty();
-    }
-
-    private void orderTypeValidation(OrderTypeResponseDto orderDivision) {
-//        if (orderDivision == null) {
-//            throw new EmptyOrderListException();
-//        }
-//        if (isNotDelivery(orderDivision.getOrderType())) {
-//            throw new NotDeliveryException();
-//        }
-//        if (isNotReady(orderDivision.getOrderState())) {
-//            throw new NotReadyException();
-//        }
+    private boolean isOrderStatusCancel(OrderStatus orderStatus) {
+        return orderStatus.equals(OrderStatus.CANCEL);
     }
 }
