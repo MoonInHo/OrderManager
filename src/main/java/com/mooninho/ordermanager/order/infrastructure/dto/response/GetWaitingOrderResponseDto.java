@@ -12,7 +12,7 @@ import java.util.List;
 public class GetWaitingOrderResponseDto {
 
     private Long id;
-    private String orderTimestamp;
+    private String timestamp;
     private String totalPrice;
     private List<String> menuNames;
     private String address;

@@ -72,9 +72,15 @@ public class OrderRestController {
     public ResponseEntity<Void> cancelOrder(
             @PathVariable Long storeId,
             @PathVariable Long orderId,
+            @RequestBody(required = false) CreateOrderCancelHistoryRequestDto createOrderCancelHistoryRequestDto,
             Authentication authentication
     ) {
-        orderService.changeOrderToCancel(storeId, orderId, authentication.getName());
+        orderService.changeOrderToCancel(
+                storeId,
+                orderId,
+                authentication.getName(),
+                createOrderCancelHistoryRequestDto
+        );
 
         return ResponseEntity.ok().build();
     }
