@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.order.infrastructure.repository;
 
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 
@@ -15,6 +16,8 @@ public interface OrderQueryRepository {
     List<GetPreparingOrderResponseDto> getPreparingOrders(Long storeId);
 
     List<GetCompleteOrderResponseDto> getCompleteOrders(Long storeId);
+
+    Optional<GetOrderDetailResponseDto> getOrderDetail(Long orderId);
 
     Optional<OrderStatus> getOrderStatus(Long orderId);
 }

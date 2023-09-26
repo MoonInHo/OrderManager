@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.order.infrastructure.repository;
 
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.domain.enums.OrderType;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
 import com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company;
@@ -11,6 +12,7 @@ import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOr
 import com.mooninho.ordermanager.임시.dto.order.OrderTypeResponseDto;
 import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -112,37 +114,40 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
+    public Optional<GetOrderDetailResponseDto> getOrderDetail(Long orderId) {
+
+        return Optional.ofNullable(queryFactory
+                .select(
+                        Projections.fields(
+                                GetOrderDetailResponseDto.class,
+                                Expressions.asNumber(orderId).as("orderId"),
+                                order.timestamp.timestamp,
+                                //orderDetails 를 List 형식으로 표현
+                                order.totalPrice.totalPrice,
+                                customer.address.address,
+                                customer.address.addressDetail,
+                                customer.contact.contact,
+                                order.customerRequest.customerRequest,
+                                order.orderType,
+                                order.paymentType,
+                                order.orderStatus // 배달 도메인 조회 로직도 추가
+                        )
+                )
+                .from(order)
+                .join(order.customer, customer)
+                .where(order.id.eq(orderId))
+                .fetchOne()
+        );
+    }
+
+    @Override
     public Optional<OrderStatus> getOrderStatus(Long orderId) {
         return Optional.ofNullable(queryFactory
                 .select(order.orderStatus)
                 .from(order)
                 .where(order.id.eq(orderId))
-                .fetchOne());
-    }
-
-    public OrderTypeResponseDto findOrderTypes(Long storeId, Long orderId) {
-//        return queryFactory
-//                .select(
-//                        Projections.constructor(
-//                                OrderTypeResponseDto.class,
-//                                Expressions.asNumber(orderId).as("orderId"),
-//                                order.orderType,
-//                                order.orderState
-//                        )
-//                )
-//                .from(order)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .fetchOne();
-        return null;
-    }
-
-    public OrderType findOrderTypeByOrderId(Long storeId, Long orderId) {
-//        return queryFactory
-//                .select(order.orderType)
-//                .from(order)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .fetchOne();
-        return null;
+                .fetchOne()
+        );
     }
 
     public DeliveryState findDeliveryState(Long storeId, Long orderId) {
@@ -152,33 +157,6 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 //                .join(order.delivery, delivery)
 //                .where(order.store.id.eq(storeId), order.id.eq(orderId))
 //                .fetchOne();
-        return null;
-    }
-
-    public Long updateOrderStateToPreparing(Long storeId, Long orderId) {
-//        return queryFactory
-//                .update(order)
-//                .set(order.orderState, OrderState.PREPARING)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .execute();
-        return null;
-    }
-
-    public Long updateOrderStateToReady(Long storeId, Long orderId) {
-//        return queryFactory
-//                .update(order)
-//                .set(order.orderState, OrderState.READY)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .execute();
-        return null;
-    }
-
-    public Long updateOrderStateToCancel(Long storeId, Long orderId) {
-//        return queryFactory
-//                .update(order)
-//                .set(order.orderState, OrderState.CANCEL)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .execute();
         return null;
     }
 
