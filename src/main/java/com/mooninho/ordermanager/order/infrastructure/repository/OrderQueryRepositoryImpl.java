@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.mooninho.ordermanager.customer.domain.entity.QCustomer.customer;
 import static com.mooninho.ordermanager.order.domain.entity.QOrder.order;
@@ -110,6 +111,15 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .fetch();
     }
 
+    @Override
+    public Optional<OrderStatus> getOrderStatus(Long orderId) {
+        return Optional.ofNullable(queryFactory
+                .select(order.orderStatus)
+                .from(order)
+                .where(order.id.eq(orderId))
+                .fetchOne());
+    }
+
     public OrderTypeResponseDto findOrderTypes(Long storeId, Long orderId) {
 //        return queryFactory
 //                .select(
@@ -120,15 +130,6 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 //                                order.orderState
 //                        )
 //                )
-//                .from(order)
-//                .where(order.store.id.eq(storeId), order.id.eq(orderId))
-//                .fetchOne();
-        return null;
-    }
-
-    public OrderStatus findOrderStateByOrderId(Long storeId, Long orderId) {
-//        return queryFactory
-//                .select(order.orderState)
 //                .from(order)
 //                .where(order.store.id.eq(storeId), order.id.eq(orderId))
 //                .fetchOne();
