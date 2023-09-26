@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GetCompleteOrderResponseDto {
 
     private Long id;
-    private String orderTimeStamp;
+    private String timestamp;
 //    private List<String> menuNames;
     private String totalPrice;
     private String address;

@@ -2,7 +2,7 @@ package com.mooninho.ordermanager.order.domain.entity;
 
 import com.mooninho.ordermanager.customer.domain.entity.Customer;
 import com.mooninho.ordermanager.order.domain.vo.CustomerRequest;
-import com.mooninho.ordermanager.order.domain.vo.OrderTimestamp;
+import com.mooninho.ordermanager.order.domain.vo.Timestamp;
 import com.mooninho.ordermanager.order.domain.vo.TotalPrice;
 import com.mooninho.ordermanager.store.domain.entity.Store;
 import com.mooninho.ordermanager.임시.domain.entity.Delivery;
@@ -28,7 +28,7 @@ public class Order {
 
     @Embedded
     @Column(nullable = false)
-    private OrderTimestamp orderTimestamp;
+    private Timestamp timestamp;
 
     @Embedded
     @Column(nullable = false)
@@ -68,7 +68,7 @@ public class Order {
     }
 
     public Order(TotalPrice totalPrice, CustomerRequest customerRequest, Store store, Delivery delivery) {
-        this.orderTimestamp = OrderTimestamp.of();
+        this.timestamp = Timestamp.of();
         this.totalPrice = totalPrice;
         this.customerRequest = customerRequest;
         this.store = store;

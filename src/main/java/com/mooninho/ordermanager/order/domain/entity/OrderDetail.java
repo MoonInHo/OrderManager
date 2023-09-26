@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderDetail {
+public class OrderDetail { // TODO OrderLine 과 OrderDetail 중 어떤게 더 적절한 이름인지 고민
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

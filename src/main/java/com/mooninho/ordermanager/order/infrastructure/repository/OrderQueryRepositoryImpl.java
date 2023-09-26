@@ -35,7 +35,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         Projections.fields(
                                 GetWaitingOrderResponseDto.class,
                                 order.id,
-                                order.orderTimestamp.orderTimestamp,
+                                order.timestamp.timestamp,
 //                                ExpressionUtils.list(String.class, menuNames), // TODO List 방식으로 조회
 //                                Expressions.constant(menuNames),
                                 order.totalPrice.totalPrice,
@@ -64,7 +64,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         Projections.fields(
                                 GetPreparingOrderResponseDto.class,
                                 order.id,
-                                order.orderTimestamp.orderTimestamp,
+                                order.timestamp.timestamp,
                                 //menuNames
                                 order.totalPrice.totalPrice,
                                 customer.address.address,
@@ -93,7 +93,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         Projections.fields(
                                 GetCompleteOrderResponseDto.class,
                                 order.id,
-                                order.orderTimestamp.orderTimestamp,
+                                order.timestamp.timestamp,
                                 //menuNames
                                 order.totalPrice.totalPrice,
                                 customer.address.address,
