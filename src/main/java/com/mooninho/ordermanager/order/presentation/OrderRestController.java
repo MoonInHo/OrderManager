@@ -1,6 +1,7 @@
 package com.mooninho.ordermanager.order.presentation;
 
-import com.mooninho.ordermanager.order.application.dto.request.CreateOrderCancelHistoryRequestDto;
+import com.mooninho.ordermanager.delivery.application.dto.reqeust.CreateDeliveryRequestDto;
+import com.mooninho.ordermanager.orderhistory.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.order.application.service.OrderService;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
@@ -89,13 +90,30 @@ public class OrderRestController {
         orderService.changeOrderToCancel(
                 storeId,
                 orderId,
-                authentication.getName(),
-                createOrderCancelHistoryRequestDto
+                createOrderCancelHistoryRequestDto,
+                authentication.getName()
         );
 
         return ResponseEntity.ok().build();
     }
-//
+
+    @PostMapping("/{orderId}/deliveries")
+    public ResponseEntity<Void> createDeliveryRequest(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @RequestBody CreateDeliveryRequestDto createDeliveryRequestDto,
+            Authentication authentication
+    ) {
+        orderService.createDeliveryRequest(
+                storeId,
+                orderId,
+                createDeliveryRequestDto,
+                authentication.getName()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
 //    @PatchMapping("/deliveries/{orderId}/complete")
 //    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {
 //
@@ -122,18 +140,6 @@ public class OrderRestController {
 //                .body(new ResponseMessageDto("픽업이 완료되었습니다."));
 //    }
 //
-//    @PostMapping("/{orderId}/deliveries")
-//    public ResponseEntity<ResponseMessageDto> createDeliveryRequest(@PathVariable Long orderId, @RequestBody DeliveryRequestDto DeliveryRequestDto) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        orderService.createDeliveryInfo(orderId, storeId, DeliveryRequestDto);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(APPLICATION_JSON)
-//                .body(new ResponseMessageDto("배달원 배정을 요청했습니다"));
-//    }
 //
 //    @GetMapping("/deliveries")
 //    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery() {

@@ -23,4 +23,7 @@ public enum ErrorCode {
     // Order
     EMPTY_ORDER_LIST_ERROR,
     NOT_FOUND_ORDER_ERROR,
+
+    // Delivery
+    NOT_FOUND_DELIVERY_COMPANY_ERROR,
 }

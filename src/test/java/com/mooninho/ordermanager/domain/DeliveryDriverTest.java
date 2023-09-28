@@ -1,8 +1,8 @@
 //package com.mooninho.ordermanager.domain;
 //
-//import com.mooninho.ordermanager.임시.domain.entity.DeliveryDriver;
-//import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DriverName;
-//import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DriverPhone;
+//import com.mooninho.ordermanager.delivery.domain.entity.DeliveryDriver;
+//import com.mooninho.ordermanager.delivery.domain.vo.DriverName;
+//import com.mooninho.ordermanager.delivery.domain.vo.DriverPhone;
 //import com.mooninho.ordermanager.임시.dto.deliveryDriver.DeliveryDriverDto;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
