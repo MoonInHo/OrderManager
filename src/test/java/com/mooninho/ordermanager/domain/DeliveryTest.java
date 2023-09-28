@@ -1,7 +1,7 @@
 //package com.mooninho.ordermanager.domain;
 //
-//import com.mooninho.ordermanager.임시.domain.entity.Delivery;
-//import com.mooninho.ordermanager.임시.domain.wrapper.delivery.DeliveryTips;
+//import com.mooninho.ordermanager.delivery.domain.entity.Delivery;
+//import com.mooninho.ordermanager.delivery.domain.vo.DeliveryTips;
 //import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDto;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;

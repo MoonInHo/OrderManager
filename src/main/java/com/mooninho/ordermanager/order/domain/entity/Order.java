@@ -5,7 +5,7 @@ import com.mooninho.ordermanager.order.domain.vo.CustomerRequest;
 import com.mooninho.ordermanager.order.domain.vo.Timestamp;
 import com.mooninho.ordermanager.order.domain.vo.TotalPrice;
 import com.mooninho.ordermanager.store.domain.entity.Store;
-import com.mooninho.ordermanager.임시.domain.entity.Delivery;
+import com.mooninho.ordermanager.delivery.domain.entity.Delivery;
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.order.domain.enums.OrderType;
 import com.mooninho.ordermanager.order.domain.enums.PaymentType;

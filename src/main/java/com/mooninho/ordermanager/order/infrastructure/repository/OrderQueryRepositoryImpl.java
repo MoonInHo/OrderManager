@@ -1,16 +1,11 @@
 package com.mooninho.ordermanager.order.infrastructure.repository;
 
+import com.mooninho.ordermanager.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.order.domain.enums.OrderStatus;
-import com.mooninho.ordermanager.order.domain.enums.OrderType;
+import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetOrderDetailResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
 import com.mooninho.ordermanager.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
-import com.mooninho.ordermanager.임시.domain.wrapper.delivery.Company;
-import com.mooninho.ordermanager.임시.dto.delivery.DeliveryDetailResponseDto;
-import com.mooninho.ordermanager.임시.dto.delivery.DeliveryTrackingResponseDto;
-import com.mooninho.ordermanager.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
-import com.mooninho.ordermanager.임시.dto.order.OrderTypeResponseDto;
-import com.mooninho.ordermanager.임시.enums.state.DeliveryState;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -150,7 +145,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         );
     }
 
-    public DeliveryState findDeliveryState(Long storeId, Long orderId) {
+    public DeliveryStatus findDeliveryState(Long storeId, Long orderId) {
 //        return queryFactory
 //                .select(order.delivery.deliveryState)
 //                .from(order)
@@ -169,7 +164,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         return null;
     }
 
-    public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState(Long storeId) {
+//    public List<DeliveryTrackingResponseDto> findDeliveryByDeliveryState(Long storeId) {
 //        return queryFactory
 //                .select(
 //                        Projections.constructor(
@@ -191,11 +186,11 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 //                        delivery.deliveryState.ne(DeliveryState.COMPLETE)
 //                )
 //                .fetch();
-        return null;
-    }
+//        return null;
+//    }
 
     //TODO fetch join 사용 고민하기
-    public List<DeliveryDetailResponseDto> findDeliveryDetail(Long storeId, Long deliveryId) {
+//    public List<DeliveryDetailResponseDto> findDeliveryDetail(Long storeId, Long deliveryId) {
 //        return queryFactory
 //                .select(
 //                        Projections.constructor(
@@ -218,15 +213,15 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 //                .join(order.customer, customer)
 //                .where(order.store.id.eq(storeId), delivery.id.eq(deliveryId))
 //                .fetch();
-        return null;
-    }
+//        return null;
+//    }
 
-    public Long findDeliveryCompanyIdByCompanyName(Company companyName) {
+//    public Long findDeliveryCompanyIdByCompanyName(Company companyName) {
 //        return queryFactory
 //                .select(deliveryCompany.id)
 //                .from(deliveryCompany)
 //                .where(deliveryCompany.company.eq(companyName))
 //                .fetchOne();
-        return null;
-    }
+//        return null;
+//    }
 }
