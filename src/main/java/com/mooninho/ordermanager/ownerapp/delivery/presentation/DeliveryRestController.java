@@ -2,13 +2,12 @@ package com.mooninho.ordermanager.ownerapp.delivery.presentation;
 
 import com.mooninho.ordermanager.ownerapp.delivery.application.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/{storeId}")
+@RequestMapping("/api/deliveries")
 @RequiredArgsConstructor
-public class DeliveryRestController {
+public class DeliveryRestController {  // TODO 배달 기사용 앱 분리 고민
 
     private final DeliveryService deliveryService;
 
@@ -43,5 +42,29 @@ public class DeliveryRestController {
 //                .status(HttpStatus.OK)
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .body(new ResponseMessageDto("배달원이 배달을 완료했습니다"));
+//    }
+
+//    @PatchMapping("/deliveries/{orderId}/complete")
+//    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {
+//
+//        Long storeId = orderService.findStoreId();
+//
+//        orderService.changeOrderStateToComplete(storeId, orderId);
+//
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .contentType(APPLICATION_JSON)
+//                .body(new ResponseMessageDto("배달주문 처리가 완료되었습니다."));
+//    }
+//
+//
+
+//
+//    @GetMapping("/deliveries/{deliveryId}/detail")
+//    public List<DeliveryDetailResponseDto> deliveryDetailInfoLookup(@PathVariable Long deliveryId) {
+//
+//        Long storeId = orderService.findStoreId();
+//
+//        return orderService.deliveryDetailLookup(storeId, deliveryId);
 //    }
 }

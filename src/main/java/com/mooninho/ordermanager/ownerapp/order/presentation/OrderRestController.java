@@ -1,6 +1,7 @@
 package com.mooninho.ordermanager.ownerapp.order.presentation;
 
-import com.mooninho.ordermanager.ownerapp.delivery.application.dto.reqeust.CreateDeliveryRequestDto;
+import com.mooninho.ordermanager.ownerapp.delivery.application.dto.request.CreateDeliveryRequestDto;
+import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.orderhistory.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.ownerapp.order.application.service.OrderService;
 import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetOrderDetailResponseDto;
@@ -59,7 +60,7 @@ public class OrderRestController {
     }
 
     @PatchMapping("/{orderId}/accept")
-    public ResponseEntity<Void> acceptOrders(
+    public ResponseEntity<Void> acceptOrders( // TODO 배달 예상시간 & 조리 예상 시간 추가
             @PathVariable Long storeId,
             @PathVariable Long orderId,
             Authentication authentication
@@ -123,5 +124,14 @@ public class OrderRestController {
         );
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/deliveries")
+    public ResponseEntity<List<GetInProgressDeliveryOrdersResponseDto>> getProgressDeliveries(
+            @PathVariable Long storeId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getInProgressDeliveryOrders(storeId, authentication.getName()));
     }
 }

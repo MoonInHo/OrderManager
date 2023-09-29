@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.mooninho.ordermanager.owner.domain.entity.QOwner.owner;
+import static com.mooninho.ordermanager.ownerapp.owner.domain.entity.QOwner.owner;
 
 @Repository
 @RequiredArgsConstructor
