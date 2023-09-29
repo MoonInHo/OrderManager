@@ -1,7 +1,8 @@
 package com.mooninho.ordermanager.ownerapp.order.application.service;
 
-import com.mooninho.ordermanager.ownerapp.delivery.application.dto.reqeust.CreateDeliveryRequestDto;
+import com.mooninho.ordermanager.ownerapp.delivery.application.dto.request.CreateDeliveryRequestDto;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.repository.DeliveryRepository;
+import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryCompanyException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.global.UnauthorizedException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.order.EmptyOrderListException;
@@ -139,6 +140,20 @@ public class OrderService {
         deliveryRepository.save(createDeliveryRequestDto.toEntity(orderId));
     }
 
+    @Transactional
+    public List<GetInProgressDeliveryOrdersResponseDto> getInProgressDeliveryOrders(Long storeId, String username) {
+
+        checkOwner(storeId, getOwnerId(username));
+
+        List<GetInProgressDeliveryOrdersResponseDto> inProgressDeliveryOrders =
+                orderRepository.getInProgressDeliveryOrders(storeId);
+        if (inProgressDeliveryOrders.isEmpty()) {
+            throw new EmptyOrderListException();
+        }
+
+        return inProgressDeliveryOrders;
+    }
+
     @Transactional(readOnly = true)
     protected Long getOwnerId(String username) {
         return ownerRepository.getOwnerId(Username.of(username))
@@ -200,7 +215,7 @@ public class OrderService {
     }
 
     private boolean isNotOrderStatusReady(OrderStatus orderStatus) {
-        return orderStatus.equals(OrderStatus.READY);
+        return !orderStatus.equals(OrderStatus.READY);
     }
 
     private boolean isOrderStatusCancel(OrderStatus orderStatus) {

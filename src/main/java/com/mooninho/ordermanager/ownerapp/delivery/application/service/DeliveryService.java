@@ -10,6 +10,8 @@ public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
 
+
+
     // 배달원 정보 조회
 
     // 배달업체 키 값 조회
@@ -82,6 +84,26 @@ public class DeliveryService {
 //        if (updatedRow == 0) {
 //            throw new NotChangedDeliveryStateException();
 //        }
+//    }
+
+    //    @Transactional
+//    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery(Long storeId) {
+//
+//        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = orderQueryRepository.findDeliveryByDeliveryState(storeId);
+//        if (isEmptyInProgressDelivery(fetchedInProgressDeliveryList)) {
+//            throw new EmptyDeliveryListException();
+//        }
+//        return fetchedInProgressDeliveryList;
+//    }
+
+//    @Transactional
+//    public List<DeliveryDetailResponseDto> deliveryDetailLookup(Long storeId, Long deliveryId) {
+//
+//        List<DeliveryDetailResponseDto> deliveryInfo = orderQueryRepository.findDeliveryDetail(storeId, deliveryId);
+//        if (isEmptyDeliveryDetail(deliveryInfo)) {
+//            throw new EmptyDeliveryException();
+//        }
+//        return deliveryInfo;
 //    }
 
 //    private boolean isNotWaiting(DeliveryResponseDto foundDelivery) {
