@@ -1,9 +1,13 @@
 package com.mooninho.ordermanager.ownerapp.delivery.infrastructure.repository;
 
+import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDelivery.delivery;
 import static com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.QDeliveryCompany.deliveryCompany;
 
 @Repository
@@ -19,6 +23,15 @@ public class DeliveryQueryRepositoryImpl implements DeliveryQueryRepository {
                 .from(deliveryCompany)
                 .where(deliveryCompany.id.eq(deliveryCompanyId))
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public Optional<DeliveryStatus> getDeliveryStatus(Long deliveryId) {
+        return Optional.ofNullable(queryFactory
+                .select(delivery.deliveryStatus)
+                .from(delivery)
+                .where(delivery.id.eq(deliveryId))
+                .fetchOne());
     }
 
 //    public DeliveryResponseDto findDeliveryByDeliveryId(Long deliveryId) {

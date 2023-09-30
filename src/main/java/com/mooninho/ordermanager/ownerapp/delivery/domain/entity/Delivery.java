@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.ownerapp.delivery.domain.entity;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
+import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity.DeliveryDriver;
 import com.mooninho.ordermanager.ownerapp.order.domain.entity.Order;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DeliveryTips;
 import jakarta.persistence.*;
@@ -50,5 +51,13 @@ public class Delivery {
 
     public static Delivery createDelivery(Order order, DeliveryCompany deliveryCompany, DeliveryTips deliveryTips) {
         return new Delivery(order, deliveryCompany, deliveryTips);
+    }
+
+    public DeliveryStatus deliveryStatus() {
+        return this.deliveryStatus;
+    }
+
+    public DeliveryCompany deliveryCompany() {
+        return this.deliveryCompany;
     }
 }

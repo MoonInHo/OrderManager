@@ -4,9 +4,9 @@ import com.mooninho.ordermanager.ownerapp.delivery.application.dto.request.Creat
 import com.mooninho.ordermanager.ownerapp.delivery.domain.repository.DeliveryRepository;
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryCompanyException;
+import com.mooninho.ordermanager.ownerapp.exception.exception.global.InvalidRequestException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.global.UnauthorizedException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.order.EmptyOrderListException;
-import com.mooninho.ordermanager.ownerapp.exception.exception.order.InvalidOrderStatusException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.order.NotFoundOrderException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.owner.OwnerNotFoundException;
 import com.mooninho.ordermanager.ownerapp.order.application.event.OrderHasCanceledEvent;
@@ -184,25 +184,25 @@ public class OrderService {
     
     private void validateOrderIsWaiting(Long orderId) {
         if (isNotOrderStatusWaiting(getOrderStatus(orderId))) {
-            throw new InvalidOrderStatusException();
+            throw new InvalidRequestException();
         }
     }
 
     private void validateOrderIsPreparing(Long orderId) {
         if (isNotOrderStatusPreparing(getOrderStatus(orderId))) {
-            throw new InvalidOrderStatusException();
+            throw new InvalidRequestException();
         }
     }
 
     private void validateOrderIsCancel(Long orderId) {
         if (isOrderStatusCancel(getOrderStatus(orderId))) {
-            throw new InvalidOrderStatusException();
+            throw new InvalidRequestException();
         }
     }
 
     private void validateOrderIsReady(Long orderId) {
         if (isNotOrderStatusReady(getOrderStatus(orderId))) {
-            throw new InvalidOrderStatusException();
+            throw new InvalidRequestException();
         }
     }
 
