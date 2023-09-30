@@ -26,4 +26,7 @@ public enum ErrorCode {
 
     // Delivery
     NOT_FOUND_DELIVERY_COMPANY_ERROR,
+
+    // DeliveryCompany
+    DUPLICATE_COMPANY_NAME_ERROR,
 }

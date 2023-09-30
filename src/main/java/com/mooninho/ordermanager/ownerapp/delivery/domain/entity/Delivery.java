@@ -1,6 +1,7 @@
 package com.mooninho.ordermanager.ownerapp.delivery.domain.entity;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
+import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.order.domain.entity.Order;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DeliveryTips;
 import jakarta.persistence.*;
