@@ -1,7 +1,8 @@
-package com.mooninho.ordermanager.ownerapp.delivery.domain.entity;
+package com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity;
 
-import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DriverName;
-import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DriverPhone;
+import com.mooninho.ordermanager.ownerapp.delivery.domain.entity.Delivery;
+import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.vo.DriverName;
+import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.vo.DriverPhone;
 import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryDriver {
 
@@ -42,5 +42,9 @@ public class DeliveryDriver {
 
     public static DeliveryDriver createDeilveryDriver(DriverName driverName, DriverPhone driverPhone, DeliveryCompany deliveryCompany) {
         return new DeliveryDriver(driverName, driverPhone, deliveryCompany);
+    }
+
+    public DeliveryCompany deliveryCompany() {
+        return this.deliveryCompany;
     }
 }

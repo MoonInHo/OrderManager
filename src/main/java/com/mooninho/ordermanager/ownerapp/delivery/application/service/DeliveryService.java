@@ -1,8 +1,15 @@
 package com.mooninho.ordermanager.ownerapp.delivery.application.service;
 
+import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.repository.DeliveryRepository;
+import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity.DeliveryDriver;
+import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.repository.DeliveryDriverRepository;
+import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryException;
+import com.mooninho.ordermanager.ownerapp.exception.exception.deliverydriver.NotFoundDeliveryDriverException;
+import com.mooninho.ordermanager.ownerapp.exception.exception.global.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -10,42 +17,29 @@ public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
 
+    @Transactional
+    public void deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) { // TODO 동시성 이슈 체크 (서로 다른 기사가 요청을 동시에 수락할경우)
 
+        validDeliveryStatus(getDeliveryStatus(deliveryId));
 
-    // 배달원 정보 조회
+        deliveryRepository.updateDeliveryStatusToDispatch(deliveryId, deliveryDriverId);
+    }
 
-    // 배달업체 키 값 조회
+    @Transactional(readOnly = true)
+    protected DeliveryStatus getDeliveryStatus(Long deliveryId) {
+        return deliveryRepository.getDeliveryStatus(deliveryId)
+                .orElseThrow(NotFoundDeliveryException::new);
+    }
 
-    // 배달원 키 값 조회
+    private void validDeliveryStatus(DeliveryStatus deliveryStatus) {
+        if (isNotDeliveryStatusWaiting(deliveryStatus)) {
+            throw new InvalidRequestException();
+        }
+    }
 
-
-
-
-
-
-    // 배달원용 앱 분리
-
-//    @Transactional
-//    public void deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) {
-//
-//        DeliveryResponseDto foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
-//        if (foundDelivery == null) {
-//            throw new EmptyDeliveryException();
-//        }
-//        if (isNotWaiting(foundDelivery)) {
-//            throw new InvalidDeliveryStateException("배차 대기중이 아닙니다.");
-//        }
-//
-//        Long driverCompanyId = deliveryQueryRepository.findDeliveryCompanyIdByDeliveryDriverId(deliveryDriverId);
-//        if (isCompanyMismatch(foundDelivery, driverCompanyId)) {
-//            throw new CompanyMismatchException();
-//        }
-//
-//        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToDispatch(deliveryId, deliveryDriverId);
-//        if (updatedRow == null) {
-//            throw new DriverAssignmentFailureException();
-//        }
-//    }
+    private boolean isNotDeliveryStatusWaiting(DeliveryStatus deliveryStatus) {
+        return !deliveryStatus.equals(DeliveryStatus.WAITING);
+    }
 
 //    @Transactional
 //    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId) {

@@ -29,4 +29,8 @@ public enum ErrorCode {
 
     // DeliveryCompany
     DUPLICATE_COMPANY_NAME_ERROR,
+    NOT_FOUND_DELIVERY_ERROR,
+
+    // DeliveryDriver
+    NOT_FOUND_DELIVERY_DRIVER_ERROR,
 }
