@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.ownerapp.delivery.domain.entity;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DriverName;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DriverPhone;
+import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

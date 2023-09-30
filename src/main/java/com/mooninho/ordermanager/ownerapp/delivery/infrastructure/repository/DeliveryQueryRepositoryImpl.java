@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDeliveryCompany.deliveryCompany;
+import static com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.QDeliveryCompany.deliveryCompany;
 
 @Repository
 @RequiredArgsConstructor

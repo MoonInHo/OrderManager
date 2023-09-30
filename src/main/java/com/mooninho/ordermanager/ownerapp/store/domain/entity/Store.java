@@ -1,5 +1,6 @@
 package com.mooninho.ordermanager.ownerapp.store.domain.entity;
 
+import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.owner.domain.entity.Owner;
 import com.mooninho.ordermanager.ownerapp.menu.domain.entity.Menu;
 import com.mooninho.ordermanager.ownerapp.order.domain.entity.Order;
@@ -33,6 +34,9 @@ public class Store {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<Menu> menu = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<DeliveryCompany> deliveryCompanies = new ArrayList<>();
 
     private Store(Long id) {
         this.id = id;

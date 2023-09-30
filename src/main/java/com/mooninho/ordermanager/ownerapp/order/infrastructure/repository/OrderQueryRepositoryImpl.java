@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static com.mooninho.ordermanager.ownerapp.customer.domain.entity.QCustomer.customer;
 import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDelivery.delivery;
-import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDeliveryCompany.deliveryCompany;
+import static com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.QDeliveryCompany.deliveryCompany;
 import static com.mooninho.ordermanager.ownerapp.order.domain.entity.QOrder.order;
 import static com.mooninho.ordermanager.ownerapp.store.domain.entity.QStore.store;
 
@@ -161,7 +161,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                                 order.timestamp.timestamp,
                                 order.orderType,
                                 // 배달 경과시간 추가 -> 배달 시작 시점에 타임스탬프를 찍고 조회 시점에 배달 시점과 현재 시점의 시간 차를 계산
-                                delivery.deliveryCompany.company,
+                                delivery.deliveryCompany.companyName.companyName,
                                 order.paymentType,
                                 order.totalPrice.totalPrice,
                                 delivery.deliveryStatus
