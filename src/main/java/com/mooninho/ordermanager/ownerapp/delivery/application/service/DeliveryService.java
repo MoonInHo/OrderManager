@@ -2,11 +2,9 @@ package com.mooninho.ordermanager.ownerapp.delivery.application.service;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.repository.DeliveryRepository;
-import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity.DeliveryDriver;
-import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.repository.DeliveryDriverRepository;
 import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryException;
-import com.mooninho.ordermanager.ownerapp.exception.exception.deliverydriver.NotFoundDeliveryDriverException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.global.InvalidRequestException;
+import com.mooninho.ordermanager.ownerapp.exception.exception.global.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +18,27 @@ public class DeliveryService {
     @Transactional
     public void deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) { // TODO 동시성 이슈 체크 (서로 다른 기사가 요청을 동시에 수락할경우)
 
-        validDeliveryStatus(getDeliveryStatus(deliveryId));
+        checkDeliveryWaiting(getDeliveryStatus(deliveryId));
 
-        deliveryRepository.updateDeliveryStatusToDispatch(deliveryId, deliveryDriverId);
+        deliveryRepository.updateDeliveryToDispatch(deliveryId, deliveryDriverId);
+    }
+
+    @Transactional
+    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId) {
+
+        checkDeliveryDispatch(getDeliveryStatus(deliveryId));
+        checkDeliveryOwnership(deliveryId, deliveryDriverId);
+
+        deliveryRepository.updateDeliveryStatus(deliveryId, DeliveryStatus.PICKUP);
+    }
+
+    @Transactional
+    public void deliveryComplete(Long deliveryId, Long deliveryDriverId) {
+
+        checkDeliveryPickUp(getDeliveryStatus(deliveryId));
+        checkDeliveryOwnership(deliveryId, deliveryDriverId);
+
+        deliveryRepository.updateDeliveryStatus(deliveryId, DeliveryStatus.COMPLETE);
     }
 
     @Transactional(readOnly = true)
@@ -31,54 +47,44 @@ public class DeliveryService {
                 .orElseThrow(NotFoundDeliveryException::new);
     }
 
-    private void validDeliveryStatus(DeliveryStatus deliveryStatus) {
-        if (isNotDeliveryStatusWaiting(deliveryStatus)) {
+    @Transactional(readOnly = true)
+    protected void checkDeliveryOwnership(Long deliveryId, Long deliveryDriverId) {
+
+        boolean deliveryOwner = deliveryRepository.isDeliveryOwner(deliveryId, deliveryDriverId);
+        if (!deliveryOwner) {
+            throw new UnauthorizedException();
+        }
+    }
+
+    private void checkDeliveryWaiting(DeliveryStatus deliveryStatus) {
+        if (!isDeliveryWaiting(deliveryStatus)) {
             throw new InvalidRequestException();
         }
     }
 
-    private boolean isNotDeliveryStatusWaiting(DeliveryStatus deliveryStatus) {
-        return !deliveryStatus.equals(DeliveryStatus.WAITING);
+    private void checkDeliveryDispatch(DeliveryStatus deliveryStatus) {
+        if (!isDeliveryDispatch(deliveryStatus)) {
+            throw new InvalidRequestException();
+        }
     }
 
-//    @Transactional
-//    public void deliveryPickUp(Long deliveryId, Long deliveryDriverId) {
-//
-//        DeliveryResponseDto foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
-//        if (foundDelivery == null) {
-//            throw new EmptyDeliveryException();
-//        }
-//        if (isDeliveryDriverMismatch(deliveryDriverId, foundDelivery)) {
-//            throw new DriverMismatchException();
-//        }
-//        if (isNotDispatch(foundDelivery)) {
-//            throw new NotStateInDispatchException();
-//        }
-//        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToPickup(deliveryId);
-//        if (updatedRow == 0) {
-//            throw new NotChangedDeliveryStateException();
-//        }
-//    }
+    private void checkDeliveryPickUp(DeliveryStatus deliveryStatus) {
+        if (!isDeliveryPickUp(deliveryStatus)) {
+            throw new InvalidRequestException();
+        }
+    }
 
-//    @Transactional
-//    public void deliveryComplete(Long deliveryId, Long deliveryDriverId) {
-//
-//        DeliveryResponseDto foundDelivery = deliveryQueryRepository.findDeliveryByDeliveryId(deliveryId);
-//        if (foundDelivery == null) {
-//            throw new EmptyDeliveryException();
-//        }
-//        if (isDeliveryDriverMismatch(deliveryDriverId, foundDelivery)) {
-//            throw new DriverMismatchException();
-//        }
-//        if (isNotPickUp(foundDelivery)) {
-//            throw new NotStateInPickUpException();
-//        }
-//
-//        Long updatedRow = deliveryQueryRepository.updateDeliveryStateToComplete(deliveryId);
-//        if (updatedRow == 0) {
-//            throw new NotChangedDeliveryStateException();
-//        }
-//    }
+    private boolean isDeliveryWaiting(DeliveryStatus deliveryStatus) {
+        return deliveryStatus.equals(DeliveryStatus.WAITING);
+    }
+
+    private boolean isDeliveryDispatch(DeliveryStatus deliveryStatus) {
+        return deliveryStatus.equals(DeliveryStatus.DISPATCH);
+    }
+
+    private boolean isDeliveryPickUp(DeliveryStatus deliveryStatus) {
+        return deliveryStatus.equals(DeliveryStatus.PICKUP);
+    }
 
     //    @Transactional
 //    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery(Long storeId) {

@@ -22,27 +22,25 @@ public class DeliveryRestController {  // TODO 배달 기사용 앱 분리 고�
         return ResponseEntity.ok().build();
     }
 
-//    @PatchMapping("/{deliveryId}/{deliveryDriverId}/pick-up")
-//    public ResponseEntity<ResponseMessageDto> deliveryPickUp(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
-//
-//        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(new ResponseMessageDto("배달원이 물품을 픽업했습니다"));
-//    }
-//
-//    @PatchMapping("/{deliveryId}/{deliveryDriverId}/complete")
-//    public ResponseEntity<ResponseMessageDto> deliveryComplete(@PathVariable Long deliveryId, @PathVariable Long deliveryDriverId) {
-//
-//        deliveryService.deliveryComplete(deliveryId, deliveryDriverId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(new ResponseMessageDto("배달원이 배달을 완료했습니다"));
-//    }
+    @PatchMapping("/{deliveryId}/{deliveryDriverId}/pick-up")
+    public ResponseEntity<Void> deliveryPickUp(
+            @PathVariable Long deliveryId,
+            @PathVariable Long deliveryDriverId
+    ) {
+        deliveryService.deliveryPickUp(deliveryId, deliveryDriverId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{deliveryId}/{deliveryDriverId}/complete")
+    public ResponseEntity<Void> deliveryComplete(
+            @PathVariable Long deliveryId,
+            @PathVariable Long deliveryDriverId
+    ) {
+        deliveryService.deliveryComplete(deliveryId, deliveryDriverId);
+
+        return ResponseEntity.ok().build();
+    }
 
 //    @PatchMapping("/deliveries/{orderId}/complete")
 //    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {

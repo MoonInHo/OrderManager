@@ -34,6 +34,18 @@ public class DeliveryQueryRepositoryImpl implements DeliveryQueryRepository {
                 .fetchOne());
     }
 
+    @Override
+    public boolean isDeliveryOwner(Long deliveryId, Long deliveryDriverId) {
+        return queryFactory
+                .selectOne()
+                .from(delivery)
+                .where(
+                        delivery.id.eq(deliveryId),
+                        delivery.deliveryDriver.id.eq(deliveryDriverId)
+                )
+                .fetchFirst() != null;
+    }
+
 //    public DeliveryResponseDto findDeliveryByDeliveryId(Long deliveryId) {
 //        return queryFactory
 //                .select(

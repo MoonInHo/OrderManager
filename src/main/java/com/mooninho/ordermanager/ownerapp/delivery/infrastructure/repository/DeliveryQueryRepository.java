@@ -9,4 +9,6 @@ public interface DeliveryQueryRepository {
     boolean isExistCompany(Long deliveryCompanyId);
 
     Optional<DeliveryStatus> getDeliveryStatus(Long deliveryId);
+
+    boolean isDeliveryOwner(Long deliveryId, Long deliveryDriverId);
 }

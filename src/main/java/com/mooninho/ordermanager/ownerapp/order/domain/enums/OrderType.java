@@ -4,5 +4,4 @@ public enum OrderType {
 
     DELIVERY,
     TOGO,
-    TABLE;
 }

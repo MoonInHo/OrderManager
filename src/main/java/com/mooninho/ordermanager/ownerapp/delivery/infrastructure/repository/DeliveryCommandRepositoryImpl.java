@@ -14,11 +14,20 @@ public class DeliveryCommandRepositoryImpl implements DeliveryCommandRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void updateDeliveryStatusToDispatch(Long deliveryId, Long deliveryDriverId) {
+    public void updateDeliveryToDispatch(Long deliveryId, Long deliveryDriverId) {
         queryFactory
                 .update(delivery)
                 .set(delivery.deliveryDriver.id, deliveryDriverId)
                 .set(delivery.deliveryStatus, DeliveryStatus.DISPATCH)
+                .where(delivery.id.eq(deliveryId))
+                .execute();
+    }
+
+    @Override
+    public void updateDeliveryStatus(Long deliveryId, DeliveryStatus deliveryStatus) {
+        queryFactory
+                .update(delivery)
+                .set(delivery.deliveryStatus, deliveryStatus)
                 .where(delivery.id.eq(deliveryId))
                 .execute();
     }
