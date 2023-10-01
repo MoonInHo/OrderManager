@@ -5,5 +5,5 @@ public enum DeliveryStatus {
     WAITING,
     DISPATCH,
     PICKUP,
-    COMPLETE;
+    COMPLETE
 }

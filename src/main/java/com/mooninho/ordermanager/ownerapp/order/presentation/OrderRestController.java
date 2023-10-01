@@ -99,12 +99,12 @@ public class OrderRestController {
     }
 
     @PatchMapping("/{orderId}/pickup")
-    public ResponseEntity<Void> pickUpComplete(
+    public ResponseEntity<Void> pickUpTogoOrder(
             @PathVariable Long storeId,
             @PathVariable Long orderId,
             Authentication authentication
     ) {
-        orderService.changeOrderToComplete(storeId, orderId, authentication.getName());
+        orderService.changeTogoOrderToComplete(storeId, orderId, authentication.getName());
 
         return ResponseEntity.ok().build();
     }
@@ -133,5 +133,16 @@ public class OrderRestController {
     ) {
         return ResponseEntity.ok()
                 .body(orderService.getInProgressDeliveryOrders(storeId, authentication.getName()));
+    }
+
+    @PatchMapping("/deliveries/{orderId}/complete")
+    public ResponseEntity<Void> completeDeliveryOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        orderService.changeDeliveryOrderToComplete(storeId, orderId, authentication.getName());
+
+        return ResponseEntity.ok().build();
     }
 }
