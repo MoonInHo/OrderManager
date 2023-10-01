@@ -4,6 +4,7 @@ import com.mooninho.ordermanager.ownerapp.delivery.application.dto.request.Creat
 import com.mooninho.ordermanager.ownerapp.delivery.domain.repository.DeliveryRepository;
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryCompanyException;
+import com.mooninho.ordermanager.ownerapp.exception.exception.delivery.NotFoundDeliveryException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.global.InvalidRequestException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.global.UnauthorizedException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.order.EmptyOrderListException;
@@ -118,10 +119,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderToComplete(Long storeId, Long orderId, String username) {
+    public void changeTogoOrderToComplete(Long storeId, Long orderId, String username) {
 
         checkOwner(storeId, getOwnerId(username));
-        validateOrderIsReady(orderId);
+        validateOrderIsReady(getDeliveryId(orderId));
 
         orderRepository.changeOrderToComplete(orderId);
     }
@@ -154,6 +155,15 @@ public class OrderService {
         return inProgressDeliveryOrders;
     }
 
+    @Transactional
+    public void changeDeliveryOrderToComplete(Long storeId, Long orderId, String username) {
+
+        checkOwner(storeId, getOwnerId(username));
+        validateDeliveryIsComplete(orderId);
+
+        orderRepository.changeOrderToComplete(orderId);
+    }
+
     @Transactional(readOnly = true)
     protected Long getOwnerId(String username) {
         return ownerRepository.getOwnerId(Username.of(username))
@@ -175,13 +185,28 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    protected Long getDeliveryId(Long orderId) {
+        return deliveryRepository.getDeliveryId(orderId)
+                .orElseThrow(NotFoundDeliveryException::new);
+    }
+
+    @Transactional(readOnly = true)
     protected void checkDeliveryCompanyExistence(CreateDeliveryRequestDto createDeliveryRequestDto) {
         boolean existCompany = deliveryRepository.isExistCompany(createDeliveryRequestDto.getDeliveryCompanyId());
         if (!existCompany) {
             throw new NotFoundDeliveryCompanyException();
         }
     }
-    
+
+    @Transactional(readOnly = true) // TODO 제대로 작성했는지 훑어보기
+    protected void validateDeliveryIsComplete(Long deliveryId) {
+
+        boolean deliveryComplete = deliveryRepository.isDeliveryComplete(deliveryId);
+        if (!deliveryComplete) {
+            throw new InvalidRequestException();
+        }
+    }
+
     private void validateOrderIsWaiting(Long orderId) {
         if (isNotOrderStatusWaiting(getOrderStatus(orderId))) {
             throw new InvalidRequestException();

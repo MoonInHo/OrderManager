@@ -11,4 +11,8 @@ public interface DeliveryQueryRepository {
     Optional<DeliveryStatus> getDeliveryStatus(Long deliveryId);
 
     boolean isDeliveryOwner(Long deliveryId, Long deliveryDriverId);
+
+    Optional<Long> getDeliveryId(Long orderId);
+
+    boolean isDeliveryComplete(Long deliveryId);
 }

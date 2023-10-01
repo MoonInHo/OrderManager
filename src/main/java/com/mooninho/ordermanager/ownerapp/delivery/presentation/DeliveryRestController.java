@@ -42,21 +42,6 @@ public class DeliveryRestController {  // TODO 배달 기사용 앱 분리 고�
         return ResponseEntity.ok().build();
     }
 
-//    @PatchMapping("/deliveries/{orderId}/complete")
-//    public ResponseEntity<ResponseMessageDto> completeDeliveryOrder(@PathVariable Long orderId) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        orderService.changeOrderStateToComplete(storeId, orderId);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentType(APPLICATION_JSON)
-//                .body(new ResponseMessageDto("배달주문 처리가 완료되었습니다."));
-//    }
-//
-//
-
 //
 //    @GetMapping("/deliveries/{deliveryId}/detail")
 //    public List<DeliveryDetailResponseDto> deliveryDetailInfoLookup(@PathVariable Long deliveryId) {
