@@ -2,10 +2,7 @@ package com.mooninho.ordermanager.ownerapp.order.infrastructure.repository;
 
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetOrderDetailResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
+import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +20,6 @@ public interface OrderQueryRepository {
     Optional<OrderStatus> getOrderStatus(Long orderId);
 
     List<GetInProgressDeliveryOrdersResponseDto> getInProgressDeliveryOrders(Long storeId);
+
+    Optional<GetDeliveryOrderResponseDto> getDeliveryOrder(Long storeId, Long deliveryId);
 }

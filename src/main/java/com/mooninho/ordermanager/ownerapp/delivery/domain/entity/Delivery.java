@@ -52,12 +52,4 @@ public class Delivery {
     public static Delivery createDelivery(Order order, DeliveryCompany deliveryCompany, DeliveryTips deliveryTips) {
         return new Delivery(order, deliveryCompany, deliveryTips);
     }
-
-    public DeliveryStatus deliveryStatus() {
-        return this.deliveryStatus;
-    }
-
-    public DeliveryCompany deliveryCompany() {
-        return this.deliveryCompany;
-    }
 }

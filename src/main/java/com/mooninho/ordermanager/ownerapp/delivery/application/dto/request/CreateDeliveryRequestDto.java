@@ -18,7 +18,7 @@ public class CreateDeliveryRequestDto {
         return Delivery.createDelivery(
                 Order.createKeyObject(orderId),
                 DeliveryCompany.createKeyObject(deliveryCompanyId),
-                DeliveryTips.of(deliveryTips) // TODO 배달비 정책 추가하기
+                DeliveryTips.of(deliveryTips)
         );
     }
 }

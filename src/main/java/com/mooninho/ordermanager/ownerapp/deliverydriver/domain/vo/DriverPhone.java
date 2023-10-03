@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class DriverPhone {
 
-    private final String DriverPhone;
+    private final String driverPhone;
 
     private DriverPhone(String driverPhone) {
-        DriverPhone = driverPhone;
+        this.driverPhone = driverPhone;
     }
 
     public static DriverPhone of(String driverPhone) {
