@@ -16,7 +16,7 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
 
     @Transactional
-    public void deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) { // TODO 동시성 이슈 체크 (서로 다른 기사가 요청을 동시에 수락할경우)
+    public void deliveryDriverAssignment(Long deliveryId, Long deliveryDriverId) {
 
         checkDeliveryWaiting(getDeliveryStatus(deliveryId));
 
@@ -27,7 +27,7 @@ public class DeliveryService {
     public void deliveryPickUp(Long deliveryId, Long deliveryDriverId) {
 
         checkDeliveryDispatch(getDeliveryStatus(deliveryId));
-        checkDeliveryOwnership(deliveryId, deliveryDriverId);
+        checkDeliveryOwner(deliveryId, deliveryDriverId);
 
         deliveryRepository.updateDeliveryStatus(deliveryId, DeliveryStatus.PICKUP);
     }
@@ -36,7 +36,7 @@ public class DeliveryService {
     public void deliveryComplete(Long deliveryId, Long deliveryDriverId) {
 
         checkDeliveryPickUp(getDeliveryStatus(deliveryId));
-        checkDeliveryOwnership(deliveryId, deliveryDriverId);
+        checkDeliveryOwner(deliveryId, deliveryDriverId);
 
         deliveryRepository.updateDeliveryStatus(deliveryId, DeliveryStatus.COMPLETE);
     }
@@ -48,7 +48,7 @@ public class DeliveryService {
     }
 
     @Transactional(readOnly = true)
-    protected void checkDeliveryOwnership(Long deliveryId, Long deliveryDriverId) {
+    protected void checkDeliveryOwner(Long deliveryId, Long deliveryDriverId) {
 
         boolean deliveryOwner = deliveryRepository.isDeliveryOwner(deliveryId, deliveryDriverId);
         if (!deliveryOwner) {
@@ -85,44 +85,4 @@ public class DeliveryService {
     private boolean isDeliveryPickUp(DeliveryStatus deliveryStatus) {
         return deliveryStatus.equals(DeliveryStatus.PICKUP);
     }
-
-    //    @Transactional
-//    public List<DeliveryTrackingResponseDto> lookupInProgressDelivery(Long storeId) {
-//
-//        List<DeliveryTrackingResponseDto> fetchedInProgressDeliveryList = orderQueryRepository.findDeliveryByDeliveryState(storeId);
-//        if (isEmptyInProgressDelivery(fetchedInProgressDeliveryList)) {
-//            throw new EmptyDeliveryListException();
-//        }
-//        return fetchedInProgressDeliveryList;
-//    }
-
-//    @Transactional
-//    public List<DeliveryDetailResponseDto> deliveryDetailLookup(Long storeId, Long deliveryId) {
-//
-//        List<DeliveryDetailResponseDto> deliveryInfo = orderQueryRepository.findDeliveryDetail(storeId, deliveryId);
-//        if (isEmptyDeliveryDetail(deliveryInfo)) {
-//            throw new EmptyDeliveryException();
-//        }
-//        return deliveryInfo;
-//    }
-
-//    private boolean isNotWaiting(DeliveryResponseDto foundDelivery) {
-//        return !foundDelivery.getDeliveryState().equals(DeliveryState.WAITING);
-//    }
-//
-//    private boolean isCompanyMismatch(DeliveryResponseDto foundDelivery, Long driverCompanyId) {
-//        return !driverCompanyId.equals(foundDelivery.getDeliveryCompany().getId());
-//    }
-//
-//    private boolean isNotPickUp(DeliveryResponseDto foundDelivery) {
-//        return !foundDelivery.getDeliveryState().equals(DeliveryState.PICKUP);
-//    }
-//
-//    private boolean isNotDispatch(DeliveryResponseDto foundDelivery) {
-//        return !foundDelivery.getDeliveryState().equals(DeliveryState.DISPATCH);
-//    }
-//
-//    private boolean isDeliveryDriverMismatch(Long deliveryDriverId, DeliveryResponseDto foundDelivery) {
-//        return !foundDelivery.getDeliveryDriverId().equals(deliveryDriverId);
-//    }
 }

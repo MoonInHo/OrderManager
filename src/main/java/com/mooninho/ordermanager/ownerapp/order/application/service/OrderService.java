@@ -13,10 +13,7 @@ import com.mooninho.ordermanager.ownerapp.exception.exception.owner.OwnerNotFoun
 import com.mooninho.ordermanager.ownerapp.order.application.event.OrderHasCanceledEvent;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.ownerapp.order.domain.repository.OrderRepository;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetOrderDetailResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
+import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
 import com.mooninho.ordermanager.ownerapp.orderhistory.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.ownerapp.owner.domain.repository.OwnerRepository;
 import com.mooninho.ordermanager.ownerapp.owner.domain.vo.Username;
@@ -141,7 +138,7 @@ public class OrderService {
         deliveryRepository.save(createDeliveryRequestDto.toEntity(orderId));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GetInProgressDeliveryOrdersResponseDto> getInProgressDeliveryOrders(Long storeId, String username) {
 
         checkOwner(storeId, getOwnerId(username));
@@ -162,6 +159,15 @@ public class OrderService {
         validateDeliveryIsComplete(orderId);
 
         orderRepository.changeOrderToComplete(orderId);
+    }
+
+    @Transactional(readOnly = true)
+    public GetDeliveryOrderResponseDto getDeliveryOrder(Long storeId, Long deliveryId, String username) {
+
+        checkOwner(storeId, getOwnerId(username));
+
+        return orderRepository.getDeliveryOrder(storeId, deliveryId)
+                .orElseThrow(NotFoundDeliveryException::new);
     }
 
     @Transactional(readOnly = true)
@@ -198,7 +204,7 @@ public class OrderService {
         }
     }
 
-    @Transactional(readOnly = true) // TODO 제대로 작성했는지 훑어보기
+    @Transactional(readOnly = true)
     protected void validateDeliveryIsComplete(Long deliveryId) {
 
         boolean deliveryComplete = deliveryRepository.isDeliveryComplete(deliveryId);

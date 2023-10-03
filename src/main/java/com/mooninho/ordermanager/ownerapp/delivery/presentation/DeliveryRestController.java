@@ -41,13 +41,4 @@ public class DeliveryRestController {  // TODO 배달 기사용 앱 분리 고�
 
         return ResponseEntity.ok().build();
     }
-
-//
-//    @GetMapping("/deliveries/{deliveryId}/detail")
-//    public List<DeliveryDetailResponseDto> deliveryDetailInfoLookup(@PathVariable Long deliveryId) {
-//
-//        Long storeId = orderService.findStoreId();
-//
-//        return orderService.deliveryDetailLookup(storeId, deliveryId);
-//    }
 }

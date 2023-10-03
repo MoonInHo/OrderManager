@@ -3,10 +3,7 @@ package com.mooninho.ordermanager.ownerapp.order.infrastructure.repository;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetOrderDetailResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
+import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,8 +16,8 @@ import java.util.Optional;
 import static com.mooninho.ordermanager.ownerapp.customer.domain.entity.QCustomer.customer;
 import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDelivery.delivery;
 import static com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.QDeliveryCompany.deliveryCompany;
+import static com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity.QDeliveryDriver.deliveryDriver;
 import static com.mooninho.ordermanager.ownerapp.order.domain.entity.QOrder.order;
-import static com.mooninho.ordermanager.ownerapp.store.domain.entity.QStore.store;
 
 @Repository
 @RequiredArgsConstructor
@@ -171,9 +168,41 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .join(order.delivery, delivery)
                 .join(delivery.deliveryCompany, deliveryCompany)
                 .where(
-                        store.id.eq(storeId),
-                        delivery.deliveryStatus.ne(DeliveryStatus.COMPLETE)
+                        order.store.id.eq(storeId),
+                        order.delivery.deliveryStatus.ne(DeliveryStatus.COMPLETE)
                 )
                 .fetch();
+    }
+
+    @Override
+    public Optional<GetDeliveryOrderResponseDto> getDeliveryOrder(Long storeId, Long deliveryId) {
+        return Optional.ofNullable(queryFactory
+                .select(
+                        Projections.fields(
+                                GetDeliveryOrderResponseDto.class,
+                                delivery.id,
+                                delivery.deliveryStatus,
+                                delivery.deliveryCompany.companyName.companyName,
+                                delivery.deliveryTips.deliveryTips,
+                                deliveryDriver.driverName.driverName,
+                                deliveryDriver.driverPhone.driverPhone,
+                                customer.contact.contact,
+                                customer.address.address,
+                                customer.address.addressDetail,
+                                order.timestamp.timestamp,
+                                order.orderType
+                        )
+                )
+                .from(delivery)
+                .join(delivery.order, order)
+                .join(delivery.deliveryCompany, deliveryCompany)
+                .leftJoin(delivery.deliveryDriver, deliveryDriver)
+                .join(order.customer, customer)
+                .where(
+                        order.store.id.eq(storeId),
+                        delivery.id.eq(deliveryId)
+                )
+                .fetchOne()
+        );
     }
 }

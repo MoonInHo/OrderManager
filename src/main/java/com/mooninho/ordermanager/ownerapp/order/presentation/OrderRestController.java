@@ -2,12 +2,9 @@ package com.mooninho.ordermanager.ownerapp.order.presentation;
 
 import com.mooninho.ordermanager.ownerapp.delivery.application.dto.request.CreateDeliveryRequestDto;
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
+import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
 import com.mooninho.ordermanager.ownerapp.orderhistory.application.dto.request.CreateOrderCancelHistoryRequestDto;
 import com.mooninho.ordermanager.ownerapp.order.application.service.OrderService;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetOrderDetailResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetWaitingOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetPreparingOrderResponseDto;
-import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.GetCompleteOrderResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -126,15 +123,6 @@ public class OrderRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/deliveries")
-    public ResponseEntity<List<GetInProgressDeliveryOrdersResponseDto>> getProgressDeliveries(
-            @PathVariable Long storeId,
-            Authentication authentication
-    ) {
-        return ResponseEntity.ok()
-                .body(orderService.getInProgressDeliveryOrders(storeId, authentication.getName()));
-    }
-
     @PatchMapping("/deliveries/{orderId}/complete")
     public ResponseEntity<Void> completeDeliveryOrder(
             @PathVariable Long storeId,
@@ -144,5 +132,24 @@ public class OrderRestController {
         orderService.changeDeliveryOrderToComplete(storeId, orderId, authentication.getName());
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/deliveries")
+    public ResponseEntity<List<GetInProgressDeliveryOrdersResponseDto>> getProgressDeliveries(
+            @PathVariable Long storeId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getInProgressDeliveryOrders(storeId, authentication.getName()));
+    }
+
+    @GetMapping("/deliveries/{deliveryId}")
+    public ResponseEntity<GetDeliveryOrderResponseDto> getDeliveryOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long deliveryId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+                .body(orderService.getDeliveryOrder(storeId, deliveryId, authentication.getName()));
     }
 }
