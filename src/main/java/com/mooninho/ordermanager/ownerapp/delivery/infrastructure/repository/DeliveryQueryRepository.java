@@ -12,7 +12,7 @@ public interface DeliveryQueryRepository {
 
     boolean isDeliveryOwner(Long deliveryId, Long deliveryDriverId);
 
-    Optional<Long> getDeliveryId(Long orderId);
+    Long getDeliveryId(Long orderId);
 
     boolean isDeliveryComplete(Long deliveryId);
 }

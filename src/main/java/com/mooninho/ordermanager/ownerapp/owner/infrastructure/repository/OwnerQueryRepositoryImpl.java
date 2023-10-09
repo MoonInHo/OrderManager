@@ -1,6 +1,7 @@
 package com.mooninho.ordermanager.ownerapp.owner.infrastructure.repository;
 
 import com.mooninho.ordermanager.ownerapp.owner.domain.entity.Owner;
+import com.mooninho.ordermanager.ownerapp.owner.domain.entity.QOwner;
 import com.mooninho.ordermanager.ownerapp.owner.domain.vo.Phone;
 import com.mooninho.ordermanager.ownerapp.owner.domain.vo.Username;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -37,20 +38,22 @@ public class OwnerQueryRepositoryImpl implements OwnerQueryRepository {
 
     @Override
     public Optional<Owner> findByUsername(Username username) {
-        return Optional.ofNullable(queryFactory
-                .selectFrom(owner)
-                .where(owner.username.eq(username))
-                .fetchOne()
-        );
+        Owner owner = queryFactory
+                .selectFrom(QOwner.owner)
+                .where(QOwner.owner.username.eq(username))
+                .fetchOne();
+
+        return Optional.ofNullable(owner);
     }
 
     @Override
     public Optional<Long> getOwnerId(Username username) {
-        return Optional.ofNullable(queryFactory
+        Long ownerId = queryFactory
                 .select(owner.id)
                 .from(owner)
                 .where(owner.username.eq(username))
-                .fetchOne()
-        );
+                .fetchOne();
+
+        return Optional.ofNullable(ownerId);
     }
 }

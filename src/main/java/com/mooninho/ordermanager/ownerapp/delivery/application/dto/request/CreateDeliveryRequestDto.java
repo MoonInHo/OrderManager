@@ -1,8 +1,8 @@
 package com.mooninho.ordermanager.ownerapp.delivery.application.dto.request;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.entity.Delivery;
-import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DeliveryTips;
+import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.order.domain.entity.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package com.mooninho.ordermanager.ownerapp.order.domain.entity;
 
 import com.mooninho.ordermanager.ownerapp.customer.domain.entity.Customer;
+import com.mooninho.ordermanager.ownerapp.order.domain.enums.DeliveryAppType;
 import com.mooninho.ordermanager.ownerapp.order.domain.vo.CustomerRequest;
 import com.mooninho.ordermanager.ownerapp.order.domain.vo.Timestamp;
 import com.mooninho.ordermanager.ownerapp.order.domain.vo.TotalPrice;
@@ -53,6 +54,10 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private DeliveryAppType deliveryAppType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
 
     @Enumerated(EnumType.STRING)
@@ -67,19 +72,50 @@ public class Order {
         this.id = id;
     }
 
-    public Order(TotalPrice totalPrice, CustomerRequest customerRequest, Store store, Delivery delivery) {
+    private Order(
+            TotalPrice totalPrice,
+            CustomerRequest customerRequest,
+            Store store,
+            Customer customer,
+            DeliveryAppType deliveryAppType,
+            OrderStatus orderStatus,
+            PaymentType paymentType,
+            OrderType orderType
+    ) {
         this.timestamp = Timestamp.of();
         this.totalPrice = totalPrice;
         this.customerRequest = customerRequest;
         this.store = store;
-        this.delivery = delivery;
+        this.customer = customer;
+        this.deliveryAppType = deliveryAppType;
+        this.orderStatus = orderStatus;
+        this.paymentType = paymentType;
+        this.orderType = orderType;
     }
 
     public static Order createKeyObject(Long id) {
         return new Order(id);
     }
 
-    public static Order createOrder(TotalPrice totalPrice, CustomerRequest customerRequest, Store store, Delivery delivery) {
-        return new Order(totalPrice, customerRequest, store, delivery);
+    public static Order createOrder(
+            TotalPrice totalPrice,
+            CustomerRequest customerRequest,
+            Store store,
+            Customer customer,
+            DeliveryAppType deliveryAppType,
+            OrderStatus orderStatus,
+            PaymentType paymentType,
+            OrderType orderType
+    ) {
+        return new Order(
+                totalPrice,
+                customerRequest,
+                store,
+                customer,
+                deliveryAppType,
+                orderStatus,
+                paymentType,
+                orderType
+        );
     }
 }

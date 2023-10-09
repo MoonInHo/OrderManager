@@ -16,7 +16,7 @@ public class JwtUtil {
 
     public JwtUtil(@Value("${secret.key}") String secretKey) {
         this.secretKey = secretKey;
-        this.expiredMs = 1000 * 60 * 60L;
+        this.expiredMs = 1000 * 60 * 60L; // TODO 유효시간 조절 후 리프레쉬 토큰 생성
     }
 
     public String generateToken(String username) {

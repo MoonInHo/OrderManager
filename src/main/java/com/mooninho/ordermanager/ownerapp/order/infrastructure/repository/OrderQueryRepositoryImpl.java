@@ -2,6 +2,7 @@ package com.mooninho.ordermanager.ownerapp.order.infrastructure.repository;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.delivery.infrastructure.dto.response.GetInProgressDeliveryOrdersResponseDto;
+import com.mooninho.ordermanager.ownerapp.order.domain.enums.DeliveryAppType;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
 import com.querydsl.core.types.Projections;
@@ -113,7 +114,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     @Override
     public Optional<GetOrderDetailResponseDto> getOrderDetail(Long orderId) {
 
-        return Optional.ofNullable(queryFactory
+        GetOrderDetailResponseDto result = queryFactory
                 .select(
                         Projections.fields(
                                 GetOrderDetailResponseDto.class,
@@ -133,18 +134,21 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .from(order)
                 .join(order.customer, customer)
                 .where(order.id.eq(orderId))
-                .fetchOne()
-        );
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
     public Optional<OrderStatus> getOrderStatus(Long orderId) {
-        return Optional.ofNullable(queryFactory
+
+        OrderStatus result = queryFactory
                 .select(order.orderStatus)
                 .from(order)
                 .where(order.id.eq(orderId))
-                .fetchOne()
-        );
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -176,7 +180,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
     @Override
     public Optional<GetDeliveryOrderResponseDto> getDeliveryOrder(Long storeId, Long deliveryId) {
-        return Optional.ofNullable(queryFactory
+        GetDeliveryOrderResponseDto result = queryFactory
                 .select(
                         Projections.fields(
                                 GetDeliveryOrderResponseDto.class,
@@ -202,7 +206,18 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         order.store.id.eq(storeId),
                         delivery.id.eq(deliveryId)
                 )
-                .fetchOne()
-        );
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public DeliveryAppType getDeliveryAppType(Long orderId) {
+
+        return queryFactory
+                .select(order.deliveryAppType)
+                .from(order)
+                .where(order.id.eq(orderId))
+                .fetchOne();
     }
 }

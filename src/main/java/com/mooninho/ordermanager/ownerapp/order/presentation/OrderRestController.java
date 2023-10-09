@@ -79,13 +79,13 @@ public class OrderRestController {
     }
 
     @PatchMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancelOrder(
+    public ResponseEntity<Void> cancelOrder( // TODO 배달이 시작된 주문도 취소가 되게 할지 고민 (물어보기)
             @PathVariable Long storeId,
             @PathVariable Long orderId,
             @RequestBody(required = false) CreateOrderCancelHistoryRequestDto createOrderCancelHistoryRequestDto,
             Authentication authentication
     ) {
-        orderService.changeOrderToCancel(
+        orderService.cancelOrder(
                 storeId,
                 orderId,
                 createOrderCancelHistoryRequestDto,
@@ -113,7 +113,7 @@ public class OrderRestController {
             @RequestBody CreateDeliveryRequestDto createDeliveryRequestDto,
             Authentication authentication
     ) {
-        orderService.createDeliveryRequest(
+        orderService.createDeliveryRequest( // TODO 배민원, 요기요익스프레스, 쿠팡이츠의 경우 주문 시점에 자동으로 배달 생성
                 storeId,
                 orderId,
                 createDeliveryRequestDto,
