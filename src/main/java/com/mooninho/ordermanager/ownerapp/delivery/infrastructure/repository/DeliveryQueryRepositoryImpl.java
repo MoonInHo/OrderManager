@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import static com.mooninho.ordermanager.ownerapp.delivery.domain.entity.QDelivery.delivery;
 import static com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.QDeliveryCompany.deliveryCompany;
-import static com.mooninho.ordermanager.ownerapp.order.domain.entity.QOrder.order;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,13 +47,12 @@ public class DeliveryQueryRepositoryImpl implements DeliveryQueryRepository {
     }
 
     @Override
-    public Optional<Long> getDeliveryId(Long orderId) {
-        return Optional.ofNullable(queryFactory
+    public Long getDeliveryId(Long orderId) {
+        return queryFactory
                 .select(delivery.id)
                 .from(delivery)
-                .where(order.id.eq(orderId))
-                .fetchOne()
-        );
+                .where(delivery.order.id.eq(orderId))
+                .fetchOne();
     }
 
     @Override

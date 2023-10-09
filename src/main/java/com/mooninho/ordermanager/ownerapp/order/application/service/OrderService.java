@@ -11,6 +11,9 @@ import com.mooninho.ordermanager.ownerapp.exception.exception.order.EmptyOrderLi
 import com.mooninho.ordermanager.ownerapp.exception.exception.order.NotFoundOrderException;
 import com.mooninho.ordermanager.ownerapp.exception.exception.owner.OwnerNotFoundException;
 import com.mooninho.ordermanager.ownerapp.order.application.event.OrderHasCanceledEvent;
+import com.mooninho.ordermanager.ownerapp.order.application.strategy.OrderCancelStrategy;
+import com.mooninho.ordermanager.ownerapp.order.application.strategy.OrderCancelStrategyFactory;
+import com.mooninho.ordermanager.ownerapp.order.domain.enums.DeliveryAppType;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.ownerapp.order.domain.repository.OrderRepository;
 import com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response.*;
@@ -34,6 +37,7 @@ public class OrderService {
     private final StoreRepository storeRepository;
     private final DeliveryRepository deliveryRepository;
     private final ApplicationEventPublisher eventPublisher; // TODO 서비스 클래스 분할 고민
+    private final OrderCancelStrategyFactory orderCancelStrategyFactory;
 
     @Transactional(readOnly = true)
     public List<GetWaitingOrderResponseDto> getWaitingOrders(Long storeId, String username) {
@@ -99,7 +103,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderToCancel(
+    public void cancelOrder(
             Long storeId,
             Long orderId,
             CreateOrderCancelHistoryRequestDto createOrderCancelHistoryRequestDto,
@@ -109,8 +113,9 @@ public class OrderService {
         checkOwner(storeId, getOwnerId(username));
         validateOrderIsCancel(orderId);
 
+        checkOrderCancellationEligibility(orderId);
+
         eventPublisher.publishEvent(new OrderHasCanceledEvent(orderId, createOrderCancelHistoryRequestDto));
-        // TODO 이벤트 수행 실패시 재시도 방법 고민 & 무한으로 해당 이벤트가 실패할 경우 대처방법 고민
 
         orderRepository.changeOrderToCancel(orderId);
     }
@@ -191,9 +196,13 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    protected DeliveryAppType getDeliveryAppType(Long orderId) {
+        return orderRepository.getDeliveryAppType(orderId);
+    }
+
+    @Transactional(readOnly = true)
     protected Long getDeliveryId(Long orderId) {
-        return deliveryRepository.getDeliveryId(orderId)
-                .orElseThrow(NotFoundDeliveryException::new);
+        return deliveryRepository.getDeliveryId(orderId);
     }
 
     @Transactional(readOnly = true)
@@ -209,6 +218,16 @@ public class OrderService {
 
         boolean deliveryComplete = deliveryRepository.isDeliveryComplete(deliveryId);
         if (!deliveryComplete) {
+            throw new InvalidRequestException();
+        }
+    }
+
+    private void checkOrderCancellationEligibility(Long orderId) {
+
+        OrderCancelStrategy strategy = orderCancelStrategyFactory.getStrategy(getDeliveryAppType(orderId));
+
+        boolean isOrderCancellationAllowed = strategy.checkOrderCancellationEligibility(getDeliveryId(orderId));
+        if (!isOrderCancellationAllowed) {
             throw new InvalidRequestException();
         }
     }

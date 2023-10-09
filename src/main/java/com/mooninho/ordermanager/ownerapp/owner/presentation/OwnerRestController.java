@@ -49,5 +49,5 @@ public class OwnerRestController {
     }
 
     //TODO 로그인 시도를 n번 시도시 토큰을 어떻게 관리할지 고민
-    //TODO Redis 학습 후에 로그아웃 기능 구현
+    //TODO Redis 학습 후에 로그아웃 기능 구현 or Refresh token rotation 알아보기
 }
