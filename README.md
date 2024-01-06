@@ -3,8 +3,9 @@
 
 ## 목차
 1. 프로젝트 목적
-2. 구현 기능
-3. 추가 계획
+2. 설계
+3. 구현 기능
+4. 추가 계획
 
 ---
 
@@ -12,9 +13,18 @@
 - 포장 / 배달 주문을 하나의 애플리케이션을 통해 제어 (모바일)
 - 주문 확인 및 처리를 위한 이동 동선 최소화
 
+## 설계
+#### Use-case Diagram
+<img width="711" alt="image" src="https://github.com/MoonInHo/OrderManager/assets/122209421/41a8a35b-7f03-4662-9922-4f01ce95e0a6">
+  
+#### ERD
+![Copy of OrderManager](https://github.com/MoonInHo/OrderManager/assets/122209421/6093ef3e-56a9-4f2b-92d9-01e49ac51844)
+
+
 ## 구현 기능
 ### 회원
 - 회원가입
+  - 비밀번호 암호화
 - 로그인
   - JWT 를 이용한 로그인 
 - 로그아웃 (구현중)
@@ -42,7 +52,7 @@
 - 사장님 / 배달기사 앱 분리
 - 동시성 이슈 제어
 - JWT 로그아웃
-- 단위 테스트
+- 단위 테스트 추가
 
 
 
