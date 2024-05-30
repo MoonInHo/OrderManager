@@ -14,10 +14,17 @@ public class OrderEventListener {
 
     @Async
     @EventListener
-    public void onOrderHasCanceledEvent(OrderHasCanceledEvent orderHasCanceledEvent) {
+    public void onOrderHasCanceledEvent(
+            OrderHasCanceledEvent orderHasCanceledEvent
+    ) {
         orderHistoryService.createCancelHistory(
                 orderHasCanceledEvent.getOrderId(),
                 orderHasCanceledEvent.getCreateOrderCancelHistoryRequestDto()
         );
     }
 }
+
+
+
+
+

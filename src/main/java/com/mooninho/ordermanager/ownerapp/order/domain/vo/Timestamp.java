@@ -19,7 +19,7 @@ public class Timestamp {
 
     public static Timestamp of() {
 
-        LocalDateTime now = LocalDateTime.now();;
+        LocalDateTime now = LocalDateTime.now();
 
         return new Timestamp(now.format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss")));
     }

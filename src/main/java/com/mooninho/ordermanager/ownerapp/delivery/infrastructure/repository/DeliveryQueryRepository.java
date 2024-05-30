@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface DeliveryQueryRepository {
 
-    boolean isExistCompany(Long deliveryCompanyId);
+    boolean isCompanyExist(Long deliveryCompanyId);
 
     Optional<DeliveryStatus> getDeliveryStatus(Long deliveryId);
 
@@ -14,5 +14,5 @@ public interface DeliveryQueryRepository {
 
     Long getDeliveryId(Long orderId);
 
-    boolean isDeliveryComplete(Long deliveryId);
+    boolean isDeliveryCompleted(Long deliveryId);
 }

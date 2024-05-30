@@ -4,11 +4,13 @@ import com.mooninho.ordermanager.ownerapp.delivery.domain.entity.Delivery;
 import com.mooninho.ordermanager.ownerapp.delivery.domain.vo.DeliveryTips;
 import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.order.domain.entity.Order;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateDeliveryRequestDto {
 
     private Long deliveryCompanyId;

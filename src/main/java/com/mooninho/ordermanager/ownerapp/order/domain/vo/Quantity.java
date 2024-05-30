@@ -18,7 +18,7 @@ public class Quantity {
     public static Quantity of(Integer quantity) {
 
         if (quantity == null) {
-            throw new IllegalArgumentException("수량을 입력하세요");
+            throw new IllegalArgumentException("수량을 입력하세요.");
         }
 
         return new Quantity(quantity);

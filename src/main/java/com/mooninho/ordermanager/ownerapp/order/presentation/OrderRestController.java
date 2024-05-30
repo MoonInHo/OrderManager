@@ -38,12 +38,12 @@ public class OrderRestController {
     }
 
     @GetMapping("/complete")
-    public ResponseEntity<List<GetCompleteOrderResponseDto>> getCompleteOrders(
+    public ResponseEntity<List<GetCompletedOrderResponseDto>> getCompleteOrders(
             @PathVariable Long storeId,
             Authentication authentication
     ) {
         return ResponseEntity.ok()
-                .body(orderService.getCompleteOrders(storeId, authentication.getName()));
+                .body(orderService.getCompletedOrders(storeId, authentication.getName()));
     }
 
     @GetMapping("/{orderId}")
@@ -107,7 +107,7 @@ public class OrderRestController {
     }
 
     @PostMapping("/{orderId}/deliveries")
-    public ResponseEntity<Void> createDeliveryRequest(
+    public ResponseEntity<Void> requestDeliveryDriver(
             @PathVariable Long storeId,
             @PathVariable Long orderId,
             @RequestBody CreateDeliveryRequestDto createDeliveryRequestDto,

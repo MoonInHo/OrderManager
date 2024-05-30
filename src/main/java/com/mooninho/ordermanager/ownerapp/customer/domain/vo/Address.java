@@ -24,7 +24,6 @@ public class Address {
         if (addressDetail == null || addressDetail.isBlank()) {
             throw new IllegalArgumentException("상세주소를 입력하세요.");
         }
-
         return new Address(address, addressDetail);
     }
 }

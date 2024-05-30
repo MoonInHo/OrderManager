@@ -1,12 +1,11 @@
 package com.mooninho.ordermanager.ownerapp.deliverydriver.domain.entity;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.entity.Delivery;
+import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.vo.DriverName;
 import com.mooninho.ordermanager.ownerapp.deliverydriver.domain.vo.DriverPhone;
-import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -33,18 +32,4 @@ public class DeliveryDriver {
 
     @OneToMany(mappedBy = "deliveryDriver")
     private List<Delivery> delivery = new ArrayList<>();
-
-    private DeliveryDriver(DriverName driverName, DriverPhone driverPhone, DeliveryCompany deliveryCompany) {
-        this.driverName = driverName;
-        this.driverPhone = driverPhone;
-        this.deliveryCompany = deliveryCompany;
-    }
-
-    public static DeliveryDriver createDeilveryDriver(DriverName driverName, DriverPhone driverPhone, DeliveryCompany deliveryCompany) {
-        return new DeliveryDriver(driverName, driverPhone, deliveryCompany);
-    }
-
-    public DeliveryCompany deliveryCompany() {
-        return this.deliveryCompany;
-    }
 }

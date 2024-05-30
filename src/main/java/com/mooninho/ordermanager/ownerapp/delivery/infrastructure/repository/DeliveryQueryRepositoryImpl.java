@@ -17,7 +17,7 @@ public class DeliveryQueryRepositoryImpl implements DeliveryQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public boolean isExistCompany(Long deliveryCompanyId) {
+    public boolean isCompanyExist(Long deliveryCompanyId) {
         return queryFactory
                 .selectOne()
                 .from(deliveryCompany)
@@ -56,7 +56,7 @@ public class DeliveryQueryRepositoryImpl implements DeliveryQueryRepository {
     }
 
     @Override
-    public boolean isDeliveryComplete(Long deliveryId) {
+    public boolean isDeliveryCompleted(Long deliveryId) {
         return queryFactory
                 .selectOne()
                 .from(delivery)
