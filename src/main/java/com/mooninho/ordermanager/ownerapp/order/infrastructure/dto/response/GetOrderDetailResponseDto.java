@@ -3,11 +3,13 @@ package com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderStatus;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderType;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.PaymentType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class GetOrderDetailResponseDto {
 
     private Long id;

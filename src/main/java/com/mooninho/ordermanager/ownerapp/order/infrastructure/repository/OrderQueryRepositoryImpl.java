@@ -86,12 +86,12 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
-    public List<GetCompleteOrderResponseDto> getCompleteOrders(Long storeId) {
+    public List<GetCompletedOrderResponseDto> getCompleteOrders(Long storeId) {
 
         return queryFactory
                 .select(
                         Projections.fields(
-                                GetCompleteOrderResponseDto.class,
+                                GetCompletedOrderResponseDto.class,
                                 order.id,
                                 order.timestamp.timestamp,
                                 //menuNames

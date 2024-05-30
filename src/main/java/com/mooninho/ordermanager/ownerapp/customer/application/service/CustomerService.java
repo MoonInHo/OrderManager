@@ -22,9 +22,7 @@ public class CustomerService {
         customerRepository.save(createCustomerRequestDto.toEntity());
     }
 
-    @Transactional(readOnly = true)
     protected void checkDuplicateContact(CreateCustomerRequestDto createCustomerRequestDto) {
-
         boolean existContact = customerRepository.isExistContact(Contact.of(createCustomerRequestDto.getContact()));
         if (existContact) {
             throw new DuplicateContactException();

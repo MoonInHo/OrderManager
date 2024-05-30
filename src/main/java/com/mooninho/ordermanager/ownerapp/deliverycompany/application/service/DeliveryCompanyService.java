@@ -22,9 +22,7 @@ public class DeliveryCompanyService {
         deliveryCompanyRepository.save(createDeliveryCompanyRequestDto.toEntity(storeId));
     }
 
-    @Transactional(readOnly = true)
     protected void checkDuplicateCompanyName(String companyName) {
-
         boolean companyNameExist = deliveryCompanyRepository.isCompanyNameExist(CompanyName.of(companyName));
         if (companyNameExist) {
             throw new DuplicateCompanyNameException();

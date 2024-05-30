@@ -17,10 +17,10 @@ public class DriverPhone {
     public static DriverPhone of(String driverPhone) {
 
         if (driverPhone == null || driverPhone.isBlank()) {
-            throw new IllegalArgumentException("배달원 휴대폰번호를 입력하세요");
+            throw new IllegalArgumentException("배달원 휴대폰번호를 입력하세요.");
         }
-        if (!driverPhone.matches("^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")) {
-            throw new IllegalArgumentException("! 올바른 형식으로 입력해주세요");
+        if (!driverPhone.matches("^010-(?:\\d{3}|\\d{4})-\\d{4}$")) {
+            throw new IllegalArgumentException("연락처 형식이 올바르지 않습니다.");
         }
 
         return new DriverPhone(driverPhone);

@@ -1,6 +1,6 @@
 package com.mooninho.ordermanager.ownerapp.store.application.dto.request;
 
-import com.mooninho.ordermanager.ownerapp.owner.domain.entity.Owner;
+import com.mooninho.ordermanager.ownerapp.member.domain.entity.Member;
 import com.mooninho.ordermanager.ownerapp.store.domain.entity.Store;
 import com.mooninho.ordermanager.ownerapp.store.domain.vo.StoreName;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ public class CreateStoreRequestDto {
     public Store toEntity(Long memberId) {
         return Store.createStore(
                 StoreName.of(storeName),
-                Owner.createKeyObject(memberId)
+                Member.createKeyObject(memberId)
         );
     }
 }

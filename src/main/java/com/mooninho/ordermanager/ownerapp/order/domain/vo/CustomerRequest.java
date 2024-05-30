@@ -16,10 +16,9 @@ public class CustomerRequest {
 
     public static CustomerRequest of(String customerRequest) {
 
-        if (customerRequest.length() < 50) {
+        if (customerRequest.length() > 50) {
             throw new IllegalArgumentException("50글자 이내로 입력해주세요.");
         }
-
         return new CustomerRequest(customerRequest);
     }
 }

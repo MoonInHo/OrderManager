@@ -3,11 +3,13 @@ package com.mooninho.ordermanager.ownerapp.deliverycompany.application.dto.reque
 import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.entity.DeliveryCompany;
 import com.mooninho.ordermanager.ownerapp.deliverycompany.domain.vo.CompanyName;
 import com.mooninho.ordermanager.ownerapp.store.domain.entity.Store;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateDeliveryCompanyRequestDto {
 
     private String companyName;

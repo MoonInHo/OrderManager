@@ -2,11 +2,13 @@ package com.mooninho.ordermanager.ownerapp.order.infrastructure.dto.response;
 
 import com.mooninho.ordermanager.ownerapp.delivery.domain.enums.DeliveryStatus;
 import com.mooninho.ordermanager.ownerapp.order.domain.enums.OrderType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class GetDeliveryOrderResponseDto {
 
     private Long id;

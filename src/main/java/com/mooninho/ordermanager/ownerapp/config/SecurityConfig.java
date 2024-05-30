@@ -1,6 +1,6 @@
 package com.mooninho.ordermanager.ownerapp.config;
 
-import com.mooninho.ordermanager.ownerapp.owner.application.security.JwtFilter;
+import com.mooninho.ordermanager.ownerapp.member.application.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
